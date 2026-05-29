@@ -1,0 +1,12 @@
+.DS_Store
+.env
+node_modules/
+
+# Generated build masters and reference plates stay local.
+canon/refs/*.png
+public/images/**/*.png
+public/images/*.png
+
+# Keep deployable static outputs.
+!public/images/**/*.webp
+!public/images/**/manifest.json

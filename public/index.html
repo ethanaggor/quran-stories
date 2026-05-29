@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#0e0b1a" />
+<title>Stories from the Qur'an</title>
+<link href="fonts/fonts.css" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #2a2622;
+    --paper: #f7f3ec;
+    --accent: #c98a4b;
+    --serif: "Newsreader", Georgia, serif;
+    --display: "Fraunces", Georgia, serif;
+    --arabic: "Amiri", serif;
+    --st: env(safe-area-inset-top, 0px);
+    --sb: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; }
+  html, body { height: 100%; background: #0e0b1a; overscroll-behavior: none; }
+  body { font-family: var(--serif); color: var(--ink); user-select: none; -webkit-user-select: none; }
+  img { -webkit-user-drag: none; }
+
+  /* ---------- HOME ---------- */
+  #home {
+    position: fixed; inset: 0; overflow-y: auto; background: var(--paper);
+    padding: calc(var(--st) + 54px) 22px calc(var(--sb) + 40px);
+  }
+  #home h1 {
+    font-family: var(--display); font-weight: 500; font-size: 40px; line-height: 1.05;
+    letter-spacing: -0.5px; max-width: 12ch; margin-bottom: 6px;
+  }
+  #home .lede { font-style: italic; color: #6c655c; font-size: 18px; margin-bottom: 26px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .card { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 9/14;
+    background: #ddd6c9; box-shadow: 0 8px 22px rgba(40,30,20,.18); }
+  .card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .card .scrim { position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.62), rgba(0,0,0,0) 55%); }
+  .card .ct { position: absolute; left: 12px; right: 12px; bottom: 11px; color: #fff;
+    font-family: var(--display); font-weight: 500; font-size: 16px; line-height: 1.15;
+    text-shadow: 0 1px 6px rgba(0,0,0,.5); }
+  .card .num { position: absolute; top: 9px; left: 11px; color: #fff; font-size: 12px;
+    font-family: var(--serif); opacity: .85; text-shadow: 0 1px 4px rgba(0,0,0,.6); }
+
+  /* ---------- READER ---------- */
+  #reader { position: fixed; inset: 0; display: none; background: #0e0b1a; }
+  #reader.on { display: block; }
+  .page { position: absolute; inset: 0; opacity: 0; transition: opacity .35s ease; pointer-events: none; }
+  .page.active { opacity: 1; pointer-events: auto; }
+  .art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  .scrim-t { position: absolute; left: 0; right: 0; top: 0; height: 46%;
+    background: linear-gradient(to bottom, rgba(0,0,0,.55), rgba(0,0,0,0)); }
+  .scrim-b { position: absolute; left: 0; right: 0; bottom: 0; height: 52%;
+    background: linear-gradient(to top, rgba(0,0,0,.62), rgba(0,0,0,0)); }
+  .scrim-c { position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,.5) 0%, rgba(0,0,0,0) 62%); }
+  .lite .scrim-t { background: linear-gradient(to bottom, rgba(247,243,236,.82), rgba(247,243,236,0)); }
+  .lite .scrim-b { background: linear-gradient(to top, rgba(247,243,236,.86), rgba(247,243,236,0)); }
+  .lite .scrim-c { background: radial-gradient(ellipse at center, rgba(247,243,236,.72) 0%, rgba(247,243,236,0) 62%); }
+
+  .txt { position: absolute; left: 0; right: 0; padding: 0 30px;
+    display: flex; flex-direction: column; }
+  .txt[data-pos="top"]    { top: calc(var(--st) + 70px); }
+  .txt[data-pos="upper"]  { top: 24%; }
+  .txt[data-pos="center"] { top: 50%; transform: translateY(-50%); align-items: center; text-align: center; }
+  .txt[data-pos="lower"]  { bottom: 26%; }
+  .txt[data-pos="bottom"] { bottom: calc(var(--sb) + 64px); }
+
+  .narrative { font-family: var(--serif); font-size: 26px; line-height: 1.45; font-weight: 450;
+    max-width: 23ch; }
+
+  .section { align-items: center; text-align: center; }
+  .section .kicker { font-family: var(--display); font-size: 14px; letter-spacing: .2em;
+    text-transform: uppercase; opacity: .82; margin-bottom: 16px; }
+  .section .stitle { font-family: var(--display); font-weight: 500; font-size: 46px; line-height: 1.06;
+    letter-spacing: -0.5px; max-width: 15ch; }
+  .light-ink { color: #fdfbf6; text-shadow: 0 2px 16px rgba(0,0,0,.6); }
+  .dark-ink  { color: #2a2622; text-shadow: 0 1px 14px rgba(247,243,236,.7); }
+
+  .quote .ar { font-family: var(--arabic); font-size: 34px; line-height: 1.7; direction: rtl;
+    margin-bottom: 16px; }
+  .quote .tr { font-family: var(--serif); font-style: italic; font-size: 27px; line-height: 1.5;
+    max-width: 24ch; }
+  .quote .src { font-family: var(--display); font-size: 15px; letter-spacing: .04em; margin-top: 16px;
+    opacity: .85; }
+
+  .arabicpg { align-items: center; text-align: center; }
+  .arabicpg .word { font-family: var(--arabic); font-size: 92px; line-height: 1.1; direction: rtl; }
+  .arabicpg .tl { font-family: var(--display); font-style: italic; font-size: 28px; margin-top: 10px; }
+  .arabicpg .mn { font-family: var(--serif); font-size: 19px; margin-top: 8px; max-width: 22ch; opacity: .92; }
+
+  /* top bar */
+  .bar { position: absolute; left: 0; right: 0; top: 0; z-index: 6;
+    display: flex; align-items: center; gap: 12px; padding: calc(var(--st) + 12px) 18px 0; }
+  .bar button { background: rgba(0,0,0,.28); color: #fff; border: none; width: 34px; height: 34px;
+    border-radius: 50%; font-size: 16px; line-height: 1; backdrop-filter: blur(6px); }
+  .prog { position: relative; flex: 1; height: 5px; border-radius: 99px; background: rgba(255,255,255,.28); overflow: hidden; }
+  .prog > i { display: block; height: 100%; width: 0; background: #f1e6d3; transition: width .3s ease; }
+  .prog .tick { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px;
+    background: rgba(14,11,26,.55); }
+
+  .tap { position: absolute; top: 60px; bottom: 0; width: 40%; z-index: 5; }
+  .tap.l { left: 0; } .tap.r { right: 0; }
+</style>
+</head>
+<body>
+  <div id="home"></div>
+  <div id="reader">
+    <div id="stage"></div>
+    <div class="bar">
+      <button id="back" aria-label="Library">⌂</button>
+      <div class="prog" id="prog"><i id="bar"></i></div>
+    </div>
+    <div class="tap l" id="tapL"></div>
+    <div class="tap r" id="tapR"></div>
+  </div>
+
+<script>
+let book = null, ci = 0, pi = 0;
+const $ = (id) => document.getElementById(id);
+
+async function init() {
+  book = await fetch('book.json').then(r => r.json());
+  renderHome();
+}
+
+function renderHome() {
+  $('reader').classList.remove('on');
+  const cards = book.chapters.map((c, i) => `
+    <button class="card" onclick="openChapter(${i})">
+      <img src="${c.cover}" alt="" loading="lazy" />
+      <div class="scrim"></div>
+      <div class="num">${String(i + 1).padStart(2, '0')}</div>
+      <div class="ct">${c.title}</div>
+    </button>`).join('');
+  $('home').innerHTML = `
+    <h1>${book.title}</h1>
+    <div class="lede">An illustrated journey through the Qur'an</div>
+    <div class="grid">${cards}</div>`;
+  $('home').style.display = 'block';
+}
+
+function openChapter(i) { ci = i; pi = 0; $('home').style.display = 'none'; $('reader').classList.add('on'); renderChapter(); }
+
+function renderChapter() {
+  const ch = book.chapters[ci];
+  $('stage').innerHTML = ch.pages.map((p, i) => pageHTML(p, i)).join('');
+  const total = ch.pages.length;
+  const ticks = ch.pages
+    .map((p, i) => (p.type === 'section' && i > 0 ? `<span class="tick" style="left:${(i / total) * 100}%"></span>` : ''))
+    .join('');
+  $('prog').innerHTML = `<i id="bar"></i>${ticks}`;
+  show(pi);
+}
+
+function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+
+function pageHTML(p, i) {
+  const lite = p.theme === 'dark';           // dark text -> needs a light scrim
+  const inkClass = p.theme === 'dark' ? 'dark-ink' : 'light-ink';
+  const centered = p.type === 'arabic' || p.type === 'section';
+  const pos = p.pos || (centered ? 'center' : 'bottom');
+  const scrim = pos === 'center'
+    ? '<div class="scrim-c"></div>'
+    : (pos === 'top' || pos === 'upper') ? '<div class="scrim-t"></div>' : '<div class="scrim-b"></div>';
+
+  let body = '';
+  if (p.type === 'narrative') {
+    body = `<div class="txt ${inkClass}" data-pos="${pos}"><div class="narrative">${esc(p.text)}</div></div>`;
+  } else if (p.type === 'section' && p.section) {
+    body = `<div class="txt section ${inkClass}" data-pos="center">
+      ${p.section.kicker ? `<div class="kicker">${esc(p.section.kicker)}</div>` : ''}
+      <div class="stitle">${esc(p.section.title)}</div></div>`;
+  } else if (p.type === 'quote' && p.quote) {
+    body = `<div class="txt quote ${inkClass}" data-pos="${pos}">
+      ${p.quote.arabic ? `<div class="ar">${esc(p.quote.arabic)}</div>` : ''}
+      <div class="tr">${esc(p.quote.translation)}</div>
+      <div class="src">${esc(p.quote.source)}</div></div>`;
+  } else if (p.type === 'arabic' && p.arabic) {
+    body = `<div class="txt arabicpg ${inkClass}" data-pos="center">
+      <div class="word">${esc(p.arabic.word)}</div>
+      <div class="tl">${esc(p.arabic.translit)}</div>
+      <div class="mn">${esc(p.arabic.meaning)}</div></div>`;
+  }
+  const needScrim = p.type !== 'image' && p.type !== 'cover';
+  return `<div class="page ${lite ? 'lite' : ''}" data-i="${i}">
+    <img class="art" src="${p.image}" alt="" />
+    ${needScrim ? scrim : ''}
+    ${body}</div>`;
+}
+
+function show(n) {
+  const pages = $('stage').children;
+  pi = Math.max(0, Math.min(pages.length - 1, n));
+  [...pages].forEach((el, i) => el.classList.toggle('active', i === pi));
+  $('bar').style.width = ((pi + 1) / pages.length * 100) + '%';
+  const ch = book.chapters[ci];
+  if (pages[pi + 1]) new Image().src = ch.pages[pi + 1].image; // preload
+}
+
+function next() {
+  const ch = book.chapters[ci];
+  if (pi < ch.pages.length - 1) return show(pi + 1);
+  if (ci < book.chapters.length - 1) { ci++; pi = 0; renderChapter(); } // flow into next chapter
+}
+function prev() {
+  if (pi > 0) return show(pi - 1);
+  if (ci > 0) { ci--; renderChapter(); pi = book.chapters[ci].pages.length - 1; show(pi); }
+}
+
+$('tapR').onclick = next;
+$('tapL').onclick = prev;
+$('back').onclick = renderHome;
+
+let x0 = null;
+$('stage').addEventListener('touchstart', e => x0 = e.touches[0].clientX, { passive: true });
+$('stage').addEventListener('touchend', e => {
+  if (x0 === null) return;
+  const dx = e.changedTouches[0].clientX - x0;
+  if (dx < -45) next(); else if (dx > 45) prev();
+  x0 = null;
+}, { passive: true });
+
+init();
+</script>
+</body>
+</html>

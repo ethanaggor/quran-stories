@@ -1,0 +1,14 @@
+{
+  "name": "quran-stories",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "plates": "bun --env-file=/Users/ethanaggor/sandbox/.env scripts/plates.ts",
+    "gen": "bun --env-file=/Users/ethanaggor/sandbox/.env scripts/generate.ts",
+    "serve": "bun --env-file=/Users/ethanaggor/sandbox/.env scripts/serve.ts"
+  },
+  "dependencies": {
+    "openai": "^6.39.1"
+  }
+}
