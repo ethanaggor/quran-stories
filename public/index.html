@@ -106,6 +106,128 @@
 
   .tap { position: absolute; top: 60px; bottom: 0; width: 40%; z-index: 5; }
   .tap.l { left: 0; } .tap.r { right: 0; }
+
+  /* ---------- LEARNING MOMENTS ---------- */
+  .learn-btn {
+    position: absolute; right: 18px; bottom: calc(var(--sb) + 78px); z-index: 8;
+    width: 48px; height: 48px; border: 1px solid rgba(255,255,255,.5); border-radius: 50%;
+    background: rgba(33,28,24,.42); color: #fff; font-family: var(--display);
+    font-size: 22px; line-height: 1; backdrop-filter: blur(12px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 8px 26px rgba(0,0,0,.24);
+    transition: transform .24s cubic-bezier(.16,1,.3,1), background .24s ease, opacity .24s ease;
+    animation: breathe 3.6s ease-in-out infinite;
+  }
+  .learn-btn.done {
+    background: rgba(247,243,236,.72); color: #3f3328; border-color: rgba(63,51,40,.24);
+  }
+  .learn-btn:active { transform: scale(.94); }
+  .learning-open .learn-btn { opacity: 0; pointer-events: none; }
+
+  .hotspot-layer {
+    position: absolute; inset: 0; z-index: 7; pointer-events: none;
+  }
+  .hotspot-marker {
+    position: absolute; width: 44px; min-width: 44px; height: 44px;
+    transform: translate(-50%, -50%) scale(.86); opacity: 0; pointer-events: auto;
+    border: 1px solid rgba(255,255,255,.66); border-radius: 50%;
+    background: rgba(247,243,236,.78); color: #2a2622;
+    font-family: var(--display); font-size: 11px; line-height: 1.05;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 10px 28px rgba(0,0,0,.28);
+    backdrop-filter: blur(10px);
+    transition: transform .25s cubic-bezier(.16,1,.3,1), opacity .2s ease, background .2s ease;
+    animation: markerIn .36s cubic-bezier(.16,1,.3,1) forwards;
+    animation-delay: calc(var(--m, 0) * 70ms);
+  }
+  .hotspot-marker::after {
+    content: ""; position: absolute; inset: -7px; border-radius: 50%;
+    border: 1px solid rgba(247,243,236,.45); animation: ringPulse 2.8s ease-out infinite;
+  }
+  .hotspot-marker.found {
+    width: auto; max-width: 86px; padding: 0 10px; border-radius: 22px;
+    background: rgba(247,243,236,.9);
+  }
+  .hotspot-marker:active { transform: translate(-50%, -50%) scale(.94); }
+
+  .learn-veil {
+    position: absolute; inset: 0; z-index: 9; display: none;
+    background: linear-gradient(to top, rgba(14,11,26,.28), rgba(14,11,26,0) 60%);
+    pointer-events: none;
+  }
+  .learning-open .learn-veil { display: block; }
+  .learn-sheet {
+    position: absolute; left: 12px; right: 12px; bottom: calc(var(--sb) + 12px); z-index: 10;
+    display: none; max-height: min(62dvh, 540px); overflow: auto;
+    padding: 14px; border: 1px solid rgba(255,255,255,.32); border-radius: 8px;
+    background: rgba(247,243,236,.92); color: #2a2622; backdrop-filter: blur(18px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 18px 42px rgba(0,0,0,.3);
+    transform: translateY(18px); opacity: 0;
+  }
+  .learning-open .learn-sheet {
+    display: block; animation: sheetIn .32s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  .learn-head { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+  .learn-kicker {
+    font-family: var(--display); font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+    color: rgba(42,38,34,.62); margin-bottom: 4px;
+  }
+  .learn-prompt { font-family: var(--display); font-size: 20px; line-height: 1.18; }
+  .learn-close {
+    flex: 0 0 auto; min-width: 64px; min-height: 44px; border: 1px solid rgba(42,38,34,.18);
+    border-radius: 8px; background: rgba(255,255,255,.35); color: #2a2622;
+    font-family: var(--serif); font-size: 15px;
+  }
+  .learn-close:active, .choice-btn:active, .seq-btn:active, .check-btn:active { transform: scale(.98); }
+  .learn-body { display: grid; gap: 10px; }
+  .hint-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .hint-pill {
+    min-height: 34px; border-radius: 8px; padding: 8px 10px; border: 1px solid rgba(42,38,34,.16);
+    background: rgba(255,255,255,.34); font-family: var(--display); font-size: 13px;
+  }
+  .hint-pill.found { background: rgba(201,138,75,.18); border-color: rgba(201,138,75,.34); }
+  .reveal-box, .feedback-box, .complete-box {
+    border-radius: 8px; padding: 11px 12px; background: rgba(255,255,255,.42);
+    border: 1px solid rgba(42,38,34,.12); font-size: 17px; line-height: 1.35;
+  }
+  .reveal-box strong, .feedback-box strong { font-family: var(--display); font-weight: 600; }
+  .complete-box { background: rgba(201,138,75,.17); border-color: rgba(201,138,75,.28); }
+  .choice-grid { display: grid; gap: 8px; }
+  .choice-btn, .check-btn {
+    min-height: 46px; border-radius: 8px; border: 1px solid rgba(42,38,34,.18);
+    background: rgba(255,255,255,.38); color: #2a2622; padding: 10px 12px;
+    text-align: left; font-family: var(--display); font-size: 17px; line-height: 1.15;
+    transition: transform .18s cubic-bezier(.16,1,.3,1), background .18s ease, border-color .18s ease;
+  }
+  .choice-btn.correct { background: rgba(125,149,92,.24); border-color: rgba(95,121,67,.36); }
+  .choice-btn.try { background: rgba(188,111,75,.16); border-color: rgba(188,111,75,.28); }
+  .sequence-list { display: grid; gap: 8px; }
+  .sequence-item {
+    display: grid; grid-template-columns: 1fr 82px; gap: 8px; align-items: center;
+    border-radius: 8px; border: 1px solid rgba(42,38,34,.14);
+    background: rgba(255,255,255,.38); padding: 8px 8px 8px 12px;
+  }
+  .sequence-label { font-family: var(--display); font-size: 16px; line-height: 1.16; }
+  .seq-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .seq-btn {
+    min-height: 40px; border-radius: 8px; border: 1px solid rgba(42,38,34,.16);
+    background: rgba(247,243,236,.78); color: #2a2622; font-size: 14px;
+  }
+  .seq-btn:disabled { opacity: .35; }
+  .check-btn { justify-self: start; min-width: 132px; text-align: center; background: rgba(201,138,75,.18); }
+
+  @keyframes breathe {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+  @keyframes markerIn {
+    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+  @keyframes ringPulse {
+    0% { transform: scale(.78); opacity: .55; }
+    70%, 100% { transform: scale(1.25); opacity: 0; }
+  }
+  @keyframes sheetIn {
+    to { transform: translateY(0); opacity: 1; }
+  }
 </style>
 </head>
 <body>
@@ -118,10 +240,13 @@
     </div>
     <div class="tap l" id="tapL"></div>
     <div class="tap r" id="tapR"></div>
+    <div class="learn-veil" id="learnVeil"></div>
+    <div class="learn-sheet" id="learnSheet" role="dialog" aria-modal="true" aria-live="polite"></div>
   </div>
 
 <script>
-let book = null, ci = 0, pi = 0;
+let book = null, ci = 0, pi = 0, activeInteraction = null;
+const interactionState = new Map();
 const $ = (id) => document.getElementById(id);
 
 async function init() {
@@ -130,6 +255,7 @@ async function init() {
 }
 
 function renderHome() {
+  closeLearning(false);
   $('reader').classList.remove('on');
   const cards = book.chapters.map((c, i) => `
     <button class="card" onclick="openChapter(${i})">
@@ -145,9 +271,16 @@ function renderHome() {
   $('home').style.display = 'block';
 }
 
-function openChapter(i) { ci = i; pi = 0; $('home').style.display = 'none'; $('reader').classList.add('on'); renderChapter(); }
+function openChapter(i) {
+  closeLearning(false);
+  ci = i; pi = 0;
+  $('home').style.display = 'none';
+  $('reader').classList.add('on');
+  renderChapter();
+}
 
 function renderChapter() {
+  closeLearning(false);
   const ch = book.chapters[ci];
   $('stage').innerHTML = ch.pages.map((p, i) => pageHTML(p, i)).join('');
   const total = ch.pages.length;
@@ -158,7 +291,26 @@ function renderChapter() {
   show(pi);
 }
 
-function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function esc(s) {
+  return (s || '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+function completionKey(chapterId, interactionId) {
+  return `qs:interaction:${chapterId}:${interactionId}`;
+}
+
+function isInteractionComplete(chapterId, interaction) {
+  try {
+    return localStorage.getItem(completionKey(chapterId, interaction.id)) === '1';
+  } catch {
+    return false;
+  }
+}
 
 function pageHTML(p, i) {
   const lite = p.theme === 'dark';           // dark text -> needs a light scrim
@@ -188,13 +340,20 @@ function pageHTML(p, i) {
       <div class="mn">${esc(p.arabic.meaning)}</div></div>`;
   }
   const needScrim = p.type !== 'image' && p.type !== 'cover';
+  const ch = book.chapters[ci];
+  const learning = p.interaction
+    ? `<button class="learn-btn ${isInteractionComplete(ch.id, p.interaction) ? 'done' : ''}" data-page="${i}" onclick="openInteraction(${i}, event)" aria-label="Open learning moment">?</button>`
+    : '';
   return `<div class="page ${lite ? 'lite' : ''}" data-i="${i}">
     <img class="art" src="${p.image}" alt="" />
     ${needScrim ? scrim : ''}
-    ${body}</div>`;
+    ${body}
+    <div class="hotspot-layer" data-page="${i}"></div>
+    ${learning}</div>`;
 }
 
 function show(n) {
+  closeLearning(false);
   const pages = $('stage').children;
   pi = Math.max(0, Math.min(pages.length - 1, n));
   [...pages].forEach((el, i) => el.classList.toggle('active', i === pi));
@@ -204,11 +363,13 @@ function show(n) {
 }
 
 function next() {
+  if (activeInteraction) return;
   const ch = book.chapters[ci];
   if (pi < ch.pages.length - 1) return show(pi + 1);
   if (ci < book.chapters.length - 1) { ci++; pi = 0; renderChapter(); } // flow into next chapter
 }
 function prev() {
+  if (activeInteraction) return;
   if (pi > 0) return show(pi - 1);
   if (ci > 0) { ci--; renderChapter(); pi = book.chapters[ci].pages.length - 1; show(pi); }
 }
@@ -217,14 +378,259 @@ $('tapR').onclick = next;
 $('tapL').onclick = prev;
 $('back').onclick = renderHome;
 
+function interactionKey(interaction) {
+  return `${book.chapters[ci].id}:${interaction.id}`;
+}
+
+function hashText(text) {
+  let hash = 0;
+  for (let i = 0; i < text.length; i++) hash = (hash * 31 + text.charCodeAt(i)) >>> 0;
+  return hash;
+}
+
+function initialSequenceOrder(interaction) {
+  const ids = interaction.items.map(item => item.id);
+  if (ids.length < 2) return ids;
+  const offset = hashText(interaction.id) % ids.length;
+  const rotated = ids.slice(offset).concat(ids.slice(0, offset));
+  if (rotated.every((id, index) => id === interaction.correctOrder[index])) {
+    return ids.slice(1).concat(ids[0]);
+  }
+  return rotated;
+}
+
+function getState(interaction) {
+  const key = interactionKey(interaction);
+  if (!interactionState.has(key)) {
+    interactionState.set(key, {
+      found: [],
+      activeMarker: null,
+      selectedOption: null,
+      feedback: '',
+      sequenceOrder: interaction.kind === 'sequence' ? initialSequenceOrder(interaction) : [],
+      sequenceMessage: '',
+    });
+  }
+  return interactionState.get(key);
+}
+
+function markComplete(interaction) {
+  const chapterId = book.chapters[ci].id;
+  try {
+    localStorage.setItem(completionKey(chapterId, interaction.id), '1');
+  } catch {}
+  const btn = document.querySelector(`.page[data-i="${pi}"] .learn-btn`);
+  if (btn) btn.classList.add('done');
+}
+
+function closeLearning(animate = true) {
+  activeInteraction = null;
+  clearHotspotMarkers();
+  $('reader').classList.remove('learning-open');
+  $('learnSheet').innerHTML = '';
+  if (!animate) $('learnSheet').style.animation = 'none';
+  requestAnimationFrame(() => { $('learnSheet').style.animation = ''; });
+}
+
+function openInteraction(pageIndex, event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  const ch = book.chapters[ci];
+  const page = ch.pages[pageIndex];
+  if (!page?.interaction) return;
+  pi = pageIndex;
+  activeInteraction = { pageIndex, interaction: page.interaction };
+  $('reader').classList.add('learning-open');
+  renderHotspotMarkers();
+  renderLearningSheet();
+}
+
+function clearHotspotMarkers() {
+  document.querySelectorAll('.hotspot-layer').forEach(layer => layer.innerHTML = '');
+}
+
+function kindLabel(kind) {
+  if (kind === 'hotspots') return 'Look closely';
+  if (kind === 'choice') return 'Try it';
+  return 'Put in order';
+}
+
+function renderHotspotMarkers() {
+  clearHotspotMarkers();
+  if (!activeInteraction || activeInteraction.interaction.kind !== 'hotspots') return;
+  const { pageIndex, interaction } = activeInteraction;
+  const state = getState(interaction);
+  const layer = document.querySelector(`.hotspot-layer[data-page="${pageIndex}"]`);
+  if (!layer) return;
+  layer.innerHTML = interaction.markers.map((marker, index) => {
+    const found = state.found.includes(marker.id);
+    return `<button class="hotspot-marker ${found ? 'found' : ''}" data-marker="${esc(marker.id)}" style="left:${marker.x}%; top:${marker.y}%; --m:${index}" aria-label="Reveal ${esc(marker.label)}"><span>${found ? esc(marker.label) : ''}</span></button>`;
+  }).join('');
+  layer.querySelectorAll('.hotspot-marker').forEach(button => {
+    button.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      tapMarker(button.dataset.marker);
+    });
+  });
+}
+
+function renderLearningSheet() {
+  if (!activeInteraction) return;
+  const { interaction } = activeInteraction;
+  const state = getState(interaction);
+  $('learnSheet').innerHTML = `
+    <div class="learn-head">
+      <div>
+        <div class="learn-kicker">${kindLabel(interaction.kind)}</div>
+        <div class="learn-prompt">${esc(interaction.prompt)}</div>
+      </div>
+      <button class="learn-close" id="learnClose" type="button">Close</button>
+    </div>
+    <div class="learn-body">${interactionBody(interaction, state)}</div>`;
+  $('learnClose').onclick = () => closeLearning();
+  bindInteractionControls(interaction);
+}
+
+function interactionBody(interaction, state) {
+  if (interaction.kind === 'hotspots') return hotspotBody(interaction, state);
+  if (interaction.kind === 'choice') return choiceBody(interaction, state);
+  return sequenceBody(interaction, state);
+}
+
+function hotspotBody(interaction, state) {
+  const active = interaction.markers.find(marker => marker.id === state.activeMarker);
+  const complete = state.found.length === interaction.markers.length;
+  return `
+    <div class="hint-row">
+      ${interaction.markers.map(marker => `<span class="hint-pill ${state.found.includes(marker.id) ? 'found' : ''}">${esc(marker.label)}</span>`).join('')}
+    </div>
+    ${active ? `<div class="reveal-box"><strong>${esc(active.label)}.</strong> ${esc(active.reveal)}</div>` : '<div class="reveal-box">Tap the glowing markers on the picture.</div>'}
+    ${complete ? `<div class="complete-box">${esc(interaction.completeText || 'You found them all.')}</div>` : ''}`;
+}
+
+function choiceBody(interaction, state) {
+  return `
+    <div class="choice-grid">
+      ${interaction.options.map(option => {
+        const selected = state.selectedOption === option.id;
+        const klass = selected ? (option.correct ? 'correct' : 'try') : '';
+        return `<button class="choice-btn ${klass}" type="button" data-option="${esc(option.id)}">${esc(option.label)}</button>`;
+      }).join('')}
+    </div>
+    ${state.feedback ? `<div class="feedback-box">${esc(state.feedback)}</div>` : ''}
+    ${isInteractionComplete(book.chapters[ci].id, interaction) ? `<div class="complete-box">${esc(interaction.completeText || 'Nicely done.')}</div>` : ''}`;
+}
+
+function sequenceBody(interaction, state) {
+  const itemsById = Object.fromEntries(interaction.items.map(item => [item.id, item]));
+  const correct = state.sequenceOrder.every((id, index) => id === interaction.correctOrder[index]);
+  return `
+    <div class="sequence-list">
+      ${state.sequenceOrder.map((id, index) => {
+        const item = itemsById[id];
+        return `<div class="sequence-item">
+          <div class="sequence-label">${esc(item.label)}</div>
+          <div class="seq-controls">
+            <button class="seq-btn" type="button" data-seq="${index}" data-dir="-1" ${index === 0 ? 'disabled' : ''}>Up</button>
+            <button class="seq-btn" type="button" data-seq="${index}" data-dir="1" ${index === state.sequenceOrder.length - 1 ? 'disabled' : ''}>Down</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <button class="check-btn" type="button" id="checkSequence">Check order</button>
+    ${state.sequenceMessage ? `<div class="${correct ? 'complete-box' : 'feedback-box'}">${esc(state.sequenceMessage)}</div>` : ''}`;
+}
+
+function bindInteractionControls(interaction) {
+  if (interaction.kind === 'choice') {
+    $('learnSheet').querySelectorAll('.choice-btn').forEach(button => {
+      button.addEventListener('click', event => {
+        event.preventDefault();
+        chooseOption(button.dataset.option);
+      });
+    });
+  }
+  if (interaction.kind === 'sequence') {
+    $('learnSheet').querySelectorAll('.seq-btn').forEach(button => {
+      button.addEventListener('click', event => {
+        event.preventDefault();
+        moveSequence(Number(button.dataset.seq), Number(button.dataset.dir));
+      });
+    });
+    const check = $('checkSequence');
+    if (check) check.onclick = () => checkSequence();
+  }
+}
+
+function tapMarker(markerId) {
+  if (!activeInteraction) return;
+  const { interaction } = activeInteraction;
+  const state = getState(interaction);
+  if (!state.found.includes(markerId)) state.found.push(markerId);
+  state.activeMarker = markerId;
+  if (state.found.length === interaction.markers.length) markComplete(interaction);
+  renderHotspotMarkers();
+  renderLearningSheet();
+}
+
+function chooseOption(optionId) {
+  if (!activeInteraction) return;
+  const { interaction } = activeInteraction;
+  const state = getState(interaction);
+  const option = interaction.options.find(item => item.id === optionId);
+  if (!option) return;
+  state.selectedOption = option.id;
+  state.feedback = option.feedback;
+  if (option.correct) markComplete(interaction);
+  renderLearningSheet();
+}
+
+function moveSequence(index, dir) {
+  if (!activeInteraction) return;
+  const { interaction } = activeInteraction;
+  const state = getState(interaction);
+  const target = index + dir;
+  if (target < 0 || target >= state.sequenceOrder.length) return;
+  const nextOrder = state.sequenceOrder.slice();
+  [nextOrder[index], nextOrder[target]] = [nextOrder[target], nextOrder[index]];
+  state.sequenceOrder = nextOrder;
+  state.sequenceMessage = '';
+  renderLearningSheet();
+}
+
+function checkSequence() {
+  if (!activeInteraction) return;
+  const { interaction } = activeInteraction;
+  const state = getState(interaction);
+  const correct = state.sequenceOrder.every((id, index) => id === interaction.correctOrder[index]);
+  if (correct) {
+    state.sequenceMessage = interaction.completeText || 'That is the story order.';
+    markComplete(interaction);
+  } else {
+    state.sequenceMessage = 'Try the order the story happened in.';
+  }
+  renderLearningSheet();
+  requestAnimationFrame(() => { $('learnSheet').scrollTop = $('learnSheet').scrollHeight; });
+}
+
 let x0 = null;
-$('stage').addEventListener('touchstart', e => x0 = e.touches[0].clientX, { passive: true });
+$('stage').addEventListener('touchstart', e => {
+  if (activeInteraction) return;
+  x0 = e.touches[0].clientX;
+}, { passive: true });
 $('stage').addEventListener('touchend', e => {
-  if (x0 === null) return;
+  if (activeInteraction || x0 === null) return;
   const dx = e.changedTouches[0].clientX - x0;
   if (dx < -45) next(); else if (dx > 45) prev();
   x0 = null;
 }, { passive: true });
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && activeInteraction) closeLearning();
+});
 
 init();
 </script>

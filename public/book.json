@@ -47,6 +47,35 @@
           "text": "Everything else — every star, every sea, every living thing — was made by Him.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "creation-signs",
+            "kind": "hotspots",
+            "prompt": "Tap three signs that point back to the One who made them.",
+            "markers": [
+              {
+                "id": "stars",
+                "x": 27,
+                "y": 23,
+                "label": "Stars",
+                "reveal": "The stars are signs, not gods; Allah made their light."
+              },
+              {
+                "id": "sea",
+                "x": 58,
+                "y": 47,
+                "label": "Sea",
+                "reveal": "The sea is vast, yet it obeys the limits Allah gives it."
+              },
+              {
+                "id": "life",
+                "x": 78,
+                "y": 34,
+                "label": "Life",
+                "reveal": "Every living thing is a gift from Allah, the Creator."
+              }
+            ],
+            "completeText": "Creation becomes a quiet lesson when you know who made it."
+          },
           "image": "images/who-is-allah/05.webp"
         },
         {
@@ -104,6 +133,32 @@
           "text": "He has no body and no shape. Our eyes cannot see Him, the way they can see the sun.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "not-like-creation",
+            "kind": "choice",
+            "prompt": "What does it mean that Allah is not like creation?",
+            "options": [
+              {
+                "id": "body",
+                "label": "He has a body like ours.",
+                "feedback": "Allah is not a created body, shape, or thing.",
+                "correct": false
+              },
+              {
+                "id": "nothing-like",
+                "label": "Nothing is like Him.",
+                "feedback": "Yes. Allah is real, near, and unlike anything He made.",
+                "correct": true
+              },
+              {
+                "id": "hidden-star",
+                "label": "He is only a hidden star.",
+                "feedback": "Stars are created things. Allah made every star.",
+                "correct": false
+              }
+            ],
+            "completeText": "You kept the most important boundary clear."
+          },
           "image": "images/who-is-allah/12.webp"
         },
         {
@@ -203,6 +258,35 @@
           "text": "Allah sends the rain from the sky, and the dry, brown land wakes up soft and green and alive.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "rain-wakes-earth",
+            "kind": "hotspots",
+            "prompt": "Tap what changes when Allah sends rain.",
+            "markers": [
+              {
+                "id": "rain",
+                "x": 48,
+                "y": 20,
+                "label": "Rain",
+                "reveal": "Rain is rizq: provision Allah sends from above."
+              },
+              {
+                "id": "dry-earth",
+                "x": 33,
+                "y": 55,
+                "label": "Earth",
+                "reveal": "Dry earth can look finished, but Allah can wake it again."
+              },
+              {
+                "id": "green-life",
+                "x": 66,
+                "y": 49,
+                "label": "Green life",
+                "reveal": "New shoots remind us that Allah brings life from what seems still."
+              }
+            ],
+            "completeText": "Rain turns the page from empty to alive."
+          },
           "image": "images/who-is-allah/25.webp"
         },
         {
@@ -241,6 +325,36 @@
           "text": "None of this made itself. Each thing is a gift — and every gift points back to the Giver.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "gift-to-giver",
+            "kind": "sequence",
+            "prompt": "Put the lesson of the signs in order.",
+            "items": [
+              {
+                "id": "gift",
+                "label": "A gift appears"
+              },
+              {
+                "id": "notice",
+                "label": "We notice it"
+              },
+              {
+                "id": "giver",
+                "label": "It points to the Giver"
+              },
+              {
+                "id": "thanks",
+                "label": "We thank Allah"
+              }
+            ],
+            "correctOrder": [
+              "gift",
+              "notice",
+              "giver",
+              "thanks"
+            ],
+            "completeText": "That is the path from wonder to gratitude."
+          },
           "image": "images/who-is-allah/30.webp"
         },
         {
@@ -291,6 +405,32 @@
           "text": "He is the Most Forgiving. When we do wrong and feel sorry, He loves to forgive us and start again.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "forgiveness-response",
+            "kind": "choice",
+            "prompt": "When someone does wrong and feels sorry, what does Allah love?",
+            "options": [
+              {
+                "id": "hide",
+                "label": "Hide forever.",
+                "feedback": "Hiding keeps the heart heavy. Allah invites us back.",
+                "correct": false
+              },
+              {
+                "id": "return",
+                "label": "Return and ask.",
+                "feedback": "Yes. Allah loves to forgive the one who turns back.",
+                "correct": true
+              },
+              {
+                "id": "pretend",
+                "label": "Pretend nothing happened.",
+                "feedback": "A truthful heart does not need pretending.",
+                "correct": false
+              }
+            ],
+            "completeText": "Mercy is not far away."
+          },
           "image": "images/who-is-allah/36.webp"
         },
         {
@@ -298,6 +438,35 @@
           "text": "He is the Provider. The food you eat and the warm home you sleep in are all gifts from Him.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "provider-gifts",
+            "kind": "hotspots",
+            "prompt": "Tap gifts that teach Allah is the Provider.",
+            "markers": [
+              {
+                "id": "dates",
+                "x": 35,
+                "y": 43,
+                "label": "Dates",
+                "reveal": "Food reaches us because Allah provides through the earth and people."
+              },
+              {
+                "id": "bread",
+                "x": 61,
+                "y": 50,
+                "label": "Bread",
+                "reveal": "A simple meal can carry a big lesson of gratitude."
+              },
+              {
+                "id": "warm-light",
+                "x": 48,
+                "y": 28,
+                "label": "Warmth",
+                "reveal": "Home, warmth, and safety are also provisions from Allah."
+              }
+            ],
+            "completeText": "Provision is not only food; it is care."
+          },
           "image": "images/who-is-allah/37.webp"
         },
         {
@@ -370,6 +539,32 @@
           },
           "theme": "light",
           "pos": "center",
+          "interaction": {
+            "id": "near-and-listening",
+            "kind": "choice",
+            "prompt": "What should you remember when you call on Allah?",
+            "options": [
+              {
+                "id": "too-busy",
+                "label": "He is too busy.",
+                "feedback": "Allah never grows tired and is never too busy.",
+                "correct": false
+              },
+              {
+                "id": "near",
+                "label": "He is near.",
+                "feedback": "Yes. Allah hears even a whisper inside the heart.",
+                "correct": true
+              },
+              {
+                "id": "only-special",
+                "label": "Only special places count.",
+                "feedback": "You can call on Allah anywhere.",
+                "correct": false
+              }
+            ],
+            "completeText": "Dua can begin anywhere."
+          },
           "image": "images/who-is-allah/46.webp"
         },
         {
@@ -445,6 +640,36 @@
           "text": "This book will tell you their stories, one by one. They are some of the best stories ever lived.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "prophets-same-truth",
+            "kind": "sequence",
+            "prompt": "Order the way Allah guides people in this book.",
+            "items": [
+              {
+                "id": "allah",
+                "label": "Allah made people"
+              },
+              {
+                "id": "prophets",
+                "label": "He sent prophets"
+              },
+              {
+                "id": "truth",
+                "label": "They taught one truth"
+              },
+              {
+                "id": "reader",
+                "label": "We learn it today"
+              }
+            ],
+            "correctOrder": [
+              "allah",
+              "prophets",
+              "truth",
+              "reader"
+            ],
+            "completeText": "Every story is part of one bright message."
+          },
           "image": "images/who-is-allah/56.webp"
         },
         {
@@ -535,6 +760,32 @@
           "text": "Muslims believe the Qur’an is not a person’s book at all. Every word in it is the word of Allah, the one God.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "allahs-words",
+            "kind": "choice",
+            "prompt": "Why is the Qur'an different from an ordinary book?",
+            "options": [
+              {
+                "id": "people-made",
+                "label": "People invented it.",
+                "feedback": "Muslims believe the Qur'an is Allah's words, not invented by people.",
+                "correct": false
+              },
+              {
+                "id": "allah-words",
+                "label": "It is Allah's words.",
+                "feedback": "Yes. That is why Muslims treat it with love and care.",
+                "correct": true
+              },
+              {
+                "id": "shelf-book",
+                "label": "It is only decoration.",
+                "feedback": "The Qur'an is recited, learned, remembered, and lived.",
+                "correct": false
+              }
+            ],
+            "completeText": "The Qur'an is a guide, not just a book on a shelf."
+          },
           "image": "images/what-is-the-quran/03.webp"
         },
         {
@@ -644,6 +895,36 @@
           "text": "The Qur’an did not arrive all at once. It came down a little at a time, over twenty-three years.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "revelation-arrives",
+            "kind": "sequence",
+            "prompt": "Put the first revelation story in order.",
+            "items": [
+              {
+                "id": "hira",
+                "label": "Muhammad sits in Hira"
+              },
+              {
+                "id": "gabriel",
+                "label": "Gabriel brings words"
+              },
+              {
+                "id": "read",
+                "label": "The command is Read"
+              },
+              {
+                "id": "years",
+                "label": "Revelation continues"
+              }
+            ],
+            "correctOrder": [
+              "hira",
+              "gabriel",
+              "read",
+              "years"
+            ],
+            "completeText": "The Qur'an came with care, over time."
+          },
           "image": "images/what-is-the-quran/17.webp"
         },
         {
@@ -667,6 +948,35 @@
           "text": "The Qur’an was given in the Arabic language, and it is recited aloud in a flowing, almost musical way.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "made-to-be-heard",
+            "kind": "hotspots",
+            "prompt": "Tap the parts of the Qur'an's sound-life.",
+            "markers": [
+              {
+                "id": "book",
+                "x": 50,
+                "y": 40,
+                "label": "Book",
+                "reveal": "The Qur'an is kept in pages, but it is meant to be recited."
+              },
+              {
+                "id": "voice",
+                "x": 61,
+                "y": 25,
+                "label": "Voice",
+                "reveal": "Recitation lets the words be heard by the heart."
+              },
+              {
+                "id": "light",
+                "x": 40,
+                "y": 25,
+                "label": "Light",
+                "reveal": "Its meaning guides like a light in a dark room."
+              }
+            ],
+            "completeText": "The Qur'an lives in reading, listening, and remembering."
+          },
           "image": "images/what-is-the-quran/20.webp"
         },
         {
@@ -745,6 +1055,35 @@
           "text": "It was kept safe in two ways at once: written down with great care, and memorized by heart.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "kept-two-ways",
+            "kind": "hotspots",
+            "prompt": "Tap the two ways the Qur'an was kept safe.",
+            "markers": [
+              {
+                "id": "pen",
+                "x": 38,
+                "y": 44,
+                "label": "Written",
+                "reveal": "Careful writing helped preserve the words."
+              },
+              {
+                "id": "heart",
+                "x": 59,
+                "y": 36,
+                "label": "Heart",
+                "reveal": "Memorizing by heart made the Qur'an travel inside people."
+              },
+              {
+                "id": "lamp",
+                "x": 76,
+                "y": 28,
+                "label": "Care",
+                "reveal": "The words were guarded with reverence from the beginning."
+              }
+            ],
+            "completeText": "Written lines and living hearts worked together."
+          },
           "image": "images/what-is-the-quran/30.webp"
         },
         {
@@ -857,6 +1196,32 @@
           "text": "Because the Qur’an is Allah’s own words, Muslims treat it with great care and deep respect.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "quran-respect",
+            "kind": "choice",
+            "prompt": "Why do Muslims treat the Qur'an with care?",
+            "options": [
+              {
+                "id": "rare-paper",
+                "label": "Because paper is rare.",
+                "feedback": "The paper matters less than whose words it carries.",
+                "correct": false
+              },
+              {
+                "id": "allah-words",
+                "label": "Because it is Allah's words.",
+                "feedback": "Yes. Love for Allah makes the reader careful.",
+                "correct": true
+              },
+              {
+                "id": "for-display",
+                "label": "Because it is for display.",
+                "feedback": "The Qur'an is loved most by being read and lived.",
+                "correct": false
+              }
+            ],
+            "completeText": "Respect grows from knowing what the Qur'an is."
+          },
           "image": "images/what-is-the-quran/45.webp"
         },
         {
@@ -878,6 +1243,35 @@
           "text": "Children learn it slowly, a few verses at a time, often by lamplight beside someone they love.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "learning-circle",
+            "kind": "hotspots",
+            "prompt": "Tap how children slowly learn the Qur'an.",
+            "markers": [
+              {
+                "id": "teacher",
+                "x": 29,
+                "y": 38,
+                "label": "Teacher",
+                "reveal": "A trusted teacher helps the words be learned correctly."
+              },
+              {
+                "id": "pages",
+                "x": 50,
+                "y": 54,
+                "label": "Pages",
+                "reveal": "A few ayahs at a time can become a lifetime of guidance."
+              },
+              {
+                "id": "home",
+                "x": 72,
+                "y": 35,
+                "label": "Home",
+                "reveal": "The Qur'an is often learned beside someone who loves you."
+              }
+            ],
+            "completeText": "Small lessons can grow into a whole book carried by heart."
+          },
           "image": "images/what-is-the-quran/48.webp"
         },
         {
@@ -901,6 +1295,32 @@
           "text": "You do not need to know Arabic to begin. You can start with its meaning, and with its stories.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "begin-with-meaning",
+            "kind": "choice",
+            "prompt": "If you do not know Arabic yet, where can you begin?",
+            "options": [
+              {
+                "id": "wait",
+                "label": "Wait until you know everything.",
+                "feedback": "You can begin before you know everything.",
+                "correct": false
+              },
+              {
+                "id": "meaning",
+                "label": "Begin with meaning and stories.",
+                "feedback": "Yes. Understanding can start gently, step by step.",
+                "correct": true
+              },
+              {
+                "id": "ignore",
+                "label": "Ignore the Qur'an.",
+                "feedback": "The stories are an open door, not a closed one.",
+                "correct": false
+              }
+            ],
+            "completeText": "A first step still counts."
+          },
           "image": "images/what-is-the-quran/51.webp"
         },
         {
@@ -1013,6 +1433,32 @@
           "text": "A prophet is not a god. He is a human who lives and sleeps like us — but he speaks the words God gives him.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "what-is-prophet",
+            "kind": "choice",
+            "prompt": "Which sentence describes a prophet?",
+            "options": [
+              {
+                "id": "god",
+                "label": "A prophet is a god.",
+                "feedback": "A prophet is human, not God.",
+                "correct": false
+              },
+              {
+                "id": "human-message",
+                "label": "A human with God's message.",
+                "feedback": "Yes. A prophet lives as a human and carries God's words.",
+                "correct": true
+              },
+              {
+                "id": "king-only",
+                "label": "Only a powerful king.",
+                "feedback": "Some prophets were kings, but many were not.",
+                "correct": false
+              }
+            ],
+            "completeText": "That keeps love for prophets in the right place."
+          },
           "image": "images/prophet-muhammad/09.webp"
         },
         {
@@ -1064,6 +1510,35 @@
           "text": "At the center of Mecca was a simple cube-shaped house of stone, called the Kaaba.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "mecca-world",
+            "kind": "hotspots",
+            "prompt": "Tap three parts of Muhammad's early world.",
+            "markers": [
+              {
+                "id": "kaaba",
+                "x": 50,
+                "y": 45,
+                "label": "Kaaba",
+                "reveal": "The Kaaba stood at the center of Mecca."
+              },
+              {
+                "id": "hills",
+                "x": 73,
+                "y": 28,
+                "label": "Hills",
+                "reveal": "Mecca sat in a dry valley between bare hills."
+              },
+              {
+                "id": "traders",
+                "x": 27,
+                "y": 55,
+                "label": "Traders",
+                "reveal": "Travelers and traders passed through the town."
+              }
+            ],
+            "completeText": "The message began in a real place."
+          },
           "image": "images/prophet-muhammad/16.webp"
         },
         {
@@ -1177,6 +1652,32 @@
           "text": "People trusted him so completely that they nicknamed him Al-Amin — \"the trustworthy one.\"",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "al-amin-meaning",
+            "kind": "choice",
+            "prompt": "What did Al-Amin mean in daily life?",
+            "options": [
+              {
+                "id": "loudest",
+                "label": "The loudest one.",
+                "feedback": "Trust was not about being loud.",
+                "correct": false
+              },
+              {
+                "id": "trustworthy",
+                "label": "The trustworthy one.",
+                "feedback": "Yes. People trusted Muhammad because he was honest.",
+                "correct": true
+              },
+              {
+                "id": "richest",
+                "label": "The richest one.",
+                "feedback": "His honor was honesty, not wealth.",
+                "correct": false
+              }
+            ],
+            "completeText": "Trust is a beautiful kind of strength."
+          },
           "image": "images/prophet-muhammad/31.webp"
         },
         {
@@ -1226,6 +1727,35 @@
           "text": "He laid his cloak on the ground, placed the stone in its center, and called a leader from every tribe.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "cloak-peacemaking",
+            "kind": "hotspots",
+            "prompt": "Tap the pieces of Muhammad's peaceful solution.",
+            "markers": [
+              {
+                "id": "cloak",
+                "x": 48,
+                "y": 55,
+                "label": "Cloak",
+                "reveal": "The cloak let everyone share the honor."
+              },
+              {
+                "id": "stone",
+                "x": 51,
+                "y": 43,
+                "label": "Stone",
+                "reveal": "The Black Stone was lifted without one tribe taking all the pride."
+              },
+              {
+                "id": "hands",
+                "x": 28,
+                "y": 47,
+                "label": "Hands",
+                "reveal": "Many leaders carried together, so anger cooled."
+              }
+            ],
+            "completeText": "A wise answer made room for everyone."
+          },
           "image": "images/prophet-muhammad/38.webp"
         },
         {
@@ -1311,6 +1841,35 @@
           "text": "\"Read!\" the angel commanded. \"But I cannot read,\" Muhammad answered, for he had never been taught.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "hira-first-words",
+            "kind": "hotspots",
+            "prompt": "Tap what is happening in the cave.",
+            "markers": [
+              {
+                "id": "light",
+                "x": 55,
+                "y": 24,
+                "label": "Light",
+                "reveal": "Gabriel is shown with light, bringing Allah's words."
+              },
+              {
+                "id": "cave",
+                "x": 32,
+                "y": 46,
+                "label": "Cave",
+                "reveal": "This is Hira, the quiet place where revelation began."
+              },
+              {
+                "id": "muhammad",
+                "x": 50,
+                "y": 62,
+                "label": "Muhammad",
+                "reveal": "Muhammad is shown respectfully without a face."
+              }
+            ],
+            "completeText": "The first words arrived in awe and mercy."
+          },
           "image": "images/prophet-muhammad/49.webp"
         },
         {
@@ -1444,6 +2003,32 @@
           "text": "First: there is only one God. Stop praying to idols of stone, and worship the Maker of all alone.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "tawhid-message",
+            "kind": "choice",
+            "prompt": "What was the first message Muhammad taught?",
+            "options": [
+              {
+                "id": "many-gods",
+                "label": "Pray to many gods.",
+                "feedback": "That was exactly what he came to correct.",
+                "correct": false
+              },
+              {
+                "id": "one-god",
+                "label": "Worship Allah alone.",
+                "feedback": "Yes. This is tawhid: Allah is one.",
+                "correct": true
+              },
+              {
+                "id": "tribe-pride",
+                "label": "Your tribe is greatest.",
+                "feedback": "He taught goodness, not tribe pride.",
+                "correct": false
+              }
+            ],
+            "completeText": "The message was simple and world-changing."
+          },
           "image": "images/prophet-muhammad/66.webp"
         },
         {
@@ -1468,6 +2053,35 @@
           "text": "He told the rich to care for the poor, the orphan, and the traveler who had nothing.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "mercy-in-action",
+            "kind": "hotspots",
+            "prompt": "Tap three people or needs Muhammad taught us to care for.",
+            "markers": [
+              {
+                "id": "food",
+                "x": 43,
+                "y": 46,
+                "label": "Food",
+                "reveal": "Feeding others is mercy you can hold in your hands."
+              },
+              {
+                "id": "poor",
+                "x": 64,
+                "y": 52,
+                "label": "Poor",
+                "reveal": "The poor and traveler were not to be forgotten."
+              },
+              {
+                "id": "hands",
+                "x": 33,
+                "y": 57,
+                "label": "Hands",
+                "reveal": "Helping hands turn belief into action."
+              }
+            ],
+            "completeText": "Mercy becomes real when it helps someone."
+          },
           "image": "images/prophet-muhammad/69.webp"
         },
         {
@@ -1650,6 +2264,41 @@
           "text": "And now you know how it began — with one honest man, one quiet cave, and one word: \"Read.\"",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "muhammad-life-arc",
+            "kind": "sequence",
+            "prompt": "Put Muhammad's story arc in order.",
+            "items": [
+              {
+                "id": "trust",
+                "label": "Known as trustworthy"
+              },
+              {
+                "id": "hira",
+                "label": "Receives words in Hira"
+              },
+              {
+                "id": "message",
+                "label": "Teaches one God"
+              },
+              {
+                "id": "medina",
+                "label": "Builds community in Medina"
+              },
+              {
+                "id": "mercy",
+                "label": "Shows mercy to the worlds"
+              }
+            ],
+            "correctOrder": [
+              "trust",
+              "hira",
+              "message",
+              "medina",
+              "mercy"
+            ],
+            "completeText": "You followed the path from honesty to mercy."
+          },
           "image": "images/prophet-muhammad/93.webp"
         },
         {
@@ -1690,6 +2339,35 @@
           "text": "From the soft clay of the earth, Allah shaped the very first human with His own care.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "clay-and-life",
+            "kind": "hotspots",
+            "prompt": "Tap what Adam's creation teaches.",
+            "markers": [
+              {
+                "id": "clay",
+                "x": 50,
+                "y": 54,
+                "label": "Clay",
+                "reveal": "Adam began from earth, shaped by Allah's care."
+              },
+              {
+                "id": "light",
+                "x": 50,
+                "y": 25,
+                "label": "Life",
+                "reveal": "Life and soul are gifts from Allah."
+              },
+              {
+                "id": "earth",
+                "x": 28,
+                "y": 63,
+                "label": "Earth",
+                "reveal": "The first human connects every family back to one beginning."
+              }
+            ],
+            "completeText": "Human life is honored from its first moment."
+          },
           "image": "images/adam/03.webp"
         },
         {
@@ -1788,6 +2466,32 @@
           "text": "“I am better than him,” Satan said. He was full of pride — thinking himself greater than he was.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "pride-or-humility",
+            "kind": "choice",
+            "prompt": "What made Satan's heart cold?",
+            "options": [
+              {
+                "id": "asking",
+                "label": "Asking questions.",
+                "feedback": "Good questions can lead to truth.",
+                "correct": false
+              },
+              {
+                "id": "pride",
+                "label": "Pride.",
+                "feedback": "Yes. Pride made him think he was too great to obey.",
+                "correct": true
+              },
+              {
+                "id": "being-small",
+                "label": "Being small.",
+                "feedback": "Smallness is not the problem. Pride is.",
+                "correct": false
+              }
+            ],
+            "completeText": "Pride pushes the heart away from mercy."
+          },
           "image": "images/adam/16.webp"
         },
         {
@@ -1839,6 +2543,35 @@
           "text": "Allah told them, “Enjoy all of this freely — but do not go near that one tree.” Just one was set apart.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "garden-test",
+            "kind": "hotspots",
+            "prompt": "Tap the gifts and the one boundary in the Garden.",
+            "markers": [
+              {
+                "id": "fruit",
+                "x": 36,
+                "y": 38,
+                "label": "Fruit",
+                "reveal": "The Garden was full of gifts Adam and Eve could enjoy."
+              },
+              {
+                "id": "stream",
+                "x": 63,
+                "y": 57,
+                "label": "Streams",
+                "reveal": "Allah surrounded them with beauty and peace."
+              },
+              {
+                "id": "tree",
+                "x": 52,
+                "y": 30,
+                "label": "One tree",
+                "reveal": "One tree was a gentle test of trust."
+              }
+            ],
+            "completeText": "Love can be shown by keeping one promise."
+          },
           "image": "images/adam/23.webp"
         },
         {
@@ -1890,6 +2623,32 @@
           "text": "But here is the beautiful part: they did not blame anyone else, and they did not run away from Allah.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "after-mistake",
+            "kind": "choice",
+            "prompt": "What did Adam and Eve do after their mistake?",
+            "options": [
+              {
+                "id": "blame",
+                "label": "Blame someone else.",
+                "feedback": "They did not hide behind blame.",
+                "correct": false
+              },
+              {
+                "id": "turn-back",
+                "label": "Turned back to Allah.",
+                "feedback": "Yes. They asked Allah for mercy with humble hearts.",
+                "correct": true
+              },
+              {
+                "id": "run-away",
+                "label": "Ran away forever.",
+                "feedback": "Running away keeps the wound open.",
+                "correct": false
+              }
+            ],
+            "completeText": "Tawbah begins by turning back."
+          },
           "image": "images/adam/30.webp"
         },
         {
@@ -1963,6 +2722,41 @@
           "text": "Allah sent Adam and Eve from the Garden to live on the earth, and from them came all the families of the world.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "adam-story-order",
+            "kind": "sequence",
+            "prompt": "Put Adam's story in order.",
+            "items": [
+              {
+                "id": "created",
+                "label": "Adam is created"
+              },
+              {
+                "id": "names",
+                "label": "He learns names"
+              },
+              {
+                "id": "garden",
+                "label": "He enters the Garden"
+              },
+              {
+                "id": "mistake",
+                "label": "He makes a mistake"
+              },
+              {
+                "id": "tawbah",
+                "label": "He asks forgiveness"
+              }
+            ],
+            "correctOrder": [
+              "created",
+              "names",
+              "garden",
+              "mistake",
+              "tawbah"
+            ],
+            "completeText": "The story moves from honor to mercy."
+          },
           "image": "images/adam/39.webp"
         },
         {
@@ -1977,6 +2771,26 @@
           "text": "This is Adam’s first gift to us all: when you slip, you do not run from Allah — you run to Him.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "run-to-allah",
+            "kind": "choice",
+            "prompt": "When you slip, where does Adam teach you to run?",
+            "options": [
+              {
+                "id": "away",
+                "label": "Away from Allah.",
+                "feedback": "That only makes the heart lonelier.",
+                "correct": false
+              },
+              {
+                "id": "to-allah",
+                "label": "To Allah.",
+                "feedback": "Yes. His mercy is the safest place to go.",
+                "correct": true
+              }
+            ],
+            "completeText": "A mistake is not the end of the story."
+          },
           "image": "images/adam/41.webp"
         },
         {
@@ -2082,6 +2896,32 @@
           "text": "Still Noah did not stop. Staying gentle and hopeful through long, hard days has a name: patience.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "patience-meaning",
+            "kind": "choice",
+            "prompt": "What did Noah's patience look like?",
+            "options": [
+              {
+                "id": "quit",
+                "label": "He quit quickly.",
+                "feedback": "Noah kept calling with hope.",
+                "correct": false
+              },
+              {
+                "id": "gentle",
+                "label": "He stayed gentle.",
+                "feedback": "Yes. Sabr means holding on to good without becoming cruel.",
+                "correct": true
+              },
+              {
+                "id": "mocked-back",
+                "label": "He mocked them back.",
+                "feedback": "He answered mockery with patience.",
+                "correct": false
+              }
+            ],
+            "completeText": "Patience can be strong and soft at the same time."
+          },
           "image": "images/noah/11.webp"
         },
         {
@@ -2132,6 +2972,35 @@
           "text": "Day after day, Noah and the believers cut and shaped the wood, while the others mocked from far away.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "ark-building",
+            "kind": "hotspots",
+            "prompt": "Tap what Noah kept doing while others laughed.",
+            "markers": [
+              {
+                "id": "wood",
+                "x": 42,
+                "y": 52,
+                "label": "Wood",
+                "reveal": "Every plank was an act of trust."
+              },
+              {
+                "id": "work",
+                "x": 63,
+                "y": 46,
+                "label": "Work",
+                "reveal": "Faith can look like steady work, day after day."
+              },
+              {
+                "id": "distance",
+                "x": 75,
+                "y": 34,
+                "label": "Mockers",
+                "reveal": "Noah did not let laughter stop obedience."
+              }
+            ],
+            "completeText": "The ark was built with patience before the rain ever came."
+          },
           "image": "images/noah/17.webp"
         },
         {
@@ -2139,6 +3008,32 @@
           "text": "To trust Allah even when it looks strange to everyone else — that is what real faith looks like.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "trust-when-strange",
+            "kind": "choice",
+            "prompt": "Why did building a ship on dry land make sense?",
+            "options": [
+              {
+                "id": "popular",
+                "label": "Everyone liked the plan.",
+                "feedback": "Most people laughed at it.",
+                "correct": false
+              },
+              {
+                "id": "allah-commanded",
+                "label": "Allah commanded it.",
+                "feedback": "Yes. Allah's command was safer than people's laughter.",
+                "correct": true
+              },
+              {
+                "id": "guess",
+                "label": "Noah guessed wildly.",
+                "feedback": "Noah was following revelation, not guessing.",
+                "correct": false
+              }
+            ],
+            "completeText": "Trust listens higher than the crowd."
+          },
           "image": "images/noah/18.webp"
         },
         {
@@ -2155,6 +3050,35 @@
           "text": "When the great ship was ready, Allah told Noah to bring aboard a pair of every kind of animal.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "two-by-two",
+            "kind": "hotspots",
+            "prompt": "Tap who came into the ark.",
+            "markers": [
+              {
+                "id": "animals",
+                "x": 49,
+                "y": 45,
+                "label": "Animals",
+                "reveal": "Allah gathered the creatures in pairs."
+              },
+              {
+                "id": "ark",
+                "x": 67,
+                "y": 58,
+                "label": "Ark",
+                "reveal": "The ark became safety because Allah made it safety."
+              },
+              {
+                "id": "believers",
+                "x": 32,
+                "y": 54,
+                "label": "Believers",
+                "reveal": "Those who trusted Allah climbed aboard together."
+              }
+            ],
+            "completeText": "The rescue gathered people and creatures under Allah's care."
+          },
           "image": "images/noah/20.webp"
         },
         {
@@ -2220,6 +3144,26 @@
           "text": "Noah was not afraid, because he knew the most important thing of all: Allah was with them.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "ark-safety",
+            "kind": "choice",
+            "prompt": "What truly carried the ark through the flood?",
+            "options": [
+              {
+                "id": "wood-alone",
+                "label": "Wood by itself.",
+                "feedback": "The wood mattered, but Allah was the true Protector.",
+                "correct": false
+              },
+              {
+                "id": "allah-with",
+                "label": "Allah was with them.",
+                "feedback": "Yes. That is why Noah was not afraid.",
+                "correct": true
+              }
+            ],
+            "completeText": "Safety comes from Allah."
+          },
           "image": "images/noah/29.webp"
         },
         {
@@ -2250,6 +3194,41 @@
           "text": "At last the rain stopped. The waters sank away. The ark came gently to rest upon a mountain.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "flood-to-new-world",
+            "kind": "sequence",
+            "prompt": "Put the flood story in order.",
+            "items": [
+              {
+                "id": "call",
+                "label": "Noah calls his people"
+              },
+              {
+                "id": "build",
+                "label": "He builds the ark"
+              },
+              {
+                "id": "board",
+                "label": "Believers board"
+              },
+              {
+                "id": "flood",
+                "label": "The flood rises"
+              },
+              {
+                "id": "rest",
+                "label": "The ark rests"
+              }
+            ],
+            "correctOrder": [
+              "call",
+              "build",
+              "board",
+              "flood",
+              "rest"
+            ],
+            "completeText": "You steered the story safely to dry land."
+          },
           "image": "images/noah/33.webp"
         },
         {
@@ -2365,6 +3344,32 @@
           "text": "His father and his people said, \"These are our gods.\" But Abraham felt something stirring in his heart — the statues were just stone.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "idols-cannot-help",
+            "kind": "choice",
+            "prompt": "Why did Abraham doubt the idols?",
+            "options": [
+              {
+                "id": "stone",
+                "label": "They were only stone.",
+                "feedback": "Yes. They could not hear, see, create, or help.",
+                "correct": true
+              },
+              {
+                "id": "too-small",
+                "label": "They were too small.",
+                "feedback": "Size was not the problem. Being powerless was.",
+                "correct": false
+              },
+              {
+                "id": "too-old",
+                "label": "They were too old.",
+                "feedback": "Age did not make them gods.",
+                "correct": false
+              }
+            ],
+            "completeText": "A made thing cannot be the Maker."
+          },
           "image": "images/abraham/05.webp"
         },
         {
@@ -2409,6 +3414,35 @@
           "text": "Every beautiful thing in the sky passes away. Abraham understood: the One who made all of them never sets and never fades.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "sky-signs",
+            "kind": "hotspots",
+            "prompt": "Tap what Abraham learned from the sky.",
+            "markers": [
+              {
+                "id": "stars",
+                "x": 33,
+                "y": 25,
+                "label": "Stars",
+                "reveal": "The stars were beautiful, but they faded."
+              },
+              {
+                "id": "moon",
+                "x": 62,
+                "y": 30,
+                "label": "Moon",
+                "reveal": "The moon was greater, but it also set."
+              },
+              {
+                "id": "horizon",
+                "x": 51,
+                "y": 58,
+                "label": "Horizon",
+                "reveal": "The Creator of the sky never sets."
+              }
+            ],
+            "completeText": "The signs led Abraham beyond the signs."
+          },
           "image": "images/abraham/11.webp"
         },
         {
@@ -2459,6 +3493,35 @@
           "text": "He struck the idols — crash! — and broke them all, except for the very largest. Then he left the big axe resting in its hands.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "broken-idols",
+            "kind": "hotspots",
+            "prompt": "Tap Abraham's lesson to his people.",
+            "markers": [
+              {
+                "id": "broken",
+                "x": 38,
+                "y": 55,
+                "label": "Broken",
+                "reveal": "The broken idols showed they had no power."
+              },
+              {
+                "id": "big-idol",
+                "x": 58,
+                "y": 38,
+                "label": "Big idol",
+                "reveal": "The largest idol could not answer a single question."
+              },
+              {
+                "id": "axe",
+                "x": 64,
+                "y": 53,
+                "label": "Axe",
+                "reveal": "Abraham used the moment to wake up their thinking."
+              }
+            ],
+            "completeText": "He wanted them to think, not just follow."
+          },
           "image": "images/abraham/17.webp"
         },
         {
@@ -2520,6 +3583,32 @@
           "text": "Abraham walked out unharmed, calm and unhurried. He had trusted Allah so completely that Allah called him Khalil — a beloved friend.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "fire-courage",
+            "kind": "choice",
+            "prompt": "What made Abraham brave in front of the fire?",
+            "options": [
+              {
+                "id": "fire-small",
+                "label": "The fire was tiny.",
+                "feedback": "The fire was terrifyingly large.",
+                "correct": false
+              },
+              {
+                "id": "trust-allah",
+                "label": "He trusted Allah.",
+                "feedback": "Yes. Trust made him steady when danger was real.",
+                "correct": true
+              },
+              {
+                "id": "crowd-helped",
+                "label": "The crowd helped him.",
+                "feedback": "The crowd opposed him, but Allah protected him.",
+                "correct": false
+              }
+            ],
+            "completeText": "Courage is trust when the heat is real."
+          },
           "image": "images/abraham/25.webp"
         },
         {
@@ -2527,6 +3616,35 @@
           "text": "A friend is someone you trust with everything. Abraham trusted Allah with his whole life, and Allah honored that trust with a miracle.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "cool-fire",
+            "kind": "hotspots",
+            "prompt": "Tap how Allah changed danger into peace.",
+            "markers": [
+              {
+                "id": "flames",
+                "x": 33,
+                "y": 38,
+                "label": "Flames",
+                "reveal": "The fire was real, but it obeyed Allah."
+              },
+              {
+                "id": "garden",
+                "x": 54,
+                "y": 56,
+                "label": "Garden",
+                "reveal": "Allah made coolness and safety in the very center of danger."
+              },
+              {
+                "id": "peace",
+                "x": 67,
+                "y": 38,
+                "label": "Peace",
+                "reveal": "A miracle can turn fear into calm."
+              }
+            ],
+            "completeText": "Even fire is a servant of Allah."
+          },
           "image": "images/abraham/26.webp"
         },
         {
@@ -2580,6 +3698,35 @@
           "text": "Abraham and Ishmael began to build. Stone by stone, they raised a simple cube-shaped house — the Kaaba — just for worshipping Allah.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "building-kaaba",
+            "kind": "hotspots",
+            "prompt": "Tap what Abraham and Ishmael built together.",
+            "markers": [
+              {
+                "id": "stones",
+                "x": 42,
+                "y": 58,
+                "label": "Stones",
+                "reveal": "Stone by stone, they built for worship."
+              },
+              {
+                "id": "kaaba",
+                "x": 52,
+                "y": 42,
+                "label": "Kaaba",
+                "reveal": "The Kaaba was raised for Allah alone."
+              },
+              {
+                "id": "prayer",
+                "x": 68,
+                "y": 52,
+                "label": "Prayer",
+                "reveal": "Their work was joined with dua."
+              }
+            ],
+            "completeText": "The strongest buildings are raised with prayer."
+          },
           "image": "images/abraham/33.webp"
         },
         {
@@ -2655,6 +3802,41 @@
           "text": "And he teaches us to build — not just houses of stone, but lives of prayer and kindness. That is what lasts.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "abraham-truth-path",
+            "kind": "sequence",
+            "prompt": "Put Abraham's path in order.",
+            "items": [
+              {
+                "id": "questions",
+                "label": "He asks who made the world"
+              },
+              {
+                "id": "rejects",
+                "label": "He rejects idols"
+              },
+              {
+                "id": "fire",
+                "label": "Allah saves him from fire"
+              },
+              {
+                "id": "valley",
+                "label": "He travels to the valley"
+              },
+              {
+                "id": "kaaba",
+                "label": "He builds the Kaaba"
+              }
+            ],
+            "correctOrder": [
+              "questions",
+              "rejects",
+              "fire",
+              "valley",
+              "kaaba"
+            ],
+            "completeText": "Abraham's questions became a life of worship."
+          },
           "image": "images/abraham/43.webp"
         },
         {
@@ -2718,6 +3900,35 @@
           "text": "To keep him safe, Allah placed a brave idea in his mother's heart: she gently set her baby in a little basket and let the river carry him away.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "river-trust",
+            "kind": "hotspots",
+            "prompt": "Tap the path Allah opened for baby Moses.",
+            "markers": [
+              {
+                "id": "basket",
+                "x": 47,
+                "y": 50,
+                "label": "Basket",
+                "reveal": "The basket carried a baby his mother loved deeply."
+              },
+              {
+                "id": "river",
+                "x": 58,
+                "y": 62,
+                "label": "River",
+                "reveal": "The river became a road by Allah's plan."
+              },
+              {
+                "id": "bank",
+                "x": 72,
+                "y": 43,
+                "label": "Bank",
+                "reveal": "Allah promised the river would bring him where he needed to go."
+              }
+            ],
+            "completeText": "Trust sometimes means placing what you love in Allah's care."
+          },
           "image": "images/moses/06.webp"
         },
         {
@@ -2725,6 +3936,32 @@
           "text": "She trusted Allah completely — even though it must have been the hardest thing she ever did. Trust sometimes means letting go.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "letting-go",
+            "kind": "choice",
+            "prompt": "What did Moses' mother show when she let the basket go?",
+            "options": [
+              {
+                "id": "forgetting",
+                "label": "Forgetting him.",
+                "feedback": "She did not forget him. She loved him and trusted Allah.",
+                "correct": false
+              },
+              {
+                "id": "trust",
+                "label": "Trust in Allah.",
+                "feedback": "Yes. Trust can be the hardest kind of love.",
+                "correct": true
+              },
+              {
+                "id": "giving-up",
+                "label": "Giving up hope.",
+                "feedback": "She let go with hope in Allah's promise.",
+                "correct": false
+              }
+            ],
+            "completeText": "Her hands let go, but her hope held on."
+          },
           "image": "images/moses/07.webp"
         },
         {
@@ -2815,6 +4052,35 @@
           "text": "Allah gave Moses wonderful signs — his staff could become a serpent, and his hand could shine bright as a lamp. These were proofs from Allah.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "moses-signs",
+            "kind": "hotspots",
+            "prompt": "Tap the signs Allah gave Moses.",
+            "markers": [
+              {
+                "id": "staff",
+                "x": 45,
+                "y": 58,
+                "label": "Staff",
+                "reveal": "The staff became a sign by Allah's command."
+              },
+              {
+                "id": "light",
+                "x": 63,
+                "y": 34,
+                "label": "Light",
+                "reveal": "The shining hand was another proof from Allah."
+              },
+              {
+                "id": "proof",
+                "x": 52,
+                "y": 42,
+                "label": "Proofs",
+                "reveal": "Signs were not magic tricks; they were truth made visible."
+              }
+            ],
+            "completeText": "The signs pointed beyond Moses to Allah."
+          },
           "image": "images/moses/18.webp"
         },
         {
@@ -2822,6 +4088,32 @@
           "text": "But Pharaoh's heart was hard. Even when the signs were right in front of him, he refused to believe. A hard heart does not change by seeing — only by choosing.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "hard-heart",
+            "kind": "choice",
+            "prompt": "Why did Pharaoh refuse even after seeing signs?",
+            "options": [
+              {
+                "id": "no-signs",
+                "label": "There were no signs.",
+                "feedback": "The signs were right in front of him.",
+                "correct": false
+              },
+              {
+                "id": "choice",
+                "label": "His heart chose pride.",
+                "feedback": "Yes. Seeing is not enough if the heart refuses truth.",
+                "correct": true
+              },
+              {
+                "id": "too-kind",
+                "label": "He was too kind.",
+                "feedback": "Pharaoh was cruel and proud.",
+                "correct": false
+              }
+            ],
+            "completeText": "A soft heart matters more than a full argument."
+          },
           "image": "images/moses/19.webp"
         },
         {
@@ -2873,6 +4165,32 @@
           "text": "\"My Lord is with me,\" he said. \"He will show the way.\" Sometimes the bravest thing you can say is: I trust Allah, even when I cannot see the way.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "sea-trust",
+            "kind": "choice",
+            "prompt": "What did Moses say when danger was in front and behind?",
+            "options": [
+              {
+                "id": "finished",
+                "label": "We are finished.",
+                "feedback": "The people were afraid, but Moses trusted Allah.",
+                "correct": false
+              },
+              {
+                "id": "lord-with",
+                "label": "My Lord is with me.",
+                "feedback": "Yes. Trust spoke before the road appeared.",
+                "correct": true
+              },
+              {
+                "id": "go-back",
+                "label": "Go back to Pharaoh.",
+                "feedback": "Allah opened a way forward.",
+                "correct": false
+              }
+            ],
+            "completeText": "Trust can speak before the sea opens."
+          },
           "image": "images/moses/26.webp"
         },
         {
@@ -2899,6 +4217,35 @@
           "text": "Moses struck the sea with his staff — and the water rose up on either side like great mountains. A dry road opened through the very middle of the sea!",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "parted-sea",
+            "kind": "hotspots",
+            "prompt": "Tap the miracle at the sea.",
+            "markers": [
+              {
+                "id": "staff",
+                "x": 38,
+                "y": 57,
+                "label": "Staff",
+                "reveal": "Moses struck the sea only by Allah's command."
+              },
+              {
+                "id": "water",
+                "x": 32,
+                "y": 34,
+                "label": "Water walls",
+                "reveal": "The water stood like mountains."
+              },
+              {
+                "id": "path",
+                "x": 53,
+                "y": 62,
+                "label": "Dry path",
+                "reveal": "Allah made a road where there was none."
+              }
+            ],
+            "completeText": "The danger became a doorway."
+          },
           "image": "images/moses/29.webp"
         },
         {
@@ -2957,6 +4304,41 @@
           "text": "And he teaches us that Allah's plans are always wiser than our fears. The river, the fire, the sea — they were never dangers. They were doors.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "moses-doors",
+            "kind": "sequence",
+            "prompt": "Put Moses' rescue signs in order.",
+            "items": [
+              {
+                "id": "river",
+                "label": "River carries baby Moses"
+              },
+              {
+                "id": "fire",
+                "label": "Fire holds Allah's call"
+              },
+              {
+                "id": "signs",
+                "label": "Signs warn Pharaoh"
+              },
+              {
+                "id": "escape",
+                "label": "People escape at night"
+              },
+              {
+                "id": "sea",
+                "label": "Sea opens as a road"
+              }
+            ],
+            "correctOrder": [
+              "river",
+              "fire",
+              "signs",
+              "escape",
+              "sea"
+            ],
+            "completeText": "River, fire, and sea became doors by Allah's plan."
+          },
           "image": "images/moses/37.webp"
         },
         {
@@ -2997,6 +4379,32 @@
           "text": "Their refusal made him so sad and frustrated that he left — before Allah had told him to go. He walked away from the town on his own.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "too-soon",
+            "kind": "choice",
+            "prompt": "What was Jonah's mistake at the beginning?",
+            "options": [
+              {
+                "id": "asking",
+                "label": "He asked Allah for help.",
+                "feedback": "Asking Allah is good.",
+                "correct": false
+              },
+              {
+                "id": "left-too-soon",
+                "label": "He left too soon.",
+                "feedback": "Yes. He walked away before Allah told him to go.",
+                "correct": true
+              },
+              {
+                "id": "warned",
+                "label": "He warned his people.",
+                "feedback": "Warning them was part of his prophetic work.",
+                "correct": false
+              }
+            ],
+            "completeText": "Patience means waiting for Allah's timing."
+          },
           "image": "images/jonah/03.webp"
         },
         {
@@ -3020,6 +4428,35 @@
           "text": "He boarded a ship and sailed out across the open water. But the sky grew dark, the wind howled, and a fierce storm rose up around them.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "storm-rises",
+            "kind": "hotspots",
+            "prompt": "Tap the storm Jonah entered.",
+            "markers": [
+              {
+                "id": "clouds",
+                "x": 48,
+                "y": 24,
+                "label": "Clouds",
+                "reveal": "The sky darkened as the story turned."
+              },
+              {
+                "id": "waves",
+                "x": 52,
+                "y": 58,
+                "label": "Waves",
+                "reveal": "The sea became wild and frightening."
+              },
+              {
+                "id": "ship",
+                "x": 38,
+                "y": 46,
+                "label": "Ship",
+                "reveal": "The sailors knew they were in danger."
+              }
+            ],
+            "completeText": "Running away did not bring Jonah peace."
+          },
           "image": "images/jonah/06.webp"
         },
         {
@@ -3057,6 +4494,35 @@
           "text": "Inside the whale it was dark — darker than night, darkness inside darkness inside the deep. Jonah was all alone.",
           "pos": "center",
           "theme": "light",
+          "interaction": {
+            "id": "darkness-inside",
+            "kind": "hotspots",
+            "prompt": "Tap the layers of darkness around Jonah.",
+            "markers": [
+              {
+                "id": "whale",
+                "x": 50,
+                "y": 45,
+                "label": "Whale",
+                "reveal": "The whale became a hidden place for Jonah's turning back."
+              },
+              {
+                "id": "sea",
+                "x": 31,
+                "y": 59,
+                "label": "Sea",
+                "reveal": "He was deep under the water."
+              },
+              {
+                "id": "night",
+                "x": 59,
+                "y": 26,
+                "label": "Darkness",
+                "reveal": "No darkness is too deep for Allah to hear."
+              }
+            ],
+            "completeText": "Even there, Jonah was not beyond mercy."
+          },
           "image": "images/jonah/11.webp"
         },
         {
@@ -3071,6 +4537,32 @@
           "text": "So Jonah did the most powerful thing a person can do: he turned to Allah and prayed from the very bottom of his heart.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "darkest-prayer",
+            "kind": "choice",
+            "prompt": "What did Jonah do in the deepest dark?",
+            "options": [
+              {
+                "id": "despair",
+                "label": "He gave up.",
+                "feedback": "He was afraid, but he did not give up.",
+                "correct": false
+              },
+              {
+                "id": "dua",
+                "label": "He made dua.",
+                "feedback": "Yes. He turned to Allah from the bottom of his heart.",
+                "correct": true
+              },
+              {
+                "id": "blame",
+                "label": "He blamed the sailors.",
+                "feedback": "He admitted his own wrong.",
+                "correct": false
+              }
+            ],
+            "completeText": "Dua works in places no one else can reach."
+          },
           "image": "images/jonah/13.webp"
         },
         {
@@ -3133,6 +4625,41 @@
           "text": "The whale set Jonah gently on the shore, weak and tired. The storm was gone, the sea was calm, and the morning light was warm.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "storm-to-shore",
+            "kind": "sequence",
+            "prompt": "Put Jonah's rescue in order.",
+            "items": [
+              {
+                "id": "ship",
+                "label": "Jonah boards the ship"
+              },
+              {
+                "id": "storm",
+                "label": "A storm rises"
+              },
+              {
+                "id": "whale",
+                "label": "The whale swallows him"
+              },
+              {
+                "id": "dua",
+                "label": "He makes dua"
+              },
+              {
+                "id": "shore",
+                "label": "He reaches the shore"
+              }
+            ],
+            "correctOrder": [
+              "ship",
+              "storm",
+              "whale",
+              "dua",
+              "shore"
+            ],
+            "completeText": "The way out began with turning back."
+          },
           "image": "images/jonah/20.webp"
         },
         {
@@ -3140,6 +4667,35 @@
           "text": "Allah grew a leafy plant to shade him and help him heal. Where there had been darkness, now there was shelter and care — mercy upon mercy.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "mercy-upon-mercy",
+            "kind": "hotspots",
+            "prompt": "Tap the mercies Allah gave Jonah.",
+            "markers": [
+              {
+                "id": "shore",
+                "x": 37,
+                "y": 59,
+                "label": "Shore",
+                "reveal": "Allah brought Jonah out of the sea alive."
+              },
+              {
+                "id": "vine",
+                "x": 57,
+                "y": 35,
+                "label": "Shade",
+                "reveal": "The leafy plant sheltered him while he healed."
+              },
+              {
+                "id": "sun",
+                "x": 68,
+                "y": 22,
+                "label": "Morning",
+                "reveal": "Warm light came after darkness."
+              }
+            ],
+            "completeText": "Allah's mercy did not stop at rescue; it kept caring."
+          },
           "image": "images/jonah/21.webp"
         },
         {
@@ -3154,6 +4710,32 @@
           "text": "Allah's mercy can reach anyone, anywhere. Even when we run away, even when we make mistakes, He is waiting for us to turn back.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "mercy-reaches",
+            "kind": "choice",
+            "prompt": "Who can Allah's mercy reach?",
+            "options": [
+              {
+                "id": "near-only",
+                "label": "Only people nearby.",
+                "feedback": "Distance does not limit Allah.",
+                "correct": false
+              },
+              {
+                "id": "anyone",
+                "label": "Anyone who turns back.",
+                "feedback": "Yes. Mercy reached Jonah and his whole town.",
+                "correct": true
+              },
+              {
+                "id": "perfect-only",
+                "label": "Only perfect people.",
+                "feedback": "Mercy is for those who need Allah.",
+                "correct": false
+              }
+            ],
+            "completeText": "No one is too far to turn back."
+          },
           "image": "images/jonah/23.webp"
         },
         {
@@ -3241,6 +4823,35 @@
           "text": "A wonderful thing happened: whenever Zachariah came to her, he found fresh fruit beside her — provision from Allah, given without any human hand.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "rizq-in-temple",
+            "kind": "hotspots",
+            "prompt": "Tap the provision Allah gave Mary.",
+            "markers": [
+              {
+                "id": "fruit",
+                "x": 49,
+                "y": 55,
+                "label": "Fruit",
+                "reveal": "Fresh fruit came to Mary as rizq from Allah."
+              },
+              {
+                "id": "light",
+                "x": 58,
+                "y": 28,
+                "label": "Light",
+                "reveal": "The light reminds us that provision can arrive unexpectedly."
+              },
+              {
+                "id": "room",
+                "x": 30,
+                "y": 43,
+                "label": "Prayer place",
+                "reveal": "Mary's worship and trust filled this quiet place."
+              }
+            ],
+            "completeText": "Allah can provide without any visible hand."
+          },
           "image": "images/mary/05.webp"
         },
         {
@@ -3281,6 +4892,32 @@
           "text": "She trusted Allah, even though she did not fully understand. Trusting Allah when you cannot see the whole plan is one of the bravest things a person can do.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "mary-trust",
+            "kind": "choice",
+            "prompt": "What did Mary do when she could not see the whole plan?",
+            "options": [
+              {
+                "id": "trusted",
+                "label": "She trusted Allah.",
+                "feedback": "Yes. Trust can be brave and quiet.",
+                "correct": true
+              },
+              {
+                "id": "understood-all",
+                "label": "She understood everything.",
+                "feedback": "She trusted even without seeing everything.",
+                "correct": false
+              },
+              {
+                "id": "ran-from-allah",
+                "label": "She ran from Allah.",
+                "feedback": "Mary stayed close to Allah.",
+                "correct": false
+              }
+            ],
+            "completeText": "Trust does not require seeing the whole road."
+          },
           "image": "images/mary/10.webp"
         },
         {
@@ -3314,6 +4951,35 @@
           },
           "theme": "dark",
           "pos": "center",
+          "interaction": {
+            "id": "palm-and-stream",
+            "kind": "hotspots",
+            "prompt": "Tap how Allah comforted Mary.",
+            "markers": [
+              {
+                "id": "stream",
+                "x": 45,
+                "y": 63,
+                "label": "Stream",
+                "reveal": "Cool water came beneath her when she needed relief."
+              },
+              {
+                "id": "dates",
+                "x": 58,
+                "y": 33,
+                "label": "Dates",
+                "reveal": "Ripe dates fell from the palm by Allah's mercy."
+              },
+              {
+                "id": "palm",
+                "x": 50,
+                "y": 42,
+                "label": "Palm",
+                "reveal": "The tree became a place of shelter and provision."
+              }
+            ],
+            "completeText": "Comfort came in exactly the form she needed."
+          },
           "image": "images/mary/14.webp"
         },
         {
@@ -3377,6 +5043,41 @@
           "text": "Mary teaches us that Allah provides when we need it most. A stream in the desert, dates from a dry tree — His rizq comes in ways we never expect.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "mary-story-path",
+            "kind": "sequence",
+            "prompt": "Put Mary's story in order.",
+            "items": [
+              {
+                "id": "worship",
+                "label": "Mary worships Allah"
+              },
+              {
+                "id": "angel",
+                "label": "An angel brings news"
+              },
+              {
+                "id": "palm",
+                "label": "Allah gives dates and water"
+              },
+              {
+                "id": "cradle",
+                "label": "Jesus speaks from the cradle"
+              },
+              {
+                "id": "lesson",
+                "label": "Mary teaches trust"
+              }
+            ],
+            "correctOrder": [
+              "worship",
+              "angel",
+              "palm",
+              "cradle",
+              "lesson"
+            ],
+            "completeText": "Mary's path is full of trust and provision."
+          },
           "image": "images/mary/22.webp"
         },
         {
@@ -3384,6 +5085,32 @@
           "text": "She teaches us that trusting Allah is not about understanding everything — it is about knowing that His plan is always good, even when you cannot see it yet.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "trust-without-seeing",
+            "kind": "choice",
+            "prompt": "What is trust in Mary's story?",
+            "options": [
+              {
+                "id": "know-everything",
+                "label": "Knowing every detail.",
+                "feedback": "Mary did not know every detail.",
+                "correct": false
+              },
+              {
+                "id": "know-allah-good",
+                "label": "Knowing Allah's plan is good.",
+                "feedback": "Yes. That is trust when the future is hidden.",
+                "correct": true
+              },
+              {
+                "id": "never-afraid",
+                "label": "Never feeling afraid.",
+                "feedback": "Trust can live in a heart that feels afraid.",
+                "correct": false
+              }
+            ],
+            "completeText": "A trusting heart can still feel deeply."
+          },
           "image": "images/mary/23.webp"
         },
         {
@@ -3391,6 +5118,32 @@
           "text": "She teaches us that patience in pain brings comfort in the end. Mary was in real pain — and Allah's comfort came right on time. Never too early, never too late.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "comfort-in-pain",
+            "kind": "choice",
+            "prompt": "What should Mary help us remember when pain is real?",
+            "options": [
+              {
+                "id": "forgotten",
+                "label": "Allah forgot her.",
+                "feedback": "Allah had not forgotten her at all.",
+                "correct": false
+              },
+              {
+                "id": "comfort-time",
+                "label": "Allah's comfort comes on time.",
+                "feedback": "Yes. He knew exactly when and how to comfort her.",
+                "correct": true
+              },
+              {
+                "id": "pain-fake",
+                "label": "Her pain was not real.",
+                "feedback": "Her pain was real, and Allah cared for her in it.",
+                "correct": false
+              }
+            ],
+            "completeText": "Real pain can still be held by mercy."
+          },
           "image": "images/mary/24.webp"
         },
         {
@@ -3424,6 +5177,35 @@
           "text": "Solomon was a prophet and a king, and Allah gave him a wonderful gift: he could understand the speech of animals and birds!",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "solomon-gift",
+            "kind": "hotspots",
+            "prompt": "Tap the gift Allah gave Solomon.",
+            "markers": [
+              {
+                "id": "birds",
+                "x": 58,
+                "y": 24,
+                "label": "Birds",
+                "reveal": "Solomon could understand the speech of birds."
+              },
+              {
+                "id": "king",
+                "x": 48,
+                "y": 52,
+                "label": "King",
+                "reveal": "He had power, but he stayed Allah's servant."
+              },
+              {
+                "id": "meadow",
+                "x": 42,
+                "y": 67,
+                "label": "Creation",
+                "reveal": "His gift helped him notice even small creatures."
+              }
+            ],
+            "completeText": "A gift becomes beautiful when it makes the heart grateful."
+          },
           "image": "images/solomon/02.webp"
         },
         {
@@ -3474,6 +5256,32 @@
           "text": "He knew that everything he had was a gift from Allah, not something he earned by himself. That knowledge kept his heart soft.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "source-of-strength",
+            "kind": "choice",
+            "prompt": "Why did Solomon stay humble with so much power?",
+            "options": [
+              {
+                "id": "his-alone",
+                "label": "He thought it was his alone.",
+                "feedback": "That would have made pride grow.",
+                "correct": false
+              },
+              {
+                "id": "from-allah",
+                "label": "He knew it came from Allah.",
+                "feedback": "Yes. Knowing the source kept his heart soft.",
+                "correct": true
+              },
+              {
+                "id": "no-power",
+                "label": "He had no power.",
+                "feedback": "He had great power, but used it with humility.",
+                "correct": false
+              }
+            ],
+            "completeText": "Remembering the Giver protects the gift."
+          },
           "image": "images/solomon/08.webp"
         },
         {
@@ -3504,6 +5312,35 @@
           "text": "A tiny ant saw them coming and cried out to warn her friends: \"Hurry, everyone — into your homes!\"",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "ant-warning",
+            "kind": "hotspots",
+            "prompt": "Tap the tiny moment Solomon noticed.",
+            "markers": [
+              {
+                "id": "ant",
+                "x": 51,
+                "y": 57,
+                "label": "Ant",
+                "reveal": "A tiny ant cared enough to warn her people."
+              },
+              {
+                "id": "homes",
+                "x": 39,
+                "y": 67,
+                "label": "Homes",
+                "reveal": "The ants had little dwellings worth protecting."
+              },
+              {
+                "id": "army",
+                "x": 66,
+                "y": 38,
+                "label": "Army",
+                "reveal": "A mighty army paused for a tiny creature."
+              }
+            ],
+            "completeText": "Greatness can hear what is small."
+          },
           "image": "images/solomon/12.webp"
         },
         {
@@ -3547,6 +5384,35 @@
           "text": "Solomon thanked Allah not just for the big gifts — the palace, the kingdom, the power — but even for being able to hear an ant. Every gift, no matter how small, deserves gratitude.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "every-gift",
+            "kind": "hotspots",
+            "prompt": "Tap gifts Solomon thanked Allah for.",
+            "markers": [
+              {
+                "id": "birds",
+                "x": 47,
+                "y": 24,
+                "label": "Birds",
+                "reveal": "Even understanding birds was a favor from Allah."
+              },
+              {
+                "id": "tree",
+                "x": 57,
+                "y": 44,
+                "label": "Shade",
+                "reveal": "Small comforts are gifts too."
+              },
+              {
+                "id": "kingdom",
+                "x": 35,
+                "y": 58,
+                "label": "Kingdom",
+                "reveal": "Power is a trust to use with justice."
+              }
+            ],
+            "completeText": "Every gift, large or tiny, can become gratitude."
+          },
           "image": "images/solomon/17.webp"
         },
         {
@@ -3570,6 +5436,32 @@
           "text": "Solomon teaches us that hikmah — wisdom — is a gift from Allah. Use it to be kind, not to be proud.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "wisdom-use",
+            "kind": "choice",
+            "prompt": "What is wisdom for?",
+            "options": [
+              {
+                "id": "pride",
+                "label": "To feel proud.",
+                "feedback": "Wisdom with pride stops being wise.",
+                "correct": false
+              },
+              {
+                "id": "kindness",
+                "label": "To be kind and fair.",
+                "feedback": "Yes. Wisdom should protect and serve.",
+                "correct": true
+              },
+              {
+                "id": "show-off",
+                "label": "To show off.",
+                "feedback": "Solomon's wisdom led him to gratitude.",
+                "correct": false
+              }
+            ],
+            "completeText": "Wisdom shines when it serves."
+          },
           "image": "images/solomon/20.webp"
         },
         {
@@ -3577,6 +5469,41 @@
           "text": "He teaches us that power without humility is dangerous, but power with gratitude is beautiful. The strongest king stopped his army for one tiny ant.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "ant-valley-order",
+            "kind": "sequence",
+            "prompt": "Put the Valley of the Ants story in order.",
+            "items": [
+              {
+                "id": "march",
+                "label": "The army marches"
+              },
+              {
+                "id": "ant",
+                "label": "An ant warns her people"
+              },
+              {
+                "id": "hears",
+                "label": "Solomon hears her"
+              },
+              {
+                "id": "smiles",
+                "label": "He smiles and stops"
+              },
+              {
+                "id": "thanks",
+                "label": "He thanks Allah"
+              }
+            ],
+            "correctOrder": [
+              "march",
+              "ant",
+              "hears",
+              "smiles",
+              "thanks"
+            ],
+            "completeText": "Power listened, paused, and became gratitude."
+          },
           "image": "images/solomon/21.webp"
         },
         {
@@ -3617,6 +5544,35 @@
           "text": "Five times every day — morning, midday, afternoon, evening, and night — Muslims stop whatever they are doing to spend a few quiet minutes talking with Allah. This is called Salah.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "five-times-rhythm",
+            "kind": "hotspots",
+            "prompt": "Tap the rhythm of the five quiet meetings.",
+            "markers": [
+              {
+                "id": "morning",
+                "x": 29,
+                "y": 31,
+                "label": "Morning",
+                "reveal": "Fajr begins the day by remembering Allah."
+              },
+              {
+                "id": "midday",
+                "x": 52,
+                "y": 25,
+                "label": "Midday",
+                "reveal": "Prayer interrupts busyness with remembrance."
+              },
+              {
+                "id": "night",
+                "x": 72,
+                "y": 40,
+                "label": "Night",
+                "reveal": "The day closes by returning to Allah."
+              }
+            ],
+            "completeText": "Salah gives the day a steady heartbeat."
+          },
           "image": "images/why-pray/02.webp"
         },
         {
@@ -3634,6 +5590,32 @@
           "text": "Imagine having someone you love, and five times a day you get to sit quietly and talk. That is what Salah is: not a burden, but a gift.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "prayer-as-gift",
+            "kind": "choice",
+            "prompt": "What is Salah in this chapter?",
+            "options": [
+              {
+                "id": "burden",
+                "label": "Only a burden.",
+                "feedback": "The chapter calls it a gift, not just a duty.",
+                "correct": false
+              },
+              {
+                "id": "meeting",
+                "label": "A quiet meeting with Allah.",
+                "feedback": "Yes. Salah is a loving pause with the One who hears.",
+                "correct": true
+              },
+              {
+                "id": "performance",
+                "label": "A performance for people.",
+                "feedback": "Prayer is for Allah, not showing off.",
+                "correct": false
+              }
+            ],
+            "completeText": "Prayer is a meeting, not a show."
+          },
           "image": "images/why-pray/04.webp"
         },
         {
@@ -3650,6 +5632,35 @@
           "text": "Before praying, Muslims wash — hands, face, arms, and feet — with cool, clean water. This is called wudu. Their bodies feel fresh, and their hearts feel calm and ready.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "wudu-prepares",
+            "kind": "hotspots",
+            "prompt": "Tap what wudu prepares.",
+            "markers": [
+              {
+                "id": "hands",
+                "x": 48,
+                "y": 54,
+                "label": "Hands",
+                "reveal": "Hands are washed before standing before Allah."
+              },
+              {
+                "id": "water",
+                "x": 58,
+                "y": 39,
+                "label": "Water",
+                "reveal": "Clean water helps the body feel fresh."
+              },
+              {
+                "id": "heart",
+                "x": 42,
+                "y": 30,
+                "label": "Heart",
+                "reveal": "Wudu also quiets the heart for prayer."
+              }
+            ],
+            "completeText": "Clean water prepares more than skin."
+          },
           "image": "images/why-pray/06.webp"
         },
         {
@@ -3687,6 +5698,35 @@
           "text": "In prayer, Muslims stand, then bow, then rest their forehead gently on the ground. Placing your forehead on the floor for Allah is the closest and most loving a person can be to Him.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "prayer-postures",
+            "kind": "hotspots",
+            "prompt": "Tap the prayer postures.",
+            "markers": [
+              {
+                "id": "stand",
+                "x": 34,
+                "y": 43,
+                "label": "Stand",
+                "reveal": "Standing begins prayer with attention."
+              },
+              {
+                "id": "bow",
+                "x": 51,
+                "y": 50,
+                "label": "Bow",
+                "reveal": "Bowing teaches humility before Allah."
+              },
+              {
+                "id": "sujud",
+                "x": 64,
+                "y": 60,
+                "label": "Sujud",
+                "reveal": "Prostration is the closest posture of love."
+              }
+            ],
+            "completeText": "The whole body learns worship."
+          },
           "image": "images/why-pray/11.webp"
         },
         {
@@ -3737,6 +5777,32 @@
           "text": "And anyone can pray — even a child, even you. You only need a clean little spot, a quiet moment, and an open heart. Allah is always ready to listen.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "who-can-pray",
+            "kind": "choice",
+            "prompt": "Who can begin learning to pray?",
+            "options": [
+              {
+                "id": "adults-only",
+                "label": "Only grown-ups.",
+                "feedback": "Children can begin learning too.",
+                "correct": false
+              },
+              {
+                "id": "any-child",
+                "label": "Even a child.",
+                "feedback": "Yes. A clean spot and open heart are enough to begin.",
+                "correct": true
+              },
+              {
+                "id": "perfect-only",
+                "label": "Only perfect people.",
+                "feedback": "Prayer is how imperfect people return to Allah.",
+                "correct": false
+              }
+            ],
+            "completeText": "You can begin with one sincere step."
+          },
           "image": "images/why-pray/17.webp"
         },
         {
@@ -3767,10 +5833,71 @@
           "text": "And it teaches us that peace does not come from having everything perfect — it comes from knowing that Allah is with you, right now, in this moment.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "peace-source",
+            "kind": "choice",
+            "prompt": "Where does prayer's peace come from?",
+            "options": [
+              {
+                "id": "perfect-life",
+                "label": "Everything being perfect.",
+                "feedback": "Life does not need to be perfect for the heart to find Allah.",
+                "correct": false
+              },
+              {
+                "id": "allah-with-you",
+                "label": "Knowing Allah is with you.",
+                "feedback": "Yes. That knowledge settles the heart.",
+                "correct": true
+              },
+              {
+                "id": "being-seen",
+                "label": "Being seen by people.",
+                "feedback": "Salah is a quiet meeting with Allah.",
+                "correct": false
+              }
+            ],
+            "completeText": "Peace can arrive right where you are."
+          },
           "image": "images/why-pray/21.webp"
         },
         {
           "type": "image",
+          "interaction": {
+            "id": "salah-order",
+            "kind": "sequence",
+            "prompt": "Put these prayer movements in order.",
+            "items": [
+              {
+                "id": "stand",
+                "label": "Stand"
+              },
+              {
+                "id": "recite",
+                "label": "Recite"
+              },
+              {
+                "id": "bow",
+                "label": "Bow"
+              },
+              {
+                "id": "sujud",
+                "label": "Prostrate"
+              },
+              {
+                "id": "peace",
+                "label": "End with peace"
+              }
+            ],
+            "correctOrder": [
+              "stand",
+              "recite",
+              "bow",
+              "sujud",
+              "peace"
+            ],
+            "completeText": "The movements become a path of remembrance."
+          },
           "image": "images/why-pray/22.webp"
         }
       ]
@@ -3800,6 +5927,35 @@
           "text": "You may have seen women wearing a soft scarf over their hair. It is called hijab. Many Muslim women choose to wear it — and they wear it with pride and joy.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "hijab-visible-signs",
+            "kind": "hotspots",
+            "prompt": "Tap what the scarf can remind us of.",
+            "markers": [
+              {
+                "id": "fabric",
+                "x": 49,
+                "y": 43,
+                "label": "Scarf",
+                "reveal": "Hijab can be a visible act of worship."
+              },
+              {
+                "id": "light",
+                "x": 62,
+                "y": 25,
+                "label": "Joy",
+                "reveal": "Many Muslim women wear it with pride and joy."
+              },
+              {
+                "id": "garden",
+                "x": 36,
+                "y": 62,
+                "label": "Dignity",
+                "reveal": "The feeling is dignified, not hidden or ashamed."
+              }
+            ],
+            "completeText": "The outside sign points to an inside intention."
+          },
           "image": "images/hijab/02.webp"
         },
         {
@@ -3817,6 +5973,32 @@
           "text": "Hijab is not just a scarf. It is a whole idea: living with modesty, dignity, and grace — something Allah asks of both men and women.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "hijab-whole-idea",
+            "kind": "choice",
+            "prompt": "What is hijab in this chapter?",
+            "options": [
+              {
+                "id": "just-scarf",
+                "label": "Only a scarf.",
+                "feedback": "The scarf matters, but hijab is bigger than cloth.",
+                "correct": false
+              },
+              {
+                "id": "modesty-dignity",
+                "label": "Modesty, dignity, and grace.",
+                "feedback": "Yes. It is a whole way of living before Allah.",
+                "correct": true
+              },
+              {
+                "id": "shame",
+                "label": "A sign of shame.",
+                "feedback": "The chapter says it is never out of shame.",
+                "correct": false
+              }
+            ],
+            "completeText": "Hijab begins with dignity before Allah."
+          },
           "image": "images/hijab/04.webp"
         },
         {
@@ -3850,6 +6032,32 @@
           "text": "Covering does not mean a woman must hide. It means that what is most beautiful about her — her mind, her heart, her kindness — is for everyone, while her beauty is hers to share as she chooses.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "not-hiding",
+            "kind": "choice",
+            "prompt": "What does covering not mean?",
+            "options": [
+              {
+                "id": "hide",
+                "label": "A woman must hide.",
+                "feedback": "Correct. Covering does not mean her mind and kindness disappear.",
+                "correct": true
+              },
+              {
+                "id": "dignity",
+                "label": "She has dignity.",
+                "feedback": "Dignity is part of the meaning, not the wrong answer.",
+                "correct": false
+              },
+              {
+                "id": "choice",
+                "label": "She can worship Allah.",
+                "feedback": "Worship is part of why many women cover.",
+                "correct": false
+              }
+            ],
+            "completeText": "A woman is known by her heart, mind, and kindness."
+          },
           "image": "images/hijab/08.webp"
         },
         {
@@ -3866,6 +6074,35 @@
           "text": "It is a little like a treasured gift kept carefully wrapped: precious, protected, and given freely — never grabbed or taken.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "wrapped-gift",
+            "kind": "hotspots",
+            "prompt": "Tap the gift picture and what it teaches.",
+            "markers": [
+              {
+                "id": "wrap",
+                "x": 48,
+                "y": 47,
+                "label": "Wrap",
+                "reveal": "The wrap shows care, not shame."
+              },
+              {
+                "id": "ribbon",
+                "x": 55,
+                "y": 34,
+                "label": "Ribbon",
+                "reveal": "Beauty can be guarded with dignity."
+              },
+              {
+                "id": "gift",
+                "x": 46,
+                "y": 57,
+                "label": "Gift",
+                "reveal": "A person's worth is precious with or without being displayed."
+              }
+            ],
+            "completeText": "The picture is about honor and care."
+          },
           "image": "images/hijab/10.webp"
         },
         {
@@ -3909,6 +6146,35 @@
           "text": "Some Muslim women cover, and some do not, and they do it in many different and beautiful ways. What matters most to Allah is the same in everyone: a kind, honest, and modest heart.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "many-beautiful-ways",
+            "kind": "hotspots",
+            "prompt": "Tap the variety this page protects.",
+            "markers": [
+              {
+                "id": "different",
+                "x": 34,
+                "y": 45,
+                "label": "Different ways",
+                "reveal": "Muslim women dress modestly in many beautiful styles."
+              },
+              {
+                "id": "friendship",
+                "x": 52,
+                "y": 56,
+                "label": "Respect",
+                "reveal": "The reader learns to speak respectfully, not judge."
+              },
+              {
+                "id": "heart",
+                "x": 68,
+                "y": 40,
+                "label": "Heart",
+                "reveal": "Allah sees the heart most of all."
+              }
+            ],
+            "completeText": "The lesson is dignity without judging people."
+          },
           "image": "images/hijab/15.webp"
         },
         {
@@ -3916,6 +6182,32 @@
           "text": "Haya' — modesty — lives in the heart first. A kind word, a gentle look, a humble spirit — these are the real coverings that Allah treasures.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "haya-first",
+            "kind": "choice",
+            "prompt": "Where does haya live first?",
+            "options": [
+              {
+                "id": "heart",
+                "label": "In the heart.",
+                "feedback": "Yes. Modesty begins inside before it appears outside.",
+                "correct": true
+              },
+              {
+                "id": "mirror",
+                "label": "Only in a mirror.",
+                "feedback": "The mirror cannot measure the heart.",
+                "correct": false
+              },
+              {
+                "id": "noise",
+                "label": "In being noticed.",
+                "feedback": "Haya is humble, not attention-seeking.",
+                "correct": false
+              }
+            ],
+            "completeText": "The most important covering is a beautiful heart."
+          },
           "image": "images/hijab/16.webp"
         },
         {
@@ -3923,6 +6215,41 @@
           "text": "Mary, the mother of Jesus, is one of the most honored women in all of Islam. She covered herself with modesty and devotion — and Allah chose her above the women of all the worlds.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "hijab-learning-path",
+            "kind": "sequence",
+            "prompt": "Put the hijab lesson in order.",
+            "items": [
+              {
+                "id": "guidance",
+                "label": "Allah gives guidance"
+              },
+              {
+                "id": "learn",
+                "label": "A girl learns its meaning"
+              },
+              {
+                "id": "choose",
+                "label": "She chooses worship"
+              },
+              {
+                "id": "respect",
+                "label": "People show respect"
+              },
+              {
+                "id": "heart",
+                "label": "Allah sees her heart"
+              }
+            ],
+            "correctOrder": [
+              "guidance",
+              "learn",
+              "choose",
+              "respect",
+              "heart"
+            ],
+            "completeText": "The lesson ends with dignity and respect."
+          },
           "image": "images/hijab/17.webp"
         },
         {
@@ -3956,6 +6283,35 @@
           "text": "Once each year comes a very special month called Ramadan — the month when Allah first began to send down the Qur'an to the Prophet Muhammad.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "ramadan-arrives",
+            "kind": "hotspots",
+            "prompt": "Tap signs that Ramadan has arrived.",
+            "markers": [
+              {
+                "id": "crescent",
+                "x": 54,
+                "y": 22,
+                "label": "Crescent",
+                "reveal": "The new moon marks the special month."
+              },
+              {
+                "id": "lanterns",
+                "x": 69,
+                "y": 42,
+                "label": "Lanterns",
+                "reveal": "Light and joy fill many homes at Ramadan."
+              },
+              {
+                "id": "quran",
+                "x": 42,
+                "y": 55,
+                "label": "Qur'an",
+                "reveal": "Ramadan is the month when the Qur'an first began to come down."
+              }
+            ],
+            "completeText": "Ramadan begins with moonlight and revelation."
+          },
           "image": "images/ramadan/02.webp"
         },
         {
@@ -3999,6 +6355,35 @@
           "text": "Before dawn they share a quiet little meal called suhoor. Then, through the day, they feel what it is like to be hungry — and they remember all the people who do not have enough.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "suhoor-and-hunger",
+            "kind": "hotspots",
+            "prompt": "Tap the early-morning Ramadan lesson.",
+            "markers": [
+              {
+                "id": "meal",
+                "x": 46,
+                "y": 56,
+                "label": "Suhoor",
+                "reveal": "The quiet meal before dawn prepares the fasting day."
+              },
+              {
+                "id": "window",
+                "x": 67,
+                "y": 33,
+                "label": "Dawn",
+                "reveal": "Fasting begins when dawn's first light comes."
+              },
+              {
+                "id": "remember",
+                "x": 35,
+                "y": 42,
+                "label": "Compassion",
+                "reveal": "Hunger helps the heart remember people who need food."
+              }
+            ],
+            "completeText": "The day begins with intention and compassion."
+          },
           "image": "images/ramadan/07.webp"
         },
         {
@@ -4006,6 +6391,32 @@
           "text": "Fasting is not only about the tummy. It also means keeping your eyes, your tongue, and your hands kind, gentle, and clean all day long.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "whole-self-fast",
+            "kind": "choice",
+            "prompt": "Fasting is not only about which part of you?",
+            "options": [
+              {
+                "id": "tummy",
+                "label": "Only the tummy.",
+                "feedback": "Correct. The tongue, eyes, hands, and heart fast too.",
+                "correct": true
+              },
+              {
+                "id": "kindness",
+                "label": "Kindness.",
+                "feedback": "Kindness is part of fasting well.",
+                "correct": false
+              },
+              {
+                "id": "self-control",
+                "label": "Self-control.",
+                "feedback": "Self-control is one of Ramadan's gifts.",
+                "correct": false
+              }
+            ],
+            "completeText": "A fasting heart tries to become gentler."
+          },
           "image": "images/ramadan/08.webp"
         },
         {
@@ -4013,6 +6424,32 @@
           "text": "By feeling hunger yourself, you understand what it is like for people who are hungry every day. Fasting grows compassion in your heart.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "why-hunger",
+            "kind": "choice",
+            "prompt": "Why does fasting let a person feel hunger?",
+            "options": [
+              {
+                "id": "complain",
+                "label": "So they can complain.",
+                "feedback": "Ramadan teaches patience, not complaint.",
+                "correct": false
+              },
+              {
+                "id": "compassion",
+                "label": "To grow compassion.",
+                "feedback": "Yes. Feeling hunger helps us remember those who have less.",
+                "correct": true
+              },
+              {
+                "id": "ignore-poor",
+                "label": "To ignore others.",
+                "feedback": "Fasting should make us more generous.",
+                "correct": false
+              }
+            ],
+            "completeText": "Compassion grows when the heart understands."
+          },
           "image": "images/ramadan/09.webp"
         },
         {
@@ -4029,6 +6466,35 @@
           "text": "When the sun finally sets, everyone gathers to break the fast together — often with a sweet date and a sip of cool water first. This happy meal is called iftar.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "iftar-table",
+            "kind": "hotspots",
+            "prompt": "Tap how the fast opens at sunset.",
+            "markers": [
+              {
+                "id": "date",
+                "x": 42,
+                "y": 48,
+                "label": "Date",
+                "reveal": "Many people break fast first with a sweet date."
+              },
+              {
+                "id": "water",
+                "x": 56,
+                "y": 49,
+                "label": "Water",
+                "reveal": "A sip of water feels like a mercy after the day."
+              },
+              {
+                "id": "family",
+                "x": 68,
+                "y": 58,
+                "label": "Together",
+                "reveal": "Iftar gathers hearts around gratitude."
+              }
+            ],
+            "completeText": "The first bites after patience taste like thanks."
+          },
           "image": "images/ramadan/11.webp"
         },
         {
@@ -4076,6 +6542,32 @@
           "text": "Eid is a reminder: after patience comes joy. After effort comes ease. After fasting comes feasting. Allah's pattern is always the same.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "after-patience",
+            "kind": "choice",
+            "prompt": "What does Eid remind us after Ramadan?",
+            "options": [
+              {
+                "id": "no-joy",
+                "label": "There is no joy.",
+                "feedback": "Eid is full of joy and gratitude.",
+                "correct": false
+              },
+              {
+                "id": "ease",
+                "label": "After patience comes joy.",
+                "feedback": "Yes. Allah teaches effort, then ease.",
+                "correct": true
+              },
+              {
+                "id": "forget",
+                "label": "Forget Allah.",
+                "feedback": "Eid is a big thank-you to Allah.",
+                "correct": false
+              }
+            ],
+            "completeText": "Patience and joy belong together."
+          },
           "image": "images/ramadan/17.webp"
         },
         {
@@ -4110,6 +6602,41 @@
         },
         {
           "type": "image",
+          "interaction": {
+            "id": "ramadan-rhythm",
+            "kind": "sequence",
+            "prompt": "Put Ramadan's rhythm in order.",
+            "items": [
+              {
+                "id": "moon",
+                "label": "Moon is sighted"
+              },
+              {
+                "id": "suhoor",
+                "label": "Suhoor before dawn"
+              },
+              {
+                "id": "fast",
+                "label": "Fast through the day"
+              },
+              {
+                "id": "iftar",
+                "label": "Iftar at sunset"
+              },
+              {
+                "id": "eid",
+                "label": "Eid brings joy"
+              }
+            ],
+            "correctOrder": [
+              "moon",
+              "suhoor",
+              "fast",
+              "iftar",
+              "eid"
+            ],
+            "completeText": "The month moves from intention to joy."
+          },
           "image": "images/ramadan/22.webp"
         }
       ]
@@ -4156,6 +6683,35 @@
           "text": "Sadaqah does not have to be money at all. Even a warm smile, a kind word, or moving a stone out of someone's path is sadaqah.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "many-sadaqah-forms",
+            "kind": "hotspots",
+            "prompt": "Tap forms of sadaqah that are not money.",
+            "markers": [
+              {
+                "id": "path",
+                "x": 52,
+                "y": 57,
+                "label": "Clear path",
+                "reveal": "Moving harm from a path can be sadaqah."
+              },
+              {
+                "id": "stone",
+                "x": 43,
+                "y": 63,
+                "label": "Stone",
+                "reveal": "Even a small removed stone can protect someone."
+              },
+              {
+                "id": "kind-word",
+                "x": 62,
+                "y": 35,
+                "label": "Kind word",
+                "reveal": "A gentle word can be a gift to Allah."
+              }
+            ],
+            "completeText": "Kindness has many shapes."
+          },
           "image": "images/sadaqah/04.webp"
         },
         {
@@ -4163,6 +6719,32 @@
           "text": "The Prophet Muhammad taught that every single act of kindness is a charity. Imagine — your smile can be a gift to Allah!",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "smile-charity",
+            "kind": "choice",
+            "prompt": "Which small action can be sadaqah?",
+            "options": [
+              {
+                "id": "smile",
+                "label": "A warm smile.",
+                "feedback": "Yes. A smile can be a gift when it is sincere.",
+                "correct": true
+              },
+              {
+                "id": "show-off",
+                "label": "Showing off.",
+                "feedback": "Showing off harms the intention.",
+                "correct": false
+              },
+              {
+                "id": "hurt",
+                "label": "Hurting feelings.",
+                "feedback": "Sadaqah brings kindness, not harm.",
+                "correct": false
+              }
+            ],
+            "completeText": "Small kindness can be real charity."
+          },
           "image": "images/sadaqah/05.webp"
         },
         {
@@ -4182,6 +6764,35 @@
           },
           "theme": "dark",
           "pos": "center",
+          "interaction": {
+            "id": "seed-multiplies",
+            "kind": "hotspots",
+            "prompt": "Tap the picture of a gift growing.",
+            "markers": [
+              {
+                "id": "seed",
+                "x": 44,
+                "y": 60,
+                "label": "Seed",
+                "reveal": "A small gift can begin like one tiny seed."
+              },
+              {
+                "id": "ears",
+                "x": 50,
+                "y": 38,
+                "label": "Seven ears",
+                "reveal": "Allah can multiply goodness far beyond what we see."
+              },
+              {
+                "id": "grain",
+                "x": 64,
+                "y": 45,
+                "label": "Grain",
+                "reveal": "Every grain reminds us that Allah grows sincere giving."
+              }
+            ],
+            "completeText": "What is small for us is not small with Allah."
+          },
           "image": "images/sadaqah/07.webp"
         },
         {
@@ -4196,6 +6807,32 @@
           "text": "The secret is the heart behind the gift. Allah does not look at the size of what you give — He looks at the love with which you give it.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "heart-behind-gift",
+            "kind": "choice",
+            "prompt": "What does Allah look at in sadaqah?",
+            "options": [
+              {
+                "id": "size-only",
+                "label": "Only the size.",
+                "feedback": "A big gift with pride can be smaller than a small gift with love.",
+                "correct": false
+              },
+              {
+                "id": "love",
+                "label": "The love behind it.",
+                "feedback": "Yes. The heart behind the gift matters most.",
+                "correct": true
+              },
+              {
+                "id": "audience",
+                "label": "How many people saw it.",
+                "feedback": "Being seen is not the goal.",
+                "correct": false
+              }
+            ],
+            "completeText": "A sincere heart makes the gift shine."
+          },
           "image": "images/sadaqah/09.webp"
         },
         {
@@ -4212,6 +6849,35 @@
           "text": "We can share food with a neighbor, care for a hungry animal, comfort someone who is sad, or give a toy to a child who has less. Every little kindness counts.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "little-kindness-counts",
+            "kind": "hotspots",
+            "prompt": "Tap people or needs sadaqah can touch.",
+            "markers": [
+              {
+                "id": "food",
+                "x": 44,
+                "y": 55,
+                "label": "Food",
+                "reveal": "Sharing food can fill a stomach and a heart."
+              },
+              {
+                "id": "door",
+                "x": 57,
+                "y": 39,
+                "label": "Neighbor",
+                "reveal": "A neighbor's door can become a place of kindness."
+              },
+              {
+                "id": "home",
+                "x": 70,
+                "y": 52,
+                "label": "Home",
+                "reveal": "Sadaqah can quietly strengthen a whole community."
+              }
+            ],
+            "completeText": "Every little kindness counts."
+          },
           "image": "images/sadaqah/11.webp"
         },
         {
@@ -4226,6 +6892,32 @@
           "text": "Giving in secret is even more beautiful. When you give without anyone knowing, it is just between you and Allah — and that is the purest kind of giving.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "secret-giving",
+            "kind": "choice",
+            "prompt": "Why is giving in secret beautiful?",
+            "options": [
+              {
+                "id": "fame",
+                "label": "It brings fame.",
+                "feedback": "Secret giving is not chasing fame.",
+                "correct": false
+              },
+              {
+                "id": "allah-only",
+                "label": "It is between you and Allah.",
+                "feedback": "Yes. That keeps the intention pure.",
+                "correct": true
+              },
+              {
+                "id": "smaller",
+                "label": "It makes the gift smaller.",
+                "feedback": "A hidden gift can be huge with Allah.",
+                "correct": false
+              }
+            ],
+            "completeText": "Hidden goodness is still seen by Allah."
+          },
           "image": "images/sadaqah/13.webp"
         },
         {
@@ -4256,6 +6948,41 @@
           "text": "And it teaches us that Allah's promise is true: what you give for His sake never, ever goes to waste. It comes back to you in ways you cannot imagine.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "giving-growth",
+            "kind": "sequence",
+            "prompt": "Put the sadaqah path in order.",
+            "items": [
+              {
+                "id": "notice",
+                "label": "Notice a need"
+              },
+              {
+                "id": "choose",
+                "label": "Choose a kind gift"
+              },
+              {
+                "id": "give",
+                "label": "Give gently"
+              },
+              {
+                "id": "allah",
+                "label": "Allah knows"
+              },
+              {
+                "id": "grow",
+                "label": "Goodness grows"
+              }
+            ],
+            "correctOrder": [
+              "notice",
+              "choose",
+              "give",
+              "allah",
+              "grow"
+            ],
+            "completeText": "Giving grows when the heart is sincere."
+          },
           "image": "images/sadaqah/17.webp"
         },
         {
@@ -4306,6 +7033,32 @@
           "text": "That tiny word \"uff\" is the smallest little grumble — and Allah asks us not even to sigh in annoyance at our parents. Instead, we choose soft and gentle words.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "uff-lesson",
+            "kind": "choice",
+            "prompt": "What does the tiny word uff teach?",
+            "options": [
+              {
+                "id": "grumble",
+                "label": "Even small grumbles matter.",
+                "feedback": "Yes. Allah teaches us to guard even little signs of annoyance.",
+                "correct": true
+              },
+              {
+                "id": "harsh",
+                "label": "Harsh words are best.",
+                "feedback": "The verse teaches noble, gentle words.",
+                "correct": false
+              },
+              {
+                "id": "ignore",
+                "label": "Ignore parents.",
+                "feedback": "Kindness begins by paying attention.",
+                "correct": false
+              }
+            ],
+            "completeText": "Gentleness can begin with one small word held back."
+          },
           "image": "images/kindness-family/04.webp"
         },
         {
@@ -4313,6 +7066,32 @@
           "text": "Allah does not ask for something impossible — He asks for kindness. And kindness is simply choosing gentle words when you could choose harsh ones.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "choose-gentle",
+            "kind": "choice",
+            "prompt": "When you could choose harsh words, what does kindness choose?",
+            "options": [
+              {
+                "id": "shout",
+                "label": "Shouting.",
+                "feedback": "Shouting usually makes hearts harder.",
+                "correct": false
+              },
+              {
+                "id": "gentle",
+                "label": "Gentle words.",
+                "feedback": "Yes. Kindness often starts with the voice.",
+                "correct": true
+              },
+              {
+                "id": "mock",
+                "label": "Mocking.",
+                "feedback": "Mocking is not birr.",
+                "correct": false
+              }
+            ],
+            "completeText": "A soft answer can protect the whole room."
+          },
           "image": "images/kindness-family/05.webp"
         },
         {
@@ -4349,6 +7128,35 @@
           "text": "Our parents cared for us when we were tiny and could do nothing for ourselves — they fed us, held us, and stayed awake for us. Our kindness is how we say thank you.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "parents-care",
+            "kind": "hotspots",
+            "prompt": "Tap ways parents care when children are small.",
+            "markers": [
+              {
+                "id": "holding",
+                "x": 48,
+                "y": 48,
+                "label": "Holding",
+                "reveal": "Parents held us when we could not hold ourselves up."
+              },
+              {
+                "id": "food",
+                "x": 36,
+                "y": 58,
+                "label": "Feeding",
+                "reveal": "They fed us before we could feed ourselves."
+              },
+              {
+                "id": "night",
+                "x": 63,
+                "y": 31,
+                "label": "Staying awake",
+                "reveal": "Love often looks like losing sleep for someone small."
+              }
+            ],
+            "completeText": "Remembering care makes gratitude easier."
+          },
           "image": "images/kindness-family/09.webp"
         },
         {
@@ -4386,6 +7194,35 @@
           "text": "Even a small act of kindness at home — making tea for someone, helping with a chore, saying \"thank you\" — is beloved to Allah.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "home-kindness",
+            "kind": "hotspots",
+            "prompt": "Tap small acts that count at home.",
+            "markers": [
+              {
+                "id": "tea",
+                "x": 43,
+                "y": 53,
+                "label": "Tea",
+                "reveal": "Making tea can be love in a cup."
+              },
+              {
+                "id": "chore",
+                "x": 62,
+                "y": 45,
+                "label": "Helping",
+                "reveal": "Helping with a chore is worship when done for Allah."
+              },
+              {
+                "id": "thanks",
+                "x": 54,
+                "y": 32,
+                "label": "Thank you",
+                "reveal": "A grateful word can warm the whole home."
+              }
+            ],
+            "completeText": "Home is where kindness gets practiced every day."
+          },
           "image": "images/kindness-family/14.webp"
         },
         {
@@ -4409,6 +7246,32 @@
           "text": "It teaches us that forgiveness is stronger than anger. Families are not perfect, but love and patience can heal almost anything.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "family-forgiveness",
+            "kind": "choice",
+            "prompt": "What is stronger than anger in a family?",
+            "options": [
+              {
+                "id": "grudge",
+                "label": "Holding a grudge.",
+                "feedback": "Grudges make love feel far away.",
+                "correct": false
+              },
+              {
+                "id": "forgiveness",
+                "label": "Forgiveness and patience.",
+                "feedback": "Yes. They help love heal what anger hurts.",
+                "correct": true
+              },
+              {
+                "id": "winning",
+                "label": "Always winning.",
+                "feedback": "Family is not a contest to win.",
+                "correct": false
+              }
+            ],
+            "completeText": "Forgiveness is strength at home."
+          },
           "image": "images/kindness-family/17.webp"
         },
         {
@@ -4416,6 +7279,41 @@
           "text": "And it teaches us that the way we treat our family is the way we learn to treat the world. Kindness at home becomes kindness everywhere.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "kind-response-order",
+            "kind": "sequence",
+            "prompt": "Put a kind family response in order.",
+            "items": [
+              {
+                "id": "pause",
+                "label": "Pause before speaking"
+              },
+              {
+                "id": "listen",
+                "label": "Listen carefully"
+              },
+              {
+                "id": "gentle",
+                "label": "Use gentle words"
+              },
+              {
+                "id": "help",
+                "label": "Help where you can"
+              },
+              {
+                "id": "dua",
+                "label": "Make dua for them"
+              }
+            ],
+            "correctOrder": [
+              "pause",
+              "listen",
+              "gentle",
+              "help",
+              "dua"
+            ],
+            "completeText": "Kindness at home can become kindness everywhere."
+          },
           "image": "images/kindness-family/18.webp"
         },
         {
@@ -4463,6 +7361,32 @@
           "text": "He promises that He is always near — nearer than you can imagine. Whenever you call on Him, He hears you.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "allah-near-promise",
+            "kind": "choice",
+            "prompt": "What does Allah promise when you call on Him?",
+            "options": [
+              {
+                "id": "near",
+                "label": "He is near and hears.",
+                "feedback": "Yes. This promise runs through the whole book.",
+                "correct": true
+              },
+              {
+                "id": "gone",
+                "label": "He is gone.",
+                "feedback": "Allah is never absent or unaware.",
+                "correct": false
+              },
+              {
+                "id": "busy",
+                "label": "He is too busy.",
+                "feedback": "Allah is never too busy for His servants.",
+                "correct": false
+              }
+            ],
+            "completeText": "Nearness is one of the promises to carry with you."
+          },
           "image": "images/allah-promises/04.webp"
         },
         {
@@ -4489,6 +7413,35 @@
           "text": "He promises that no sadness lasts forever. With every hard thing, Allah sends ease — gently, surely, again and again.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "hardship-ease",
+            "kind": "hotspots",
+            "prompt": "Tap signs that ease can come after hardship.",
+            "markers": [
+              {
+                "id": "clouds",
+                "x": 39,
+                "y": 30,
+                "label": "Clouds",
+                "reveal": "Hardship can feel heavy like storm clouds."
+              },
+              {
+                "id": "light",
+                "x": 56,
+                "y": 28,
+                "label": "Light",
+                "reveal": "Allah can open light through what felt closed."
+              },
+              {
+                "id": "green",
+                "x": 53,
+                "y": 58,
+                "label": "Green valley",
+                "reveal": "Ease can grow after rain and difficulty."
+              }
+            ],
+            "completeText": "Hardship does not get the last word."
+          },
           "image": "images/allah-promises/07.webp"
         },
         {
@@ -4522,6 +7475,32 @@
           "text": "And He promises that no one who is sorry and turns back to Him is ever turned away. Allah's mercy is bigger than any mistake.",
           "pos": "top",
           "theme": "dark",
+          "interaction": {
+            "id": "mercy-after-mistake",
+            "kind": "choice",
+            "prompt": "What does Allah promise the one who turns back sorry?",
+            "options": [
+              {
+                "id": "turned-away",
+                "label": "Always turned away.",
+                "feedback": "Allah does not turn away sincere tawbah.",
+                "correct": false
+              },
+              {
+                "id": "forgiven",
+                "label": "Mercy is open.",
+                "feedback": "Yes. His mercy is bigger than any mistake.",
+                "correct": true
+              },
+              {
+                "id": "perfect-first",
+                "label": "Be perfect first.",
+                "feedback": "We return because we need mercy.",
+                "correct": false
+              }
+            ],
+            "completeText": "Hope stays open."
+          },
           "image": "images/allah-promises/11.webp"
         },
         {
@@ -4565,6 +7544,35 @@
           "text": "To everyone who believes and does good, Allah promises a beautiful home forever — where every good thing waits, and no one is ever afraid or sad again.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "jannah-promises",
+            "kind": "hotspots",
+            "prompt": "Tap what Jannah means in this promise.",
+            "markers": [
+              {
+                "id": "river",
+                "x": 45,
+                "y": 60,
+                "label": "Rivers",
+                "reveal": "The garden is described with beauty and peace."
+              },
+              {
+                "id": "trees",
+                "x": 58,
+                "y": 39,
+                "label": "Trees",
+                "reveal": "Every good thing there is from Allah's mercy."
+              },
+              {
+                "id": "peace",
+                "x": 67,
+                "y": 24,
+                "label": "No fear",
+                "reveal": "Allah promises a home where sadness and fear end."
+              }
+            ],
+            "completeText": "Jannah is hope made forever."
+          },
           "image": "images/allah-promises/16.webp"
         },
         {
@@ -4598,6 +7606,41 @@
           },
           "theme": "light",
           "pos": "center",
+          "interaction": {
+            "id": "bookwide-path",
+            "kind": "sequence",
+            "prompt": "Put the book's big lesson in order.",
+            "items": [
+              {
+                "id": "learn",
+                "label": "Learn who Allah is"
+              },
+              {
+                "id": "stories",
+                "label": "Meet the prophets"
+              },
+              {
+                "id": "return",
+                "label": "Turn back after mistakes"
+              },
+              {
+                "id": "good",
+                "label": "Do good with love"
+              },
+              {
+                "id": "hope",
+                "label": "Hope for Allah's mercy"
+              }
+            ],
+            "correctOrder": [
+              "learn",
+              "stories",
+              "return",
+              "good",
+              "hope"
+            ],
+            "completeText": "That is a path you can keep walking."
+          },
           "image": "images/allah-promises/20.webp"
         },
         {
@@ -4605,10 +7648,65 @@
           "text": "This is not the end of the story. It is the beginning of your story. Every prophet, every lesson, every promise — they were all leading here, to you.",
           "pos": "bottom",
           "theme": "light",
+          "interaction": {
+            "id": "your-story",
+            "kind": "choice",
+            "prompt": "What does the book ask the reader to carry forward?",
+            "options": [
+              {
+                "id": "forget",
+                "label": "Forget every lesson.",
+                "feedback": "The stories are meant to travel with you.",
+                "correct": false
+              },
+              {
+                "id": "begin",
+                "label": "Begin your own story with Allah.",
+                "feedback": "Yes. The ending opens into your life.",
+                "correct": true
+              },
+              {
+                "id": "only-watch",
+                "label": "Only watch from far away.",
+                "feedback": "These lessons are for your real days.",
+                "correct": false
+              }
+            ],
+            "completeText": "The book closes by opening a door."
+          },
           "image": "images/allah-promises/21.webp"
         },
         {
           "type": "image",
+          "interaction": {
+            "id": "final-landscape",
+            "kind": "hotspots",
+            "prompt": "Tap the worlds gathered in the final picture.",
+            "markers": [
+              {
+                "id": "mountains",
+                "x": 31,
+                "y": 35,
+                "label": "Mountains",
+                "reveal": "Moses, Abraham, and many stories stood near mountains."
+              },
+              {
+                "id": "sea",
+                "x": 58,
+                "y": 58,
+                "label": "Sea",
+                "reveal": "Noah, Moses, and Jonah all learned that water obeys Allah."
+              },
+              {
+                "id": "road",
+                "x": 49,
+                "y": 70,
+                "label": "Road",
+                "reveal": "The last page invites your own next step."
+              }
+            ],
+            "completeText": "All the lessons gather into a hopeful beginning."
+          },
           "image": "images/allah-promises/22.webp"
         }
       ]

@@ -9,6 +9,30 @@ The implementation must be deterministic, offline-capable, and compatible with t
 image pipeline. GPT image generation remains a build-time asset step only; no runtime LLM calls are
 added to the reader.
 
+## Implementation update — 2026-05-29
+
+The all-chapter interaction layer is implemented. The concrete all-chapter spec lives in
+`all-chapter-interactions-spec.md`; it is the current page-index matrix and supersedes the generic
+chapter examples below where they conflict with implemented placements.
+
+Current implementation facts:
+
+- Interaction data source: `content/interactions.ts`.
+- Runtime data contract: `content/types.ts` `Page.interaction`.
+- Build integration: `scripts/generate.ts` applies interactions while emitting `public/book.json`.
+- Validation: `scripts/validate-interactions.ts` and `bun run validate:interactions`.
+- Runtime: `public/index.html` bottom-sheet learning layer with hotspots, choices, sequence ordering,
+  completion persistence, and CSS motion.
+- Totals: 16 chapters, 592 pages, 109 interactions, 46 hotspots, 46 choices, 17 sequences.
+- Mobile QA: Agent Browser completed one hotspot, one choice, and one sequence in every chapter;
+  48 flows tested, 0 failures.
+
+Material decision recorded:
+
+- Interactions are authored in one centralized page-index overlay rather than inline in every chapter
+  file. This keeps narrative/canon chapter files focused while still producing typed
+  `Page.interaction` data in `book.json`.
+
 ## Current baseline
 
 - The active page source of truth is `content/NN-slug.ts`.
@@ -543,6 +567,10 @@ Record any encountered failure mode in this plan under this section before final
 - Choice prompt too long for mobile sheet: shorten prompt and feedback.
 - Sequence item labels wrap awkwardly: shorten labels; keep 3-5 words.
 - Completion state key collision: fix interaction ids to be unique per chapter.
+- Implemented fix: sequence completion could land below the visible sheet on a 390x844 mobile
+  viewport. The sheet max-height and sequence row density were adjusted, and `Check order` now
+  scrolls the sheet to the result. The fixed state is captured in
+  `/tmp/quran-interactions-qa/sequence-promises-fixed.png`.
 
 ### Fixed but could benefit from cleaner/simpler implementation with an architectural change
 

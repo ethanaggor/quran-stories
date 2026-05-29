@@ -6,6 +6,7 @@
   "scripts": {
     "plates": "bun --env-file=/Users/ethanaggor/sandbox/.env scripts/plates.ts",
     "gen": "bun --env-file=/Users/ethanaggor/sandbox/.env scripts/generate.ts",
+    "validate:interactions": "bun scripts/validate-interactions.ts",
     "serve": "bun --env-file=/Users/ethanaggor/sandbox/.env scripts/serve.ts"
   },
   "dependencies": {

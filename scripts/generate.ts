@@ -15,6 +15,7 @@ import { readdir, mkdir, writeFile, rename } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import type { Chapter } from "../content/types";
+import { applyInteractions } from "../content/interactions";
 import { compile, platePath } from "../canon/index";
 import { editImage, pool } from "./img";
 
@@ -28,7 +29,7 @@ async function loadChapters(): Promise<Chapter[]> {
   const chapters: Chapter[] = [];
   for (const f of files) {
     const mod = await import(join(CONTENT_DIR, f));
-    if (mod.default) chapters.push(mod.default as Chapter);
+    if (mod.default) chapters.push(applyInteractions(mod.default as Chapter));
   }
   return chapters;
 }
