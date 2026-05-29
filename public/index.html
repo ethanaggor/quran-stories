@@ -20,13 +20,40 @@
     --sb: env(safe-area-inset-bottom, 0px);
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; }
-  html, body { height: 100%; background: #0e0b1a; overscroll-behavior: none; }
-  body { font-family: var(--serif); color: var(--ink); user-select: none; -webkit-user-select: none; }
+  html, body { width: 100%; min-height: 100%; background: #0e0b1a; overscroll-behavior: none; }
+  body {
+    min-height: 100dvh; overflow: hidden; font-family: var(--serif); color: var(--ink);
+    user-select: none; -webkit-user-select: none;
+  }
   img { -webkit-user-drag: none; }
+
+  #appShell {
+    position: fixed; inset: 0; display: grid; place-items: center;
+    background: #0e0b1a; overflow: hidden;
+  }
+  #appFrame {
+    position: relative; width: 100vw; height: 100dvh; overflow: hidden;
+    background: #0e0b1a;
+  }
+
+  @media (min-width: 700px) and (min-height: 620px) {
+    #appShell {
+      padding: 16px;
+      background: linear-gradient(180deg, #211a15 0%, #0f0d0c 100%);
+    }
+    #appFrame {
+      width: min(calc(100vw - 40px), calc((100dvh - 32px) * 9 / 16), 560px);
+      height: auto; aspect-ratio: 9 / 16; border-radius: 24px;
+      box-shadow:
+        0 28px 90px rgba(0,0,0,.48),
+        0 0 0 1px rgba(255,255,255,.08),
+        inset 0 1px 0 rgba(255,255,255,.08);
+    }
+  }
 
   /* ---------- HOME ---------- */
   #home {
-    position: fixed; inset: 0; overflow-y: auto; background: var(--paper);
+    position: absolute; inset: 0; overflow-y: auto; background: var(--paper);
     padding: calc(var(--st) + 54px) 22px calc(var(--sb) + 40px);
   }
   #home h1 {
@@ -47,7 +74,7 @@
     font-family: var(--serif); opacity: .85; text-shadow: 0 1px 4px rgba(0,0,0,.6); }
 
   /* ---------- READER ---------- */
-  #reader { position: fixed; inset: 0; display: none; background: #0e0b1a; }
+  #reader { position: absolute; inset: 0; display: none; background: #0e0b1a; }
   #reader.on { display: block; }
   .page { position: absolute; inset: 0; opacity: 0; transition: opacity .35s ease; pointer-events: none; }
   .page.active { opacity: 1; pointer-events: auto; }
@@ -100,7 +127,10 @@
   .bar button { background: rgba(0,0,0,.28); color: #fff; border: none; width: 34px; height: 34px;
     border-radius: 50%; font-size: 16px; line-height: 1; backdrop-filter: blur(6px); }
   .prog { position: relative; flex: 1; height: 5px; border-radius: 99px; background: rgba(255,255,255,.28); overflow: hidden; }
-  .prog > i { display: block; height: 100%; width: 0; background: #f1e6d3; transition: width .3s ease; }
+  .prog > i {
+    display: block; height: 100%; width: 100%; background: #f1e6d3;
+    transform: scaleX(0); transform-origin: left center; transition: transform .3s ease;
+  }
   .prog .tick { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px;
     background: rgba(14,11,26,.55); }
 
@@ -109,20 +139,37 @@
 
   /* ---------- LEARNING MOMENTS ---------- */
   .learn-btn {
-    position: absolute; right: 18px; bottom: calc(var(--sb) + 78px); z-index: 8;
-    width: 48px; height: 48px; border: 1px solid rgba(255,255,255,.5); border-radius: 50%;
-    background: rgba(33,28,24,.42); color: #fff; font-family: var(--display);
-    font-size: 22px; line-height: 1; backdrop-filter: blur(12px);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 8px 26px rgba(0,0,0,.24);
+    position: absolute; right: 18px; bottom: calc(var(--sb) + 22px); z-index: 8;
+    width: 48px; height: 48px; padding: 0; display: grid; place-items: center;
+    border: 1px solid rgba(255,236,194,.64); border-radius: 50%;
+    background:
+      radial-gradient(circle at 34% 28%, rgba(255,255,255,.72), rgba(255,255,255,0) 30%),
+      linear-gradient(145deg, rgba(238,199,122,.94), rgba(181,113,56,.9));
+    color: #3f2a16; backdrop-filter: blur(12px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 10px 28px rgba(34,23,15,.3);
     transition: transform .24s cubic-bezier(.16,1,.3,1), background .24s ease, opacity .24s ease;
-    animation: breathe 3.6s ease-in-out infinite;
+    animation: sparkBreathe 4.8s ease-in-out infinite;
+  }
+  .learn-btn::after {
+    content: ""; position: absolute; inset: -8px; border-radius: 50%;
+    border: 1px solid rgba(244,209,142,.42); opacity: 0;
+    animation: sparkRing 4.8s ease-out infinite;
   }
   .learn-btn.done {
-    background: rgba(247,243,236,.72); color: #3f3328; border-color: rgba(63,51,40,.24);
+    background: rgba(247,243,236,.78); color: #4e3a26; border-color: rgba(78,58,38,.24);
+    animation: none;
   }
+  .learn-btn.done::after { display: none; }
+  .learn-btn.learn-top { top: calc(var(--st) + 78px); bottom: auto; }
   .learn-btn:active { transform: scale(.94); }
   .learning-open .learn-btn { opacity: 0; pointer-events: none; }
-
+  .learn-symbol {
+    position: relative; z-index: 1; width: 26px; height: 26px; display: grid; place-items: center;
+  }
+  .learn-icon {
+    width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
   .hotspot-layer {
     position: absolute; inset: 0; z-index: 7; pointer-events: none;
   }
@@ -214,9 +261,13 @@
   .seq-btn:disabled { opacity: .35; }
   .check-btn { justify-self: start; min-width: 132px; text-align: center; background: rgba(201,138,75,.18); }
 
-  @keyframes breathe {
+  @keyframes sparkBreathe {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
+    50% { transform: translateY(-2px); }
+  }
+  @keyframes sparkRing {
+    12% { transform: scale(.82); opacity: .48; }
+    38%, 100% { transform: scale(1.28); opacity: 0; }
   }
   @keyframes markerIn {
     to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
@@ -228,20 +279,35 @@
   @keyframes sheetIn {
     to { transform: translateY(0); opacity: 1; }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page, .prog > i, .learn-btn, .learn-btn::after, .hotspot-marker, .seq-btn,
+    .hotspot-marker::after, .learn-sheet, .choice-btn, .check-btn {
+      animation: none !important;
+      transition: none !important;
+    }
+    .hotspot-marker { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    .hotspot-marker::after { display: none; }
+    .learning-open .learn-sheet { transform: translateY(0); opacity: 1; }
+  }
 </style>
 </head>
 <body>
-  <div id="home"></div>
-  <div id="reader">
-    <div id="stage"></div>
-    <div class="bar">
-      <button id="back" aria-label="Library">⌂</button>
-      <div class="prog" id="prog"><i id="bar"></i></div>
-    </div>
-    <div class="tap l" id="tapL"></div>
-    <div class="tap r" id="tapR"></div>
-    <div class="learn-veil" id="learnVeil"></div>
-    <div class="learn-sheet" id="learnSheet" role="dialog" aria-modal="true" aria-live="polite"></div>
+  <div id="appShell">
+    <main id="appFrame" aria-label="Stories from the Qur'an">
+      <div id="home"></div>
+      <div id="reader">
+        <div id="stage"></div>
+        <div class="bar">
+          <button id="back" aria-label="Library">⌂</button>
+          <div class="prog" id="prog"><i id="bar"></i></div>
+        </div>
+        <div class="tap l" id="tapL"></div>
+        <div class="tap r" id="tapR"></div>
+        <div class="learn-veil" id="learnVeil"></div>
+        <div class="learn-sheet" id="learnSheet" role="dialog" aria-modal="true" aria-live="polite"></div>
+      </div>
+    </main>
   </div>
 
 <script>
@@ -312,6 +378,20 @@ function isInteractionComplete(chapterId, interaction) {
   }
 }
 
+function sparkIcon() {
+  return `<svg class="learn-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 3l1.75 5.25L19 10l-5.25 1.75L12 17l-1.75-5.25L5 10l5.25-1.75L12 3Z"></path>
+    <path d="M19 15l.75 2.25L22 18l-2.25.75L19 21l-.75-2.25L16 18l2.25-.75L19 15Z"></path>
+    <path d="M5 4l.6 1.8 1.8.6-1.8.6L5 8.8 4.4 7 2.6 6.4l1.8-.6L5 4Z"></path>
+  </svg>`;
+}
+
+function checkIcon() {
+  return `<svg class="learn-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M6.5 12.5l3.2 3.2 7.8-8.4"></path>
+  </svg>`;
+}
+
 function pageHTML(p, i) {
   const lite = p.theme === 'dark';           // dark text -> needs a light scrim
   const inkClass = p.theme === 'dark' ? 'dark-ink' : 'light-ink';
@@ -341,8 +421,12 @@ function pageHTML(p, i) {
   }
   const needScrim = p.type !== 'image' && p.type !== 'cover';
   const ch = book.chapters[ci];
+  const complete = p.interaction && isInteractionComplete(ch.id, p.interaction);
+  const learnPlacement = p.interaction && needScrim && (pos === 'bottom' || pos === 'lower') ? 'learn-top' : '';
   const learning = p.interaction
-    ? `<button class="learn-btn ${isInteractionComplete(ch.id, p.interaction) ? 'done' : ''}" data-page="${i}" onclick="openInteraction(${i}, event)" aria-label="Open learning moment">?</button>`
+    ? `<button class="learn-btn ${learnPlacement} ${complete ? 'done' : ''}" data-page="${i}" onclick="openInteraction(${i}, event)" aria-label="Open discovery moment">
+        <span class="learn-symbol">${complete ? checkIcon() : sparkIcon()}</span>
+      </button>`
     : '';
   return `<div class="page ${lite ? 'lite' : ''}" data-i="${i}">
     <img class="art" src="${p.image}" alt="" />
@@ -357,7 +441,7 @@ function show(n) {
   const pages = $('stage').children;
   pi = Math.max(0, Math.min(pages.length - 1, n));
   [...pages].forEach((el, i) => el.classList.toggle('active', i === pi));
-  $('bar').style.width = ((pi + 1) / pages.length * 100) + '%';
+  $('bar').style.transform = `scaleX(${(pi + 1) / pages.length})`;
   const ch = book.chapters[ci];
   if (pages[pi + 1]) new Image().src = ch.pages[pi + 1].image; // preload
 }
@@ -420,7 +504,11 @@ function markComplete(interaction) {
     localStorage.setItem(completionKey(chapterId, interaction.id), '1');
   } catch {}
   const btn = document.querySelector(`.page[data-i="${pi}"] .learn-btn`);
-  if (btn) btn.classList.add('done');
+  if (btn) {
+    btn.classList.add('done');
+    const symbol = btn.querySelector('.learn-symbol');
+    if (symbol) symbol.innerHTML = checkIcon();
+  }
 }
 
 function closeLearning(animate = true) {

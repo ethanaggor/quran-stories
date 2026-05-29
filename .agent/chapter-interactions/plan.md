@@ -44,6 +44,38 @@ Material decision recorded:
 
 This spec supersedes the current `?` affordance in `public/index.html`.
 
+## UX implementation update — 2026-05-29
+
+The Story Spark and larger-screen reader frame pass is implemented in `public/index.html`.
+
+Current implementation facts:
+
+- The reader is wrapped in `#appShell` and `#appFrame`.
+- Mobile keeps a full-bleed `100vw` by `100dvh` frame.
+- Screens at least `700px` wide and `620px` tall center the app in a capped 9:16 frame.
+- The visible `?` affordance is replaced by an inline SVG Story Spark medallion.
+- Completed interactions render a quiet inline SVG check medallion.
+- Lower/bottom text pages place the medallion at the upper-right under the progress bar so it does
+  not overlap story copy; pages without lower text may keep the lower-right placement.
+- The progress bar fill now animates with `transform: scaleX(...)` instead of width animation.
+- `prefers-reduced-motion` disables or reduces spark, marker, sheet, and control motion.
+
+Validation evidence:
+
+- `git diff --check`
+- `bun run validate:interactions`
+- `bun run gen --book-only`
+- Artifact check: 16 chapters, 109 interactions, 0 PNG refs.
+- Agent Browser QA at `390x844`, `768x1024`, `1024x768`, and `1440x900`.
+- Representative screenshots:
+  - `/tmp/quran-story-spark-qa/mobile-story-spark-revised-2.png`
+  - `/tmp/quran-story-spark-qa/mobile-sheet-final.png`
+  - `/tmp/quran-story-spark-qa/mobile-sequence-final-complete.png`
+  - `/tmp/quran-story-spark-qa/mobile-completed-check-final.png`
+  - `/tmp/quran-story-spark-qa/ipad-portrait-frame-final.png`
+  - `/tmp/quran-story-spark-qa/ipad-landscape-frame-final.png`
+  - `/tmp/quran-story-spark-qa/desktop-frame-final.png`
+
 ## Current baseline
 
 - The active page source of truth is `content/NN-slug.ts`.
@@ -582,6 +614,12 @@ Record any encountered failure mode in this plan under this section before final
   viewport. The sheet max-height and sequence row density were adjusted, and `Check order` now
   scrolls the sheet to the result. The fixed state is captured in
   `/tmp/quran-interactions-qa/sequence-promises-fixed.png`.
+- Implemented fix: the optional `Discover` text cue in the Story Spark spec overlapped narrative
+  copy on iPad/desktop screenshots. The text cue was removed and the icon-only spark animation is
+  the invitation state.
+- Implemented fix: the lower-right Story Spark position intersected the bottom narrative text box
+  on bottom-text pages. The medallion now uses page-aware placement and moves to the upper-right for
+  lower/bottom text pages.
 
 ### Fixed but could benefit from cleaner/simpler implementation with an architectural change
 
