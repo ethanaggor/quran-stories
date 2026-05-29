@@ -33,6 +33,17 @@ Material decision recorded:
   file. This keeps narrative/canon chapter files focused while still producing typed
   `Page.interaction` data in `book.json`.
 
+## UX refinement spec — 2026-05-29
+
+`story-spark-and-reader-frame-spec.md` finalizes the next UX pass:
+
+- replace the visible `?` learning affordance with a warm Story Spark discovery medallion;
+- keep the existing bottom-sheet interaction engine;
+- add a centered 9:16 app frame for iPad, laptop, and desktop screens while preserving full-bleed
+  mobile behavior.
+
+This spec supersedes the current `?` affordance in `public/index.html`.
+
 ## Current baseline
 
 - The active page source of truth is `content/NN-slug.ts`.
