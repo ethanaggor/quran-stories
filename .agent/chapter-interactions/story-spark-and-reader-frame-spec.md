@@ -307,6 +307,172 @@ Frame acceptance rules:
    - Add an implementation update to `.agent/chapter-interactions/plan.md`.
    - Record any failure modes found during implementation.
 
+## Granular Implementation Checklist
+
+Use this checklist as the implementation runbook. Complete each phase in order unless a validation
+finding forces a spec update first.
+
+### Phase 0: Preflight and boundaries
+
+- [ ] Confirm the current worktree status with `git status --short`.
+- [ ] Read this full spec before editing.
+- [ ] Read the current relevant sections of `public/index.html`:
+  - [ ] root DOM under `<body>`;
+  - [ ] `#home`, `#reader`, `.page`, `.art`, `.bar`, `.tap` CSS;
+  - [ ] current `.learn-btn`, `.hotspot-layer`, `.learn-sheet`, and interaction CSS;
+  - [ ] `pageHTML`;
+  - [ ] `openInteraction`, `closeLearning`, `markComplete`, and interaction handlers.
+- [ ] Do not edit `content/interactions.ts`, `content/types.ts`, `scripts/generate.ts`, or
+  `public/book.json` unless implementation reveals a real contract issue.
+- [ ] Do not add any third-party package.
+- [ ] Do not regenerate images.
+
+### Phase 1: App shell and frame DOM
+
+- [ ] Wrap the existing app roots in `#appShell`.
+- [ ] Wrap `#home` and `#reader` in `#appFrame`.
+- [ ] Keep existing ids stable:
+  - [ ] `home`;
+  - [ ] `reader`;
+  - [ ] `stage`;
+  - [ ] `prog`;
+  - [ ] `bar`;
+  - [ ] `tapL`;
+  - [ ] `tapR`;
+  - [ ] `learnVeil`;
+  - [ ] `learnSheet`.
+- [ ] Set `aria-label="Stories from the Qur'an"` on `#appFrame`.
+- [ ] Verify the JavaScript selectors still point to the same ids after the DOM move.
+
+### Phase 2: Frame-relative layout CSS
+
+- [ ] Add base CSS for `#appShell`.
+- [ ] Add base CSS for `#appFrame`.
+- [ ] Change `#home` from viewport-fixed to frame-absolute.
+- [ ] Change `#reader` from viewport-fixed to frame-absolute.
+- [ ] Keep `#reader.on` behavior unchanged.
+- [ ] Ensure `.page`, `.art`, `.bar`, `.tap`, `.learn-veil`, `.learn-sheet`,
+  `.hotspot-layer`, and `.learn-btn` remain positioned against the framed reader surface.
+- [ ] Add larger-screen media query for screens at least `700px` wide and `620px` tall.
+- [ ] In that media query, set the frame width using the 9:16 height-derived formula.
+- [ ] Cap framed width at `560px`.
+- [ ] Add frame border radius and a restrained matte shadow only in the larger-screen media query.
+- [ ] Keep mobile full-bleed by leaving `#appFrame` at `100vw` by `100dvh` outside the media query.
+- [ ] Confirm no CSS uses viewport-width font scaling.
+- [ ] Confirm no animation uses `top`, `left`, `width`, or `height`.
+
+### Phase 3: Story Spark JS helpers and markup
+
+- [ ] Add `sparkIcon()` near the existing interaction helpers.
+- [ ] Add `checkIcon()` near `sparkIcon()`.
+- [ ] Ensure both helpers return inline SVG strings with `class="learn-icon"` and
+  `aria-hidden="true"`.
+- [ ] Add session-only `discoverCueShown` state.
+- [ ] Add `shouldShowDiscoverCue()`.
+- [ ] Update `pageHTML` to compute `complete` once for interaction pages.
+- [ ] Update `pageHTML` to render `sparkIcon()` when incomplete.
+- [ ] Update `pageHTML` to render `checkIcon()` when complete.
+- [ ] Remove visible `?` text from the learning button.
+- [ ] Change the learning button aria label to `Open discovery moment`.
+- [ ] Add `.learn-symbol` around the icon.
+- [ ] Add `.learn-cue` only for the first incomplete interaction in the current browser session.
+- [ ] Ensure `markComplete()` still adds `.done` to the visible button after completion.
+- [ ] Ensure completed buttons update to the check icon when the page is re-rendered.
+
+### Phase 4: Story Spark CSS and motion
+
+- [ ] Remove question-mark-specific font sizing from `.learn-btn`.
+- [ ] Style `.learn-btn` as a warm gold/parchment medallion.
+- [ ] Keep the hit target at least `48px` by `48px`.
+- [ ] Add `.learn-symbol`.
+- [ ] Add `.learn-icon` with:
+  - [ ] `fill: none`;
+  - [ ] `stroke: currentColor`;
+  - [ ] `stroke-width: 1.8`;
+  - [ ] `stroke-linecap: round`;
+  - [ ] `stroke-linejoin: round`.
+- [ ] Add `.learn-cue` as a small attached label that can appear without increasing the hit target
+  unpredictably.
+- [ ] Add one short first-appearance cue animation for incomplete Story Spark.
+- [ ] Keep any repeated breathing animation subtle enough not to compete with reading.
+- [ ] Remove breathing/pulse animation from `.learn-btn.done`.
+- [ ] Keep `.learning-open .learn-btn` hidden and non-interactive.
+- [ ] Keep active/tap feedback using `transform`.
+- [ ] Add or update `@media (prefers-reduced-motion: reduce)` so spark, marker, and sheet
+  animations are disabled or reduced.
+
+### Phase 5: Interaction behavior regression checks
+
+- [ ] Confirm tapping Story Spark opens the bottom sheet.
+- [ ] Confirm page taps and swipes are ignored while the sheet is open.
+- [ ] Confirm Escape closes the sheet on desktop.
+- [ ] Confirm hotspot markers still appear at the correct frame-relative coordinates.
+- [ ] Confirm hotspot marker labels still appear after tap.
+- [ ] Confirm hotspot completion still writes localStorage completion.
+- [ ] Confirm choice feedback still appears.
+- [ ] Confirm correct choice completion still writes localStorage completion.
+- [ ] Confirm sequence item movement still works.
+- [ ] Confirm `Check order` still scrolls the sheet to the result.
+- [ ] Confirm completed interaction pages show the quiet check medallion after reload.
+
+### Phase 6: Larger-screen visual QA
+
+- [ ] At `390x844`, confirm:
+  - [ ] app is full-bleed;
+  - [ ] no visible frame border or desktop backdrop;
+  - [ ] Story Spark is visible on an interaction page;
+  - [ ] no `?` appears in the affordance.
+- [ ] At `768x1024`, confirm:
+  - [ ] app is centered;
+  - [ ] frame is 9:16;
+  - [ ] page is fully visible;
+  - [ ] bottom sheet stays inside the frame.
+- [ ] At `1024x768`, confirm:
+  - [ ] app is centered;
+  - [ ] frame is 9:16;
+  - [ ] no vertical or horizontal browser scroll is needed to see the page;
+  - [ ] tap zones stay inside the frame.
+- [ ] At `1440x900`, confirm:
+  - [ ] app is centered;
+  - [ ] frame width is capped at `560px`;
+  - [ ] matte backdrop is quiet and does not read like a landing page;
+  - [ ] text and controls do not feel oversized.
+- [ ] Capture representative screenshots for:
+  - [ ] mobile Story Spark;
+  - [ ] iPad portrait frame;
+  - [ ] iPad landscape frame;
+  - [ ] desktop frame;
+  - [ ] completed Story Spark state.
+
+### Phase 7: Documentation and failure modes
+
+- [ ] Add an implementation update to `.agent/chapter-interactions/plan.md`.
+- [ ] Record any spec decision that changed during implementation.
+- [ ] Record failure modes under the required categories:
+  - [ ] direct fix and needs no further changes;
+  - [ ] fixed but could benefit from cleaner/simpler implementation with an architectural change;
+  - [ ] requires large change, unfixable blocker, or user decision.
+- [ ] If a local simplification becomes obvious and safe, implement it before final validation.
+- [ ] If a larger cleanup is discovered, document it instead of widening this implementation.
+
+### Phase 8: Final validation, commit, and deploy
+
+- [ ] Run `git diff --check`.
+- [ ] Run `bun run validate:interactions`.
+- [ ] Run `bun run gen --book-only`.
+- [ ] Run the artifact check in `Strict Validation Gates`.
+- [ ] Run Agent Browser QA for the required viewports and interaction flows.
+- [ ] Check browser console and browser errors.
+- [ ] Inspect `git diff` for unintended changes.
+- [ ] Stage explicit paths only.
+- [ ] Run `git diff --staged`.
+- [ ] Run `git diff --staged --check`.
+- [ ] Commit the implementation.
+- [ ] Push `main`.
+- [ ] Watch the GitHub Pages deploy workflow to completion.
+- [ ] Run live cache-busted checks for `index.html` and `book.json`.
+- [ ] Confirm the final repo worktree is clean.
+
 ## Strict Validation Gates
 
 Do not commit until all gates are green.
