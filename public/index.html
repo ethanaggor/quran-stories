@@ -123,6 +123,8 @@
   #reader.on { display: block; }
   .page { position: absolute; inset: 0; opacity: 0; transition: opacity .35s ease; pointer-events: none; }
   .page.active { opacity: 1; pointer-events: auto; }
+  .page.image-error::before { content: ""; position: absolute; inset: 0; background: var(--amb-base); }
+  .page.image-error .art { opacity: 0; }
   .art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
   .scrim-t { position: absolute; left: 0; right: 0; top: 0; height: 46%;
@@ -370,7 +372,7 @@
   </div>
 
 <script>
-let book = null, ci = 0, pi = 0, activeInteraction = null;
+let book = null, ci = 0, pi = 0, navPi = 0, activeInteraction = null;
 const interactionState = new Map();
 const $ = (id) => document.getElementById(id);
 
@@ -410,14 +412,16 @@ function buildBokeh() {
 }
 
 async function init() {
-  book = await fetch('book.json').then(r => r.json());
+  book = await fetch('book.json', { cache: 'no-cache' }).then(r => r.json());
   renderHome();
 }
 
 function renderHome() {
+  resetImagePipeline();
   closeLearning(false);
   applyAmbient(null);
   $('reader').classList.remove('on');
+  $('stage').innerHTML = '';
   const cards = book.chapters.map((c, i) => `
     <button class="card" onclick="openChapter(${i})">
       <img src="${c.cover}" alt="" loading="lazy" decoding="async" />
@@ -430,17 +434,19 @@ function renderHome() {
     <div class="lede">An illustrated journey through the Qur'an</div>
     <div class="grid">${cards}</div>`;
   $('home').style.display = 'block';
+  activateWaitingWorkerIfSafe();
 }
 
 function openChapter(i) {
   closeLearning(false);
-  ci = i; pi = 0;
+  ci = i; pi = 0; navPi = 0;
   $('home').style.display = 'none';
   $('reader').classList.add('on');
   renderChapter();
 }
 
 function renderChapter() {
+  resetImagePipeline();
   closeLearning(false);
   const ch = book.chapters[ci];
   applyAmbient(ch);
@@ -547,44 +553,191 @@ function applyAmbient(chapter) {
   buildBokeh();
 }
 
-// Only the pages near the current one keep a loaded image. Opening a chapter no longer fetches
-// every page at once (some chapters have ~190 pages); pages outside the window are unloaded to
-// bound memory, and approaching pages are prefetched so the crossfade has its image ready.
-const WIN_BACK = 1, WIN_FWD = 2, WIN_UNLOAD = 3;
-function applyImageWindow(center) {
-  const pages = $('stage').children;
-  for (let i = 0; i < pages.length; i++) {
-    const img = pages[i].querySelector('img.art');
-    if (!img) continue;
-    const d = i - center;
-    if (d >= -WIN_BACK && d <= WIN_FWD) {
-      if (!img.src && img.dataset.src) img.src = img.dataset.src;
-      img.fetchPriority = d === 0 ? 'high' : 'low';
-    } else if (Math.abs(d) > WIN_UNLOAD && img.src) {
-      img.removeAttribute('src');
-    }
+const PIN_BACK = 1;
+const PIN_FWD = 1;
+const PREFETCH_AHEAD = 4;
+const PREFETCH_CONCURRENCY = 2;
+const IMAGE_BUDGET = 12;
+const IMAGE_TIMEOUT_MS = 12000;
+let showToken = 0;
+let imageEpoch = 0;
+let prefetchRunning = 0;
+let prefetchQueue = [];
+const prefetchQueued = new Set();
+const imageUse = new Map();
+
+function resetImagePipeline() {
+  showToken++;
+  imageEpoch++;
+  prefetchQueue = [];
+  prefetchQueued.clear();
+  imageUse.clear();
+}
+
+function pageImagePath(index) {
+  return book?.chapters?.[ci]?.pages?.[index]?.image || '';
+}
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function imageLoadEvent(img) {
+  return new Promise((resolve, reject) => {
+    const cleanup = () => {
+      img.removeEventListener('load', onLoad);
+      img.removeEventListener('error', onError);
+    };
+    const onLoad = () => { cleanup(); resolve(); };
+    const onError = () => { cleanup(); reject(new Error(`Image failed: ${img.dataset.src || img.currentSrc}`)); };
+    img.addEventListener('load', onLoad, { once: true });
+    img.addEventListener('error', onError, { once: true });
+  });
+}
+
+async function decodeImage(img) {
+  const loaded = img.complete && img.naturalWidth > 0;
+  if (!loaded) await imageLoadEvent(img);
+  if (img.decode) await img.decode();
+  if (!img.naturalWidth) throw new Error(`Image decoded with no width: ${img.dataset.src || img.currentSrc}`);
+}
+
+async function decodeWithTimeout(img) {
+  let timeoutId;
+  const timeout = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error(`Image timed out: ${img.dataset.src || img.currentSrc}`)), IMAGE_TIMEOUT_MS);
+  });
+  try {
+    await Promise.race([decodeImage(img), timeout]);
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
-function show(n) {
+function readerIsShowing() {
+  return $('reader').classList.contains('on');
+}
+
+async function ensurePageImage(index, priority = 'low', retry = true, chapterId = book.chapters[ci].id, epoch = imageEpoch) {
+  if (epoch !== imageEpoch || chapterId !== book.chapters[ci]?.id || !readerIsShowing()) return false;
+  const pageEl = $('stage').children[index];
+  const img = pageEl?.querySelector('img.art');
+  const src = img?.dataset.src;
+  if (!img || !src) return false;
+
+  pageEl.classList.remove('image-error');
+  img.fetchPriority = priority;
+  img.dataset.state = 'loading';
+  if (img.getAttribute('src') !== src) img.src = src;
+
+  try {
+    await decodeWithTimeout(img);
+    if (epoch !== imageEpoch || chapterId !== book.chapters[ci]?.id || !readerIsShowing()) return false;
+    img.dataset.state = 'decoded';
+    imageUse.set(src, performance.now());
+    return true;
+  } catch (error) {
+    if (epoch !== imageEpoch || chapterId !== book.chapters[ci]?.id || !readerIsShowing()) return false;
+    if (retry) {
+      img.removeAttribute('src');
+      img.dataset.state = 'idle';
+      await wait(180);
+      return ensurePageImage(index, priority, false, chapterId, epoch);
+    }
+    pageEl.classList.add('image-error');
+    img.dataset.state = 'error';
+    console.warn(error);
+    return false;
+  }
+}
+
+function pinnedSources(center) {
+  const pins = new Set();
+  for (let i = center - PIN_BACK; i <= center + PIN_FWD; i++) {
+    const src = pageImagePath(i);
+    if (src) pins.add(src);
+  }
+  return pins;
+}
+
+function evictImages(center) {
+  const pins = pinnedSources(center);
+  const loaded = [...document.querySelectorAll('#stage img.art[src]')]
+    .filter(img => img.dataset.state === 'decoded');
+  let count = loaded.length;
+  const candidates = loaded
+    .filter(img => !pins.has(img.dataset.src))
+    .sort((a, b) => (imageUse.get(a.dataset.src) || 0) - (imageUse.get(b.dataset.src) || 0));
+
+  for (const img of candidates) {
+    if (count <= IMAGE_BUDGET) break;
+    imageUse.delete(img.dataset.src);
+    img.removeAttribute('src');
+    img.dataset.state = 'idle';
+    img.closest('.page')?.classList.remove('image-error');
+    count--;
+  }
+}
+
+function queuePrefetch(center) {
+  const chapter = book.chapters[ci];
+  for (let i = center + 2; i <= center + PREFETCH_AHEAD; i++) {
+    if (!chapter.pages[i]) continue;
+    const key = `${chapter.id}:${i}`;
+    if (prefetchQueued.has(key)) continue;
+    prefetchQueued.add(key);
+    prefetchQueue.push({ chapterId: chapter.id, index: i, key });
+  }
+  pumpPrefetch();
+}
+
+function pumpPrefetch() {
+  while (prefetchRunning < PREFETCH_CONCURRENCY && prefetchQueue.length) {
+    const job = prefetchQueue.shift();
+    if (job.chapterId !== book.chapters[ci]?.id) {
+      prefetchQueued.delete(job.key);
+      continue;
+    }
+    prefetchRunning++;
+    ensurePageImage(job.index, 'low', true, job.chapterId)
+      .finally(() => {
+        prefetchRunning--;
+        prefetchQueued.delete(job.key);
+        evictImages(navPi);
+        pumpPrefetch();
+      });
+  }
+}
+
+async function show(n) {
   closeLearning(false);
   const pages = $('stage').children;
-  pi = Math.max(0, Math.min(pages.length - 1, n));
+  if (!pages.length) return;
+  const target = Math.max(0, Math.min(pages.length - 1, n));
+  navPi = target;
+  const token = ++showToken;
+  await ensurePageImage(target, 'high');
+  if (token !== showToken) return;
+  pi = target;
   [...pages].forEach((el, i) => el.classList.toggle('active', i === pi));
   $('bar').style.transform = `scaleX(${(pi + 1) / pages.length})`;
-  applyImageWindow(pi);
+  for (let i = pi - PIN_BACK; i <= pi + PIN_FWD; i++) {
+    if (i !== pi && pages[i]) ensurePageImage(i, 'low');
+  }
+  queuePrefetch(pi);
+  evictImages(pi);
 }
 
 function next() {
   if (activeInteraction) return;
   const ch = book.chapters[ci];
-  if (pi < ch.pages.length - 1) return show(pi + 1);
-  if (ci < book.chapters.length - 1) { ci++; pi = 0; renderChapter(); } // flow into next chapter
+  if (navPi < ch.pages.length - 1) return show(navPi + 1);
+  if (ci < book.chapters.length - 1) { ci++; pi = 0; navPi = 0; renderChapter(); } // flow into next chapter
 }
 function prev() {
   if (activeInteraction) return;
-  if (pi > 0) return show(pi - 1);
-  if (ci > 0) { ci--; renderChapter(); pi = book.chapters[ci].pages.length - 1; show(pi); }
+  if (navPi > 0) return show(navPi - 1);
+  if (ci > 0) { ci--; pi = book.chapters[ci].pages.length - 1; navPi = pi; renderChapter(); }
 }
 
 $('tapR').onclick = next;
@@ -658,6 +811,7 @@ function openInteraction(pageIndex, event) {
   const page = ch.pages[pageIndex];
   if (!page?.interaction) return;
   pi = pageIndex;
+  navPi = pageIndex;
   activeInteraction = { pageIndex, interaction: page.interaction };
   $('reader').classList.add('learning-open');
   renderHotspotMarkers();
@@ -849,13 +1003,89 @@ document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && activeInteraction) closeLearning();
 });
 
+let activateWaitingWorkerIfSafe = () => {};
+
 init();
 
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+  let swRegistration = null;
+  let waitingWorker = null;
+  let reloadForServiceWorker = false;
+
+  function readerIsHome() {
+    return !$('reader').classList.contains('on');
+  }
+
+  activateWaitingWorkerIfSafe = () => {
+    if (!waitingWorker || !readerIsHome()) return;
+    reloadForServiceWorker = true;
+    waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+  };
+
+  function watchServiceWorker(registration) {
+    if (registration.waiting) {
+      waitingWorker = registration.waiting;
+      window.qsServiceWorkerWaiting = true;
+      activateWaitingWorkerIfSafe();
+    }
+    registration.addEventListener('updatefound', () => {
+      const worker = registration.installing;
+      if (!worker) return;
+      worker.addEventListener('statechange', () => {
+        if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+          waitingWorker = worker;
+          window.qsServiceWorkerWaiting = true;
+          activateWaitingWorkerIfSafe();
+        }
+      });
+    });
+  }
+
+  window.addEventListener('load', async () => {
+    try {
+      swRegistration = await navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' });
+      watchServiceWorker(swRegistration);
+      swRegistration.update().catch(() => {});
+    } catch (error) {
+      console.warn(error);
+    }
+  });
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.qsServiceWorkerWaiting = false;
+    if (reloadForServiceWorker) window.location.reload();
   });
 }
+
+window.qsResetCache = async () => {
+  if ('serviceWorker' in navigator) {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(registrations.map(registration => registration.unregister()));
+  }
+  if ('caches' in window) {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(key => key.startsWith('qs-')).map(key => caches.delete(key)));
+  }
+  window.location.reload();
+};
+
+window.qsDebug = () => ({
+  buildId: book?.buildId,
+  chapterId: book?.chapters?.[ci]?.id,
+  page: pi,
+  targetPage: navPi,
+  loadedImages: [...document.querySelectorAll('#stage img.art')].map((img, index) => ({
+    index,
+    src: img.getAttribute('src') || '',
+    state: img.dataset.state || 'idle',
+    naturalWidth: img.naturalWidth,
+    complete: img.complete,
+  })),
+  serviceWorker: {
+    controlled: !!navigator.serviceWorker?.controller,
+    waiting: !!window.qsServiceWorkerWaiting,
+  },
+});
 </script>
 </body>
 </html>

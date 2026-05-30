@@ -1,85 +1,132 @@
 /* Service worker for Stories from the Qur'an.
  *
- * Caching is the app's real performance + offline layer (GitHub Pages can't set cache headers).
- * All precache URLs are RELATIVE so the worker works under the project subpath
- * (https://<user>.github.io/quran-stories/) and at the dev-server root alike.
- *
- * Strategy:
- *   - HTML navigations + book.json -> stale-while-revalidate (instant, self-updating on next load)
- *   - fonts / css / icons          -> cache-first (effectively immutable)
- *   - images/**                    -> cache-first, cached on view (not precached; 165MB is too big)
- *
- * Update behavior: skipWaiting + clients.claim, so a new deploy takes control immediately and
- * refreshes silently on the next navigation, without a jarring mid-read reload.
+ * The book data and page images change during generation, so the worker reads generated build
+ * metadata instead of assuming a permanent "v1" cache. HTML/book/build metadata are network-first
+ * with offline fallback. Fonts/icons and versioned image requests are cache-first.
  */
-const VERSION = "v1";
-const SHELL_CACHE = `qs-shell-${VERSION}`;
-const IMG_CACHE = `qs-img-${VERSION}`;
+const CACHE_PREFIX = "qs-";
+const META_CACHE = `${CACHE_PREFIX}meta`;
+const BUILD_URL = new URL("build.json", self.registration.scope).toString();
 
-const SHELL_ASSETS = [
+const FALLBACK_SHELL_ASSETS = [
   "./",
   "index.html",
+  "sw.js",
   "book.json",
+  "build.json",
   "manifest.json",
   "fonts/fonts.css",
   "icons/icon-192.png",
   "icons/icon-512.png",
   "icons/icon-maskable-512.png",
-  "fonts/01-J7aRnpd8CGxBHqUp.woff2",
-  "fonts/02-J7acnpd8CGxBHp2VkZY4.woff2",
-  "fonts/03-6NVf8FyLNQOQZAnv9ZwNjucMHVn85Ni7emAe9lKqZTnbB-gzTK0K1ChJdt9vIVYX9G37lvd9sPEKsxx664UJf1hLTf7W.woff2",
-  "fonts/04-6NVf8FyLNQOQZAnv9ZwNjucMHVn85Ni7emAe9lKqZTnbB-gzTK0K1ChJdt9vIVYX9G37lvd9sPEKsxx664UJf1h5Tf7W.woff2",
-  "fonts/05-6NVf8FyLNQOQZAnv9ZwNjucMHVn85Ni7emAe9lKqZTnbB-gzTK0K1ChJdt9vIVYX9G37lvd9sPEKsxx664UJf1iVSv7W.woff2",
-  "fonts/06-6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIctxujDg.woff2",
-  "fonts/07-6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIchRujDg.woff2",
-  "fonts/08-6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIcaRyjDg.woff2",
-  "fonts/09-cY9kfjOCX1hbuyalUrK439vogqC9yFZCYg7oRZaLP4obnf7fTXglsMwoT-ZA.woff2",
-  "fonts/10-cY9kfjOCX1hbuyalUrK439vogqC9yFZCYg7oRZaLP4obnf7fTXglsMwaT-ZA.woff2",
-  "fonts/11-cY9qfjOCX1hbuyalUrK49dLac06G1ZGsZBtoBCzBDXXD9JVF438weI_ADA.woff2",
-  "fonts/12-cY9qfjOCX1hbuyalUrK49dLac06G1ZGsZBtoBCzBDXXD9JVF438wSo_ADA.woff2",
-  "fonts/13-cY9qfjOCX1hbuyalUrK49dLac06G1ZGsZBtoBCzBDXXD9JVF438wpojADA.woff2",
 ];
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(SHELL_CACHE).then((cache) => cache.addAll(SHELL_ASSETS)).then(() => self.skipWaiting())
-  );
-});
+let buildMetaPromise = null;
 
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(
-        keys.filter((k) => k !== SHELL_CACHE && k !== IMG_CACHE).map((k) => caches.delete(k))
-      ))
-      .then(() => self.clients.claim())
-  );
-});
+function fallbackBuildMeta() {
+  return {
+    buildId: "fallback",
+    shellAssets: FALLBACK_SHELL_ASSETS,
+    imageAssets: [],
+  };
+}
 
-function staleWhileRevalidate(request) {
-  return caches.open(SHELL_CACHE).then((cache) =>
-    cache.match(request).then((cached) => {
-      const network = fetch(request)
-        .then((response) => {
-          if (response && response.ok) cache.put(request, response.clone());
-          return response;
-        })
-        .catch(() => cached);
-      return cached || network;
-    })
+function shellCacheName(buildId) {
+  return `${CACHE_PREFIX}shell-${buildId}`;
+}
+
+function imageCacheName(buildId) {
+  return `${CACHE_PREFIX}img-${buildId}`;
+}
+
+async function readCachedBuildMeta() {
+  const cache = await caches.open(META_CACHE);
+  const cached = await cache.match(BUILD_URL);
+  if (!cached) return null;
+  try {
+    return await cached.json();
+  } catch {
+    return null;
+  }
+}
+
+async function fetchBuildMeta() {
+  const response = await fetch(BUILD_URL, { cache: "no-store" });
+  if (!response.ok) throw new Error(`build.json ${response.status}`);
+  const cache = await caches.open(META_CACHE);
+  await cache.put(BUILD_URL, response.clone());
+  return response.json();
+}
+
+async function cleanupCachesForBuild(buildId) {
+  const keep = new Set([META_CACHE, shellCacheName(buildId), imageCacheName(buildId)]);
+  const keys = await caches.keys();
+  await Promise.all(
+    keys
+      .filter((key) => key.startsWith(CACHE_PREFIX) && !keep.has(key))
+      .map((key) => caches.delete(key))
   );
 }
 
-function cacheFirst(request, cacheName) {
-  return caches.open(cacheName).then((cache) =>
-    cache.match(request).then((cached) => {
-      if (cached) return cached;
-      return fetch(request).then((response) => {
-        if (response && response.ok) cache.put(request, response.clone());
-        return response;
+async function getBuildMeta(refresh = false) {
+  if (refresh || !buildMetaPromise) {
+    buildMetaPromise = fetchBuildMeta()
+      .catch(() => readCachedBuildMeta())
+      .then(async (meta) => {
+        const validMeta = meta && meta.buildId ? meta : fallbackBuildMeta();
+        if (refresh) cleanupCachesForBuild(validMeta.buildId).catch(() => {});
+        return validMeta;
       });
-    })
-  );
+  }
+  return buildMetaPromise;
+}
+
+async function warmShellCache(refresh = false) {
+  const meta = await getBuildMeta(refresh);
+  const cache = await caches.open(shellCacheName(meta.buildId));
+  await cache.addAll(meta.shellAssets || FALLBACK_SHELL_ASSETS);
+  return meta;
+}
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(warmShellCache(true));
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    const meta = await getBuildMeta();
+    await cleanupCachesForBuild(meta.buildId);
+  })());
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
+});
+
+async function networkFirst(request, cacheName, fallbackAsset) {
+  const cache = await caches.open(cacheName);
+  try {
+    const response = await fetch(request);
+    if (response && response.ok) await cache.put(request, response.clone());
+    return response;
+  } catch {
+    const cached = await cache.match(request);
+    if (cached) return cached;
+    if (fallbackAsset) {
+      const fallback = await cache.match(fallbackAsset);
+      if (fallback) return fallback;
+    }
+    return new Response("Offline", { status: 503, statusText: "Offline" });
+  }
+}
+
+async function cacheFirst(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+  if (cached) return cached;
+  const response = await fetch(request);
+  if (response && response.ok) await cache.put(request, response.clone());
+  return response;
 }
 
 self.addEventListener("fetch", (event) => {
@@ -89,11 +136,14 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return;
 
   const path = url.pathname;
-  if (request.mode === "navigate" || path.endsWith("/book.json")) {
-    event.respondWith(staleWhileRevalidate(request));
+  if (request.mode === "navigate") {
+    event.respondWith(getBuildMeta(true).then((meta) => networkFirst(request, shellCacheName(meta.buildId), "index.html")));
+  } else if (path.endsWith("/book.json") || path.endsWith("/build.json")) {
+    event.respondWith(getBuildMeta(true).then((meta) => networkFirst(request, shellCacheName(meta.buildId))));
   } else if (/\/images\//.test(path)) {
-    event.respondWith(cacheFirst(request, IMG_CACHE));
-  } else if (/\.(woff2|css|png|svg|json)$/.test(path)) {
-    event.respondWith(cacheFirst(request, SHELL_CACHE));
+    const requestBuildId = url.searchParams.get("v");
+    event.respondWith(getBuildMeta().then((meta) => cacheFirst(request, imageCacheName(requestBuildId || meta.buildId))));
+  } else if (/\.(woff2|css|js|png|svg|webp|json)$/.test(path)) {
+    event.respondWith(getBuildMeta().then((meta) => cacheFirst(request, shellCacheName(meta.buildId))));
   }
 });
