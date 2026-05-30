@@ -2,7 +2,7 @@
 
 ## Status
 
-Implemented locally through the validation phase. This plan supersedes incremental tuning of the current image windowing path when the target is a buttery mobile reader. The current bokeh design remains in scope as a visual surface to preserve, not as a performance target to remove.
+Implemented and deployed. This plan supersedes incremental tuning of the current image windowing path when the target is a buttery mobile reader. The current bokeh design remains in scope as a visual surface to preserve, not as a performance target to remove.
 
 ## Outcome
 
@@ -556,7 +556,7 @@ Startup should prefer cached UI first, then background freshness:
 - [x] Validate no accidental bokeh-only loading state appears on mobile.
 - [x] Validate iPad/desktop frame at `834x1194`, `1024x1366`, and `1440x900`.
 - [x] Validate console/errors are clean after cold and warm passes.
-- [ ] Validate deployed GitHub Pages `build.json` matches the committed build after push.
+- [x] Validate deployed GitHub Pages `build.json` matches the committed build after push.
 
 ## Deletion And Simplification Targets
 
@@ -635,6 +635,10 @@ The implementation is not complete until these observed results are true.
   turned to page 1, and decoded active reader art at natural width 828.
 - Console/error QA: Agent Browser console and page errors were empty after cold and warm/offline
   passes.
+- Deployment QA: GitHub Pages workflow run `26674624018` completed successfully for commit
+  `3e2a088969187f1cd94ede1850db6b4857df7784`; live
+  `https://ethanaggor.github.io/quran-stories/build.json` reports build `5ecdfde2d5a21f18` with
+  592 pages and `203326170` image-tier bytes.
 
 ## Implementation Failure Modes Log
 
