@@ -6,7 +6,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="theme-color" content="#0e0b1a" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
 <title>Stories from the Qur'an</title>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/07-6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIchRujDg.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/11-cY9qfjOCX1hbuyalUrK49dLac06G1ZGsZBtoBCzBDXXD9JVF438weI_ADA.woff2" />
 <link href="fonts/fonts.css" rel="stylesheet" />
 <style>
   :root {
@@ -18,6 +22,11 @@
     --arabic: "Amiri", serif;
     --st: env(safe-area-inset-top, 0px);
     --sb: env(safe-area-inset-bottom, 0px);
+    /* Active chapter ambient palette (set by JS on chapter open). */
+    --amb-base: #0e0b1a;
+    --c1: #e7b86a; --c2: #d98a72; --c3: #5d76b8;
+    /* A seamless 8-point-star (Rub el Hizb / khatam) lattice — gold line-work, like manuscript gilding. */
+    --girih: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23e7cd95' stroke-width='1'%3E%3Crect x='22' y='22' width='20' height='20'/%3E%3Crect x='22' y='22' width='20' height='20' transform='rotate(45 32 32)'/%3E%3Crect x='-10' y='-10' width='20' height='20'/%3E%3Crect x='-10' y='-10' width='20' height='20' transform='rotate(45 0 0)'/%3E%3Crect x='54' y='-10' width='20' height='20'/%3E%3Crect x='54' y='-10' width='20' height='20' transform='rotate(45 64 0)'/%3E%3Crect x='-10' y='54' width='20' height='20'/%3E%3Crect x='-10' y='54' width='20' height='20' transform='rotate(45 0 64)'/%3E%3Crect x='54' y='54' width='20' height='20'/%3E%3Crect x='54' y='54' width='20' height='20' transform='rotate(45 64 64)'/%3E%3C/g%3E%3C/svg%3E");
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; }
   html, body { width: 100%; min-height: 100%; background: #0e0b1a; overscroll-behavior: none; }
@@ -27,19 +36,55 @@
   }
   img { -webkit-user-drag: none; }
 
+  /* The living background: a thematically-tinted backlight wash over the deep base, real
+     out-of-focus bokeh (discrete glowing circles, built by JS as .bokeh-dot elements) that
+     float around slowly like motes in space, and a faint girih gilding (::after). Backlight and
+     dots are colored from the active chapter's three palette lights (--c1/--c2/--c3). */
+  .bokeh-field {
+    background:
+      radial-gradient(150% 110% at 28% 18%, color-mix(in srgb, var(--c1) 30%, transparent), transparent 58%),
+      radial-gradient(150% 110% at 82% 88%, color-mix(in srgb, var(--c3) 26%, transparent), transparent 58%),
+      radial-gradient(120% 90% at 60% 55%, color-mix(in srgb, var(--c2) 16%, transparent), transparent 62%),
+      var(--amb-base);
+  }
+  .bokeh-field::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1;
+    background-image: var(--girih); background-size: 116px 116px;
+    opacity: .05; mix-blend-mode: soft-light;
+  }
+  .bokeh-dot {
+    position: absolute; top: var(--y); left: var(--x); z-index: 0;
+    width: var(--s); height: var(--s); margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+    border-radius: 50%; pointer-events: none;
+    /* Out-of-focus disc: soft glowing core with a slightly brighter rim, fading to nothing. */
+    background: radial-gradient(circle at 50% 50%,
+      color-mix(in srgb, var(--dot) 60%, #fff) 0%,
+      var(--dot) 32%,
+      color-mix(in srgb, var(--dot) 88%, #fff) 58%,
+      color-mix(in srgb, var(--dot) 40%, transparent) 70%,
+      transparent 74%);
+    filter: blur(var(--b));
+    opacity: var(--o);
+    mix-blend-mode: screen;
+    animation: bokehFloat var(--dur) ease-in-out var(--delay) infinite;
+    will-change: transform;
+  }
+
   #appShell {
-    position: fixed; inset: 0; display: grid; place-items: center;
-    background: #0e0b1a; overflow: hidden;
+    position: fixed; inset: 0; display: grid; place-items: center; overflow: hidden;
   }
   #appFrame {
     position: relative; width: 100vw; height: 100dvh; overflow: hidden;
-    background: #0e0b1a;
+    background: var(--amb-base);
+  }
+  /* Ambient backdrop inside the frame — what the crossfade and safe areas reveal between pages. */
+  #ambient {
+    position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
   }
 
   @media (min-width: 700px) and (min-height: 620px) {
     #appShell {
       padding: 16px;
-      background: linear-gradient(180deg, #211a15 0%, #0f0d0c 100%);
     }
     #appFrame {
       width: min(calc(100vw - 40px), calc((100dvh - 32px) * 9 / 16), 560px);
@@ -74,7 +119,7 @@
     font-family: var(--serif); opacity: .85; text-shadow: 0 1px 4px rgba(0,0,0,.6); }
 
   /* ---------- READER ---------- */
-  #reader { position: absolute; inset: 0; display: none; background: #0e0b1a; }
+  #reader { position: absolute; inset: 0; display: none; background: transparent; }
   #reader.on { display: block; }
   .page { position: absolute; inset: 0; opacity: 0; transition: opacity .35s ease; pointer-events: none; }
   .page.active { opacity: 1; pointer-events: auto; }
@@ -141,25 +186,32 @@
   .learn-btn {
     position: absolute; right: 18px; bottom: calc(var(--sb) + 22px); z-index: 8;
     width: 48px; height: 48px; padding: 0; display: grid; place-items: center;
-    border: 1px solid rgba(255,236,194,.64); border-radius: 50%;
+    border: 1px solid rgba(255,233,176,.85); border-radius: 50%;
     background:
-      radial-gradient(circle at 34% 28%, rgba(255,255,255,.72), rgba(255,255,255,0) 30%),
-      linear-gradient(145deg, rgba(238,199,122,.94), rgba(181,113,56,.9));
-    color: #3f2a16; backdrop-filter: blur(12px);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 10px 28px rgba(34,23,15,.3);
-    transition: transform .24s cubic-bezier(.16,1,.3,1), background .24s ease, opacity .24s ease;
-    animation: sparkBreathe 4.8s ease-in-out infinite;
+      radial-gradient(circle at 50% 32%, rgba(255,247,222,.95), rgba(255,247,222,0) 42%),
+      linear-gradient(150deg, #f3dca0 0%, #d8ab5a 52%, #b3793b 100%);
+    color: #5a3c1c;
+    box-shadow:
+      inset 0 1px 0 rgba(255,250,232,.75), inset 0 -3px 8px rgba(120,76,32,.4),
+      0 8px 22px rgba(40,26,12,.42), 0 0 18px rgba(232,190,110,.42);
+    transition: transform .24s cubic-bezier(.16,1,.3,1), opacity .24s ease;
+    animation: sparkBreathe 5.6s ease-in-out infinite;
   }
-  .learn-btn::after {
-    content: ""; position: absolute; inset: -8px; border-radius: 50%;
-    border: 1px solid rgba(244,209,142,.42); opacity: 0;
-    animation: sparkRing 4.8s ease-out infinite;
+  /* Two staggered golden ripples — a slow gold "ping" that loops until the page is discovered. */
+  .learn-btn::before, .learn-btn::after {
+    content: ""; position: absolute; inset: -2px; border-radius: 50%;
+    border: 1.5px solid rgba(233,193,112,.72); pointer-events: none;
+    animation: goldRipple 3s ease-out infinite;
   }
+  .learn-btn::after { animation-delay: 1.5s; }
   .learn-btn.done {
-    background: rgba(247,243,236,.78); color: #4e3a26; border-color: rgba(78,58,38,.24);
+    background:
+      radial-gradient(circle at 50% 34%, rgba(255,247,222,.55), rgba(255,247,222,0) 46%),
+      linear-gradient(150deg, #e9cf9a 0%, #c9a566 60%, #a98a52 100%);
+    color: #5a3c1c; border-color: rgba(233,205,149,.62);
     animation: none;
   }
-  .learn-btn.done::after { display: none; }
+  .learn-btn.done::before, .learn-btn.done::after { display: none; }
   .learn-btn.learn-top { top: calc(var(--st) + 78px); bottom: auto; }
   .learn-btn:active { transform: scale(.94); }
   .learning-open .learn-btn { opacity: 0; pointer-events: none; }
@@ -261,13 +313,18 @@
   .seq-btn:disabled { opacity: .35; }
   .check-btn { justify-self: start; min-width: 132px; text-align: center; background: rgba(201,138,75,.18); }
 
+  @keyframes bokehFloat {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    50%  { transform: translate3d(var(--dx), var(--dy), 0) scale(var(--sc)); }
+    100% { transform: translate3d(0, 0, 0) scale(1); }
+  }
+  @keyframes goldRipple {
+    0%   { transform: scale(.9); opacity: .7; }
+    100% { transform: scale(1.95); opacity: 0; }
+  }
   @keyframes sparkBreathe {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-2px); }
-  }
-  @keyframes sparkRing {
-    12% { transform: scale(.82); opacity: .48; }
-    38%, 100% { transform: scale(1.28); opacity: 0; }
   }
   @keyframes markerIn {
     to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
@@ -281,7 +338,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .page, .prog > i, .learn-btn, .learn-btn::after, .hotspot-marker, .seq-btn,
+    .bokeh-dot, .bokeh-field::after,
+    .page, .prog > i, .learn-btn, .learn-btn::before, .learn-btn::after, .hotspot-marker, .seq-btn,
     .hotspot-marker::after, .learn-sheet, .choice-btn, .check-btn {
       animation: none !important;
       transition: none !important;
@@ -293,8 +351,9 @@
 </style>
 </head>
 <body>
-  <div id="appShell">
+  <div id="appShell" class="bokeh-field">
     <main id="appFrame" aria-label="Stories from the Qur'an">
+      <div id="ambient" class="bokeh-field"></div>
       <div id="home"></div>
       <div id="reader">
         <div id="stage"></div>
@@ -315,17 +374,53 @@ let book = null, ci = 0, pi = 0, activeInteraction = null;
 const interactionState = new Map();
 const $ = (id) => document.getElementById(id);
 
+function buildBokeh() {
+  // Out-of-focus bokeh: small discrete glowing discs scattered across the field that float
+  // slowly in random directions, like motes drifting in space. Each disc is colored via one of
+  // the chapter palette tokens, so it recolors automatically when applyAmbient() updates
+  // --c1/--c2/--c3 on :root.
+  const tokens = ['var(--c1)', 'var(--c2)', 'var(--c3)'];
+  document.querySelectorAll('.bokeh-field').forEach(field => {
+    if (field.querySelector('.bokeh-dot')) return;
+    const frag = document.createDocumentFragment();
+    const count = 30;
+    for (let i = 0; i < count; i++) {
+      const dot = document.createElement('span');
+      dot.className = 'bokeh-dot';
+      const size = 6 + Math.random() * 42;        // 6–48px: small near/far lights
+      const dur = 48 + Math.random() * 60;        // 48–108s: very slow drift
+      const angle = Math.random() * Math.PI * 2;
+      const reach = 24 + Math.random() * 64;      // how far it wanders
+      dot.style.setProperty('--dot', tokens[i % 3]);
+      dot.style.setProperty('--x', (Math.random() * 100).toFixed(2) + '%');
+      dot.style.setProperty('--y', (Math.random() * 100).toFixed(2) + '%');
+      dot.style.setProperty('--s', size.toFixed(0) + 'px');
+      dot.style.setProperty('--b', (1 + size / 14).toFixed(1) + 'px');
+      dot.style.setProperty('--o', (0.32 + Math.random() * 0.4).toFixed(2));
+      dot.style.setProperty('--dur', dur.toFixed(1) + 's');
+      dot.style.setProperty('--delay', '-' + (Math.random() * dur).toFixed(1) + 's');
+      dot.style.setProperty('--dx', (Math.cos(angle) * reach).toFixed(0) + 'px');
+      dot.style.setProperty('--dy', (Math.sin(angle) * reach).toFixed(0) + 'px');
+      dot.style.setProperty('--sc', (1 + Math.random() * 0.18).toFixed(2));
+      frag.appendChild(dot);
+    }
+    field.prepend(frag);
+  });
+}
+
 async function init() {
+  buildBokeh();
   book = await fetch('book.json').then(r => r.json());
   renderHome();
 }
 
 function renderHome() {
   closeLearning(false);
+  applyAmbient(null);
   $('reader').classList.remove('on');
   const cards = book.chapters.map((c, i) => `
     <button class="card" onclick="openChapter(${i})">
-      <img src="${c.cover}" alt="" loading="lazy" />
+      <img src="${c.cover}" alt="" loading="lazy" decoding="async" />
       <div class="scrim"></div>
       <div class="num">${String(i + 1).padStart(2, '0')}</div>
       <div class="ct">${c.title}</div>
@@ -348,6 +443,7 @@ function openChapter(i) {
 function renderChapter() {
   closeLearning(false);
   const ch = book.chapters[ci];
+  applyAmbient(ch);
   $('stage').innerHTML = ch.pages.map((p, i) => pageHTML(p, i)).join('');
   const total = ch.pages.length;
   const ticks = ch.pages
@@ -379,10 +475,11 @@ function isInteractionComplete(chapterId, interaction) {
 }
 
 function sparkIcon() {
+  // Rub el Hizb (۞) — two overlapping squares, the Qur'an's division mark.
   return `<svg class="learn-icon" viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M12 3l1.75 5.25L19 10l-5.25 1.75L12 17l-1.75-5.25L5 10l5.25-1.75L12 3Z"></path>
-    <path d="M19 15l.75 2.25L22 18l-2.25.75L19 21l-.75-2.25L16 18l2.25-.75L19 15Z"></path>
-    <path d="M5 4l.6 1.8 1.8.6-1.8.6L5 8.8 4.4 7 2.6 6.4l1.8-.6L5 4Z"></path>
+    <rect x="6.2" y="6.2" width="11.6" height="11.6"></rect>
+    <rect x="6.2" y="6.2" width="11.6" height="11.6" transform="rotate(45 12 12)"></rect>
+    <circle cx="12" cy="12" r="1.9"></circle>
   </svg>`;
 }
 
@@ -429,11 +526,43 @@ function pageHTML(p, i) {
       </button>`
     : '';
   return `<div class="page ${lite ? 'lite' : ''}" data-i="${i}">
-    <img class="art" src="${p.image}" alt="" />
+    <img class="art" data-src="${p.image}" alt="" decoding="async" />
     ${needScrim ? scrim : ''}
     ${body}
     <div class="hotspot-layer" data-page="${i}"></div>
     ${learning}</div>`;
+}
+
+const themeMeta = document.querySelector('meta[name="theme-color"]');
+const DEFAULT_AMBIENT = { base: '#0e0b1a', lights: ['#e7b86a', '#d98a72', '#5d76b8'] };
+function applyAmbient(chapter) {
+  const amb = (chapter && chapter.ambient) || DEFAULT_AMBIENT;
+  const lights = amb.lights && amb.lights.length === 3 ? amb.lights : DEFAULT_AMBIENT.lights;
+  const root = document.documentElement.style;
+  root.setProperty('--amb-base', amb.base);
+  root.setProperty('--c1', lights[0]);
+  root.setProperty('--c2', lights[1]);
+  root.setProperty('--c3', lights[2]);
+  if (themeMeta) themeMeta.setAttribute('content', amb.base);
+}
+
+// Only the pages near the current one keep a loaded image. Opening a chapter no longer fetches
+// every page at once (some chapters have ~190 pages); pages outside the window are unloaded to
+// bound memory, and approaching pages are prefetched so the crossfade has its image ready.
+const WIN_BACK = 1, WIN_FWD = 2, WIN_UNLOAD = 3;
+function applyImageWindow(center) {
+  const pages = $('stage').children;
+  for (let i = 0; i < pages.length; i++) {
+    const img = pages[i].querySelector('img.art');
+    if (!img) continue;
+    const d = i - center;
+    if (d >= -WIN_BACK && d <= WIN_FWD) {
+      if (!img.src && img.dataset.src) img.src = img.dataset.src;
+      img.fetchPriority = d === 0 ? 'high' : 'low';
+    } else if (Math.abs(d) > WIN_UNLOAD && img.src) {
+      img.removeAttribute('src');
+    }
+  }
 }
 
 function show(n) {
@@ -442,8 +571,7 @@ function show(n) {
   pi = Math.max(0, Math.min(pages.length - 1, n));
   [...pages].forEach((el, i) => el.classList.toggle('active', i === pi));
   $('bar').style.transform = `scaleX(${(pi + 1) / pages.length})`;
-  const ch = book.chapters[ci];
-  if (pages[pi + 1]) new Image().src = ch.pages[pi + 1].image; // preload
+  applyImageWindow(pi);
 }
 
 function next() {
@@ -721,6 +849,12 @@ document.addEventListener('keydown', event => {
 });
 
 init();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
 </script>
 </body>
 </html>

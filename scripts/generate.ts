@@ -16,6 +16,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import type { Chapter } from "../content/types";
 import { applyInteractions } from "../content/interactions";
+import { AMBIENT, DEFAULT_AMBIENT } from "../content/ambient";
 import { compile, platePath } from "../canon/index";
 import { editImage, pool } from "./img";
 
@@ -79,7 +80,8 @@ function toBookChapter(ch: Chapter) {
       return { ...rest, image: imageRel(ch.id, i) };
     })
     .filter(Boolean) as any[];
-  return { id: ch.id, title: ch.title, subtitle: ch.subtitle ?? "", cover: pages[0]?.image ?? null, pages };
+  const ambient = AMBIENT[ch.id] ?? DEFAULT_AMBIENT;
+  return { id: ch.id, title: ch.title, subtitle: ch.subtitle ?? "", ambient, cover: pages[0]?.image ?? null, pages };
 }
 
 async function buildBook(chapters: Chapter[]) {

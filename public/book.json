@@ -5,6 +5,14 @@
       "id": "who-is-allah",
       "title": "Who Is Allah?",
       "subtitle": "The one God who made everything and loves you",
+      "ambient": {
+        "base": "#0e0b1a",
+        "lights": [
+          "#e7b86a",
+          "#d98a72",
+          "#5d76b8"
+        ]
+      },
       "cover": "images/who-is-allah/00.webp",
       "pages": [
         {
@@ -732,6 +740,14 @@
       "id": "what-is-the-quran",
       "title": "What Is the Qur’an?",
       "subtitle": "Allah’s own words, sent to guide the world",
+      "ambient": {
+        "base": "#0a1420",
+        "lights": [
+          "#e9c479",
+          "#3a8f88",
+          "#c9b27a"
+        ]
+      },
       "cover": "images/what-is-the-quran/00.webp",
       "pages": [
         {
@@ -1357,6 +1373,14 @@
       "id": "prophet-muhammad",
       "title": "Prophet Muhammad ﷺ",
       "subtitle": "The life and message of the final prophet",
+      "ambient": {
+        "base": "#14101c",
+        "lights": [
+          "#e0a866",
+          "#c4715a",
+          "#6aa088"
+        ]
+      },
       "cover": "images/prophet-muhammad/00.webp",
       "pages": [
         {
@@ -2311,6 +2335,14 @@
       "id": "adam",
       "title": "Adam",
       "subtitle": "The first human, and the gift of turning back",
+      "ambient": {
+        "base": "#100c14",
+        "lights": [
+          "#d6a05f",
+          "#7faa6a",
+          "#5d76b8"
+        ]
+      },
       "cover": "images/adam/00.webp",
       "pages": [
         {
@@ -2810,6 +2842,14 @@
       "id": "noah",
       "title": "Noah",
       "subtitle": "The patient prophet and the great ark",
+      "ambient": {
+        "base": "#0c1418",
+        "lights": [
+          "#4290a0",
+          "#e0b46a",
+          "#7e93a8"
+        ]
+      },
       "cover": "images/noah/00.webp",
       "pages": [
         {
@@ -3302,6 +3342,14 @@
       "id": "abraham",
       "title": "Abraham",
       "subtitle": "The friend of Allah",
+      "ambient": {
+        "base": "#0d0a1a",
+        "lights": [
+          "#8a6fc4",
+          "#e0b46a",
+          "#6aa088"
+        ]
+      },
       "cover": "images/abraham/00.webp",
       "pages": [
         {
@@ -3849,6 +3897,14 @@
       "id": "moses",
       "title": "Moses",
       "subtitle": "The river and the sea",
+      "ambient": {
+        "base": "#08131a",
+        "lights": [
+          "#5aa07a",
+          "#34a0aa",
+          "#d9b96a"
+        ]
+      },
       "cover": "images/moses/00.webp",
       "pages": [
         {
@@ -4351,6 +4407,14 @@
       "id": "jonah",
       "title": "Jonah",
       "subtitle": "The whale and the prayer in the dark",
+      "ambient": {
+        "base": "#07111c",
+        "lights": [
+          "#2f8690",
+          "#3a6db0",
+          "#6aa07a"
+        ]
+      },
       "cover": "images/jonah/00.webp",
       "pages": [
         {
@@ -4778,6 +4842,14 @@
       "id": "mary",
       "title": "Mary",
       "subtitle": "The palm tree and the birth of Jesus",
+      "ambient": {
+        "base": "#0a1320",
+        "lights": [
+          "#3a8f88",
+          "#e9c479",
+          "#4a6db0"
+        ]
+      },
       "cover": "images/mary/00.webp",
       "pages": [
         {
@@ -5156,6 +5228,14 @@
       "id": "solomon",
       "title": "Solomon",
       "subtitle": "Speaking with the animals",
+      "ambient": {
+        "base": "#08140f",
+        "lights": [
+          "#3fa06a",
+          "#e0b84e",
+          "#3a8fb0"
+        ]
+      },
       "cover": "images/solomon/00.webp",
       "pages": [
         {
@@ -5523,6 +5603,14 @@
       "id": "why-pray",
       "title": "Why Do Muslims Pray?",
       "subtitle": "A daily talk with Allah",
+      "ambient": {
+        "base": "#0e0e1c",
+        "lights": [
+          "#e3a877",
+          "#d98a72",
+          "#5d76b8"
+        ]
+      },
       "cover": "images/why-pray/00.webp",
       "pages": [
         {
@@ -5906,6 +5994,14 @@
       "id": "hijab",
       "title": "Why Do Many Muslim Women Cover?",
       "subtitle": "A choice made with love",
+      "ambient": {
+        "base": "#14111a",
+        "lights": [
+          "#d98a98",
+          "#8aa888",
+          "#e6cf9a"
+        ]
+      },
       "cover": "images/hijab/00.webp",
       "pages": [
         {
@@ -6262,6 +6358,14 @@
       "id": "ramadan",
       "title": "The Month of Ramadan",
       "subtitle": "A month of fasting, light, and giving",
+      "ambient": {
+        "base": "#0a0f24",
+        "lights": [
+          "#ecbb5e",
+          "#d9924e",
+          "#4a5db0"
+        ]
+      },
       "cover": "images/ramadan/00.webp",
       "pages": [
         {
@@ -6645,6 +6749,14 @@
       "id": "sadaqah",
       "title": "The Joy of Giving",
       "subtitle": "Why kindness is a kind of treasure",
+      "ambient": {
+        "base": "#12100c",
+        "lights": [
+          "#e0bd6a",
+          "#88aa68",
+          "#d9a85e"
+        ]
+      },
       "cover": "images/sadaqah/00.webp",
       "pages": [
         {
@@ -6995,6 +7107,14 @@
       "id": "kindness-family",
       "title": "Kindness to Parents and Family",
       "subtitle": "How we love the people closest to us",
+      "ambient": {
+        "base": "#140e0a",
+        "lights": [
+          "#e6ad60",
+          "#c4715a",
+          "#7faa78"
+        ]
+      },
       "cover": "images/kindness-family/00.webp",
       "pages": [
         {
@@ -7326,6 +7446,14 @@
       "id": "allah-promises",
       "title": "What Allah Promises Those Who Love Him",
       "subtitle": "The end of our journey",
+      "ambient": {
+        "base": "#0e0c18",
+        "lights": [
+          "#e9c06a",
+          "#dd9a86",
+          "#6a86c4"
+        ]
+      },
       "cover": "images/allah-promises/00.webp",
       "pages": [
         {

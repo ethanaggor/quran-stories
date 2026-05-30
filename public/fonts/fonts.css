@@ -4,89 +4,89 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(01-J7aRnpd8CGxBHqUp.ttf) format('truetype');
+  src: url(01-J7aRnpd8CGxBHqUp.woff2) format('woff2');
 }
 @font-face {
   font-family: 'Amiri';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url(02-J7acnpd8CGxBHp2VkZY4.ttf) format('truetype');
+  src: url(02-J7acnpd8CGxBHp2VkZY4.woff2) format('woff2');
 }
 @font-face {
   font-family: 'Fraunces';
   font-style: italic;
   font-weight: 400;
   font-display: swap;
-  src: url(03-6NVf8FyLNQOQZAnv9ZwNjucMHVn85Ni7emAe9lKqZTnbB-gzTK0K1ChJdt9vIVYX9G37lvd9sPEKsxx664UJf1hLTf7W.ttf) format('truetype');
+  src: url(03-6NVf8FyLNQOQZAnv9ZwNjucMHVn85Ni7emAe9lKqZTnbB-gzTK0K1ChJdt9vIVYX9G37lvd9sPEKsxx664UJf1hLTf7W.woff2) format('woff2');
 }
 @font-face {
   font-family: 'Fraunces';
   font-style: italic;
   font-weight: 500;
   font-display: swap;
-  src: url(04-6NVf8FyLNQOQZAnv9ZwNjucMHVn85Ni7emAe9lKqZTnbB-gzTK0K1ChJdt9vIVYX9G37lvd9sPEKsxx664UJf1h5Tf7W.ttf) format('truetype');
+  src: url(04-6NVf8FyLNQOQZAnv9ZwNjucMHVn85Ni7emAe9lKqZTnbB-gzTK0K1ChJdt9vIVYX9G37lvd9sPEKsxx664UJf1h5Tf7W.woff2) format('woff2');
 }
 @font-face {
   font-family: 'Fraunces';
   font-style: italic;
   font-weight: 600;
   font-display: swap;
-  src: url(05-6NVf8FyLNQOQZAnv9ZwNjucMHVn85Ni7emAe9lKqZTnbB-gzTK0K1ChJdt9vIVYX9G37lvd9sPEKsxx664UJf1iVSv7W.ttf) format('truetype');
+  src: url(05-6NVf8FyLNQOQZAnv9ZwNjucMHVn85Ni7emAe9lKqZTnbB-gzTK0K1ChJdt9vIVYX9G37lvd9sPEKsxx664UJf1iVSv7W.woff2) format('woff2');
 }
 @font-face {
   font-family: 'Fraunces';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(06-6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIctxujDg.ttf) format('truetype');
+  src: url(06-6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIctxujDg.woff2) format('woff2');
 }
 @font-face {
   font-family: 'Fraunces';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url(07-6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIchRujDg.ttf) format('truetype');
+  src: url(07-6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIchRujDg.woff2) format('woff2');
 }
 @font-face {
   font-family: 'Fraunces';
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url(08-6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIcaRyjDg.ttf) format('truetype');
+  src: url(08-6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIcaRyjDg.woff2) format('woff2');
 }
 @font-face {
   font-family: 'Newsreader';
   font-style: italic;
   font-weight: 400;
   font-display: swap;
-  src: url(09-cY9kfjOCX1hbuyalUrK439vogqC9yFZCYg7oRZaLP4obnf7fTXglsMwoT-ZA.ttf) format('truetype');
+  src: url(09-cY9kfjOCX1hbuyalUrK439vogqC9yFZCYg7oRZaLP4obnf7fTXglsMwoT-ZA.woff2) format('woff2');
 }
 @font-face {
   font-family: 'Newsreader';
   font-style: italic;
   font-weight: 500;
   font-display: swap;
-  src: url(10-cY9kfjOCX1hbuyalUrK439vogqC9yFZCYg7oRZaLP4obnf7fTXglsMwaT-ZA.ttf) format('truetype');
+  src: url(10-cY9kfjOCX1hbuyalUrK439vogqC9yFZCYg7oRZaLP4obnf7fTXglsMwaT-ZA.woff2) format('woff2');
 }
 @font-face {
   font-family: 'Newsreader';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(11-cY9qfjOCX1hbuyalUrK49dLac06G1ZGsZBtoBCzBDXXD9JVF438weI_ADA.ttf) format('truetype');
+  src: url(11-cY9qfjOCX1hbuyalUrK49dLac06G1ZGsZBtoBCzBDXXD9JVF438weI_ADA.woff2) format('woff2');
 }
 @font-face {
   font-family: 'Newsreader';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url(12-cY9qfjOCX1hbuyalUrK49dLac06G1ZGsZBtoBCzBDXXD9JVF438wSo_ADA.ttf) format('truetype');
+  src: url(12-cY9qfjOCX1hbuyalUrK49dLac06G1ZGsZBtoBCzBDXXD9JVF438wSo_ADA.woff2) format('woff2');
 }
 @font-face {
   font-family: 'Newsreader';
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url(13-cY9qfjOCX1hbuyalUrK49dLac06G1ZGsZBtoBCzBDXXD9JVF438wpojADA.ttf) format('truetype');
+  src: url(13-cY9qfjOCX1hbuyalUrK49dLac06G1ZGsZBtoBCzBDXXD9JVF438wpojADA.woff2) format('woff2');
 }
