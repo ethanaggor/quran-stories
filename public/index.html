@@ -56,13 +56,13 @@
     position: absolute; top: var(--y); left: var(--x); z-index: 0;
     width: var(--s); height: var(--s); margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
     border-radius: 50%; pointer-events: none;
-    /* Out-of-focus disc: soft glowing core with a slightly brighter rim, fading to nothing. */
+    /* Out-of-focus disc: a hazy glow that fades gradually to nothing — no hard edge or rim. */
     background: radial-gradient(circle at 50% 50%,
-      color-mix(in srgb, var(--dot) 60%, #fff) 0%,
-      var(--dot) 32%,
-      color-mix(in srgb, var(--dot) 88%, #fff) 58%,
-      color-mix(in srgb, var(--dot) 40%, transparent) 70%,
-      transparent 74%);
+      color-mix(in srgb, var(--dot) 55%, #fff) 0%,
+      color-mix(in srgb, var(--dot) 85%, transparent) 30%,
+      color-mix(in srgb, var(--dot) 45%, transparent) 55%,
+      color-mix(in srgb, var(--dot) 18%, transparent) 74%,
+      transparent 88%);
     filter: blur(var(--b));
     opacity: var(--o);
     mix-blend-mode: screen;
@@ -375,19 +375,20 @@ const interactionState = new Map();
 const $ = (id) => document.getElementById(id);
 
 function buildBokeh() {
-  // Out-of-focus bokeh: small discrete glowing discs scattered across the field that float
-  // slowly in random directions, like motes drifting in space. Each disc is colored via one of
-  // the chapter palette tokens, so it recolors automatically when applyAmbient() updates
-  // --c1/--c2/--c3 on :root.
+  // Out-of-focus bokeh: many small hazy discs scattered across the field that float slowly in
+  // random directions, like motes drifting in space. Each disc is colored via one of the chapter
+  // palette tokens, so it recolors when applyAmbient() updates --c1/--c2/--c3 on :root. Positions
+  // are re-randomized on every call so each viewer change (home / opening a chapter) reshuffles
+  // the field; page turns don't call this, so a chapter's layout stays put while you read it.
   const tokens = ['var(--c1)', 'var(--c2)', 'var(--c3)'];
   document.querySelectorAll('.bokeh-field').forEach(field => {
-    if (field.querySelector('.bokeh-dot')) return;
+    field.querySelectorAll('.bokeh-dot').forEach(d => d.remove());
     const frag = document.createDocumentFragment();
-    const count = 30;
+    const count = 46;
     for (let i = 0; i < count; i++) {
       const dot = document.createElement('span');
       dot.className = 'bokeh-dot';
-      const size = 6 + Math.random() * 42;        // 6–48px: small near/far lights
+      const size = 5 + Math.random() * 40;        // 5–45px: small near/far lights
       const dur = 48 + Math.random() * 60;        // 48–108s: very slow drift
       const angle = Math.random() * Math.PI * 2;
       const reach = 24 + Math.random() * 64;      // how far it wanders
@@ -395,8 +396,8 @@ function buildBokeh() {
       dot.style.setProperty('--x', (Math.random() * 100).toFixed(2) + '%');
       dot.style.setProperty('--y', (Math.random() * 100).toFixed(2) + '%');
       dot.style.setProperty('--s', size.toFixed(0) + 'px');
-      dot.style.setProperty('--b', (1 + size / 14).toFixed(1) + 'px');
-      dot.style.setProperty('--o', (0.32 + Math.random() * 0.4).toFixed(2));
+      dot.style.setProperty('--b', (2 + size / 10).toFixed(1) + 'px');
+      dot.style.setProperty('--o', (0.24 + Math.random() * 0.34).toFixed(2));
       dot.style.setProperty('--dur', dur.toFixed(1) + 's');
       dot.style.setProperty('--delay', '-' + (Math.random() * dur).toFixed(1) + 's');
       dot.style.setProperty('--dx', (Math.cos(angle) * reach).toFixed(0) + 'px');
@@ -409,7 +410,6 @@ function buildBokeh() {
 }
 
 async function init() {
-  buildBokeh();
   book = await fetch('book.json').then(r => r.json());
   renderHome();
 }
@@ -544,6 +544,7 @@ function applyAmbient(chapter) {
   root.setProperty('--c2', lights[1]);
   root.setProperty('--c3', lights[2]);
   if (themeMeta) themeMeta.setAttribute('content', amb.base);
+  buildBokeh();
 }
 
 // Only the pages near the current one keep a loaded image. Opening a chapter no longer fetches
