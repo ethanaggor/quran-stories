@@ -6,10 +6,12 @@
   "scripts": {
     "plates": "bun --env-file=/Users/ethanaggor/sandbox/.env scripts/plates.ts",
     "gen": "bun --env-file=/Users/ethanaggor/sandbox/.env scripts/generate.ts",
+    "derive-assets": "bun scripts/derive-assets.ts",
     "validate:interactions": "bun scripts/validate-interactions.ts",
     "serve": "bun --env-file=/Users/ethanaggor/sandbox/.env scripts/serve.ts"
   },
   "dependencies": {
-    "openai": "^6.39.1"
+    "openai": "^6.39.1",
+    "sharp": "0.34.5"
   }
 }

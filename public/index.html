@@ -110,8 +110,16 @@
   }
   #home .lede { font-style: italic; color: #6c655c; font-size: 18px; margin-bottom: 26px; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .card { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 9/14;
-    background: #ddd6c9; box-shadow: 0 8px 22px rgba(40,30,20,.18); }
+  .card { position: relative; border: 0; padding: 0; border-radius: 16px; overflow: hidden; aspect-ratio: 9/14;
+    background: #ddd6c9; box-shadow: 0 8px 22px rgba(40,30,20,.18);
+    transition: transform .16s cubic-bezier(.16,1,.3,1), box-shadow .16s ease, filter .16s ease; }
+  .card:active, .card.opening { transform: scale(.975); box-shadow: 0 4px 16px rgba(40,30,20,.22); }
+  .card.opening { filter: saturate(1.06) brightness(1.02); }
+  .card.opening::after {
+    content: ""; position: absolute; inset: 0; z-index: 4;
+    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.16), rgba(255,255,255,0) 54%);
+    animation: cardOpenPulse .8s ease-in-out infinite alternate;
+  }
   .card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .card .scrim { position: absolute; inset: 0;
     background: linear-gradient(to top, rgba(0,0,0,.62), rgba(0,0,0,0) 55%); }
@@ -122,7 +130,7 @@
     font-family: var(--serif); opacity: .85; text-shadow: 0 1px 4px rgba(0,0,0,.6); }
 
   /* ---------- READER ---------- */
-  #reader { position: absolute; inset: 0; display: none; background: transparent; }
+  #reader { position: absolute; inset: 0; display: none; background: var(--amb-base); overflow: hidden; }
   #reader.on { display: block; }
   .page { position: absolute; inset: 0; opacity: 0; transition: opacity .35s ease; pointer-events: none; }
   .page.active { opacity: 1; pointer-events: auto; }
@@ -404,6 +412,10 @@
     0%, 100% { box-shadow: 0 0 0 0 rgba(201,138,75,0); }
     40% { box-shadow: 0 0 0 4px rgba(201,138,75,.28); }
   }
+  @keyframes cardOpenPulse {
+    from { opacity: .45; }
+    to { opacity: .9; }
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .bokeh-dot, .bokeh-field::after,
@@ -440,7 +452,9 @@
 
 <script>
 let book = null, ci = 0, pi = 0, navPi = 0, activeInteraction = null;
+let readerMode = { mode: 'home' };
 const interactionState = new Map();
+const perfMetrics = {};
 const $ = (id) => document.getElementById(id);
 
 function buildBokeh() {
@@ -479,19 +493,42 @@ function buildBokeh() {
 }
 
 async function init() {
-  book = await fetch('book.json', { cache: 'no-cache' }).then(r => r.json());
+  book = await fetch('book.json').then(r => r.json());
   renderHome();
+}
+
+function markMetric(name) {
+  performance.mark(name);
+}
+
+function measureMetric(name, start, end) {
+  try {
+    performance.measure(name, start, end);
+    const entries = performance.getEntriesByName(name);
+    perfMetrics[name] = entries[entries.length - 1]?.duration || 0;
+  } catch {}
+}
+
+function markFeedback(startMark, endMark, metricName) {
+  requestAnimationFrame(() => {
+    markMetric(endMark);
+    measureMetric(metricName, startMark, endMark);
+  });
+}
+
+function nextPaint() {
+  return new Promise(resolve => requestAnimationFrame(resolve));
 }
 
 function renderHome() {
   resetImagePipeline();
   closeLearning(false);
-  applyAmbient(null);
-  $('reader').classList.remove('on');
+  readerMode = { mode: 'home' };
   $('stage').innerHTML = '';
+  $('reader').classList.remove('on');
   const cards = book.chapters.map((c, i) => `
-    <button class="card" onclick="openChapter(${i})">
-      <img src="${c.cover}" alt="" loading="lazy" decoding="async" />
+    <button class="card" onclick="openChapter(${i}, event)" data-chapter="${esc(c.id)}">
+      <img src="${c.coverAssets.thumb.src}" alt="" loading="lazy" decoding="async" width="${c.coverAssets.thumb.width}" height="${c.coverAssets.thumb.height}" />
       <div class="scrim"></div>
       <div class="num">${String(i + 1).padStart(2, '0')}</div>
       <div class="ct">${c.title}</div>
@@ -501,29 +538,56 @@ function renderHome() {
     <div class="lede">An illustrated journey through the Qur'an</div>
     <div class="grid">${cards}</div>`;
   $('home').style.display = 'block';
-  activateWaitingWorkerIfSafe();
+  requestAnimationFrame(() => {
+    applyAmbient(null);
+    activateWaitingWorkerIfSafe();
+  });
 }
 
-function openChapter(i) {
+async function openChapter(i, event) {
+  markMetric('qs:storyTap');
+  const card = event?.currentTarget;
+  if (card) card.classList.add('opening');
+  markFeedback('qs:storyTap', 'qs:storyFeedbackVisible', 'storyTapToFeedback');
+  await nextPaint();
   closeLearning(false);
   ci = i; pi = 0; navPi = 0;
+  readerMode = { mode: 'openingChapter', chapterIndex: i, targetPage: 0 };
+  const epoch = ++imageEpoch;
+  applyAmbient(book.chapters[ci]);
+  buildProgress();
+  renderSlots();
+  const ready = await loadPageAsset(ci, 0, 'P0', epoch);
+  if (!ready || epoch !== imageEpoch || readerMode.mode !== 'openingChapter') return;
   $('home').style.display = 'none';
   $('reader').classList.add('on');
-  renderChapter();
+  readerMode = { mode: 'reading', chapterIndex: ci, pageIndex: pi };
+  renderSlots();
+  queueWarmup(ci, pi);
 }
 
 function renderChapter() {
-  resetImagePipeline();
   closeLearning(false);
+  applyAmbient(book.chapters[ci]);
+  buildProgress();
+  renderSlots();
+  queueWarmup(ci, pi);
+}
+
+function buildProgress() {
   const ch = book.chapters[ci];
-  applyAmbient(ch);
-  $('stage').innerHTML = ch.pages.map((p, i) => pageHTML(p, i)).join('');
   const total = ch.pages.length;
   const ticks = ch.pages
     .map((p, i) => (p.type === 'section' && i > 0 ? `<span class="tick" style="left:${(i / total) * 100}%"></span>` : ''))
     .join('');
   $('prog').innerHTML = `<i id="bar"></i>${ticks}`;
-  show(pi);
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = book.chapters[ci].pages.length;
+  const bar = $('bar');
+  if (bar) bar.style.transform = `scaleX(${(pi + 1) / total})`;
 }
 
 function esc(s) {
@@ -605,7 +669,7 @@ function pageHTML(p, i) {
       </button>`
     : '';
   return `<div class="page ${lite ? 'lite' : ''}" data-i="${i}">
-    <img class="art" data-src="${p.image}" alt="" decoding="async" />
+    <img class="art" src="${p.assets.thumb.src}" data-thumb="${p.assets.thumb.src}" data-src="${readerAssetForPage(p).src}" alt="" decoding="async" />
     ${needScrim ? scrim : ''}
     ${body}
     <div class="hotspot-layer" data-page="${i}"></div>
@@ -626,29 +690,36 @@ function applyAmbient(chapter) {
   buildBokeh();
 }
 
-const PIN_BACK = 1;
-const PIN_FWD = 1;
-const PREFETCH_AHEAD = 4;
-const PREFETCH_CONCURRENCY = 2;
-const IMAGE_BUDGET = 12;
+const PRIORITIES = { P0: 0, P1: 1, P2: 2, P3: 3, P4: 4 };
+const MAX_FETCHES = matchMedia('(max-width: 699px)').matches ? 2 : 3;
+const MAX_DECODES = matchMedia('(max-width: 699px)').matches ? 1 : 2;
 const IMAGE_TIMEOUT_MS = 12000;
-let showToken = 0;
+const DECODE_BUDGET = 12;
 let imageEpoch = 0;
-let prefetchRunning = 0;
-let prefetchQueue = [];
-const prefetchQueued = new Set();
-const imageUse = new Map();
+let schedulerEpoch = 0;
+let activeFetches = 0;
+let activeDecodes = 0;
+const assetQueue = [];
+const assetRecords = new Map();
+const decodedUse = new Map();
 
 function resetImagePipeline() {
-  showToken++;
   imageEpoch++;
-  prefetchQueue = [];
-  prefetchQueued.clear();
-  imageUse.clear();
+  schedulerEpoch++;
+  assetQueue.length = 0;
+  activeFetches = 0;
+  activeDecodes = 0;
 }
 
-function pageImagePath(index) {
-  return book?.chapters?.[ci]?.pages?.[index]?.image || '';
+function readerAssetForPage(page) {
+  const frameWidth = $('appFrame')?.getBoundingClientRect().width || window.innerWidth;
+  return (window.innerWidth < 700 || frameWidth < 520) ? page.assets.readerMobile : page.assets.readerDesktop;
+}
+
+function assetFor(chapterIndex, pageIndex, tier = 'reader') {
+  const page = book.chapters[chapterIndex]?.pages[pageIndex];
+  if (!page) return null;
+  return tier === 'thumb' ? page.assets.thumb : readerAssetForPage(page);
 }
 
 function wait(ms) {
@@ -662,160 +733,211 @@ function imageLoadEvent(img) {
       img.removeEventListener('error', onError);
     };
     const onLoad = () => { cleanup(); resolve(); };
-    const onError = () => { cleanup(); reject(new Error(`Image failed: ${img.dataset.src || img.currentSrc}`)); };
+    const onError = () => { cleanup(); reject(new Error(`Image failed: ${img.currentSrc || img.src}`)); };
     img.addEventListener('load', onLoad, { once: true });
     img.addEventListener('error', onError, { once: true });
   });
 }
 
-async function decodeImage(img) {
-  const loaded = img.complete && img.naturalWidth > 0;
-  if (!loaded) await imageLoadEvent(img);
-  if (img.decode) await img.decode();
-  if (!img.naturalWidth) throw new Error(`Image decoded with no width: ${img.dataset.src || img.currentSrc}`);
-}
-
-async function decodeWithTimeout(img) {
+async function loadAndDecode(src) {
+  const img = new Image();
+  img.decoding = 'async';
+  img.src = src;
   let timeoutId;
+  let fetchStarted = false;
+  let decodeStarted = false;
   const timeout = new Promise((_, reject) => {
-    timeoutId = setTimeout(() => reject(new Error(`Image timed out: ${img.dataset.src || img.currentSrc}`)), IMAGE_TIMEOUT_MS);
+    timeoutId = setTimeout(() => reject(new Error(`Image timed out: ${src}`)), IMAGE_TIMEOUT_MS);
   });
   try {
-    await Promise.race([decodeImage(img), timeout]);
+    activeFetches++;
+    fetchStarted = true;
+    await Promise.race([imageLoadEvent(img), timeout]);
+    activeFetches--;
+    fetchStarted = false;
+    while (activeDecodes >= MAX_DECODES) await wait(16);
+    activeDecodes++;
+    decodeStarted = true;
+    if (img.decode) await Promise.race([img.decode(), timeout]);
+    if (!img.naturalWidth) throw new Error(`Image decoded with no width: ${src}`);
+    return img;
   } finally {
     clearTimeout(timeoutId);
+    if (fetchStarted) activeFetches--;
+    if (decodeStarted) activeDecodes--;
+    activeFetches = Math.max(0, activeFetches);
+    activeDecodes = Math.max(0, activeDecodes);
   }
 }
 
-function readerIsShowing() {
-  return $('reader').classList.contains('on');
-}
-
-async function ensurePageImage(index, priority = 'low', retry = true, chapterId = book.chapters[ci].id, epoch = imageEpoch) {
-  if (epoch !== imageEpoch || chapterId !== book.chapters[ci]?.id || !readerIsShowing()) return false;
-  const pageEl = $('stage').children[index];
-  const img = pageEl?.querySelector('img.art');
-  const src = img?.dataset.src;
-  if (!img || !src) return false;
-
-  pageEl.classList.remove('image-error');
-  img.fetchPriority = priority;
-  img.dataset.state = 'loading';
-  if (img.getAttribute('src') !== src) img.src = src;
-
-  try {
-    await decodeWithTimeout(img);
-    if (epoch !== imageEpoch || chapterId !== book.chapters[ci]?.id || !readerIsShowing()) return false;
-    img.dataset.state = 'decoded';
-    imageUse.set(src, performance.now());
-    return true;
-  } catch (error) {
-    if (epoch !== imageEpoch || chapterId !== book.chapters[ci]?.id || !readerIsShowing()) return false;
-    if (retry) {
-      img.removeAttribute('src');
-      img.dataset.state = 'idle';
-      await wait(180);
-      return ensurePageImage(index, priority, false, chapterId, epoch);
-    }
-    pageEl.classList.add('image-error');
-    img.dataset.state = 'error';
-    console.warn(error);
-    return false;
+function loadPageAsset(chapterIndex, pageIndex, priority = 'P2', epoch = imageEpoch) {
+  const asset = assetFor(chapterIndex, pageIndex);
+  if (!asset) return Promise.resolve(false);
+  const key = asset.src;
+  const existing = assetRecords.get(key);
+  if (existing?.state === 'decoded') {
+    decodedUse.set(key, performance.now());
+    return Promise.resolve(true);
   }
-}
-
-function pinnedSources(center) {
-  const pins = new Set();
-  for (let i = center - PIN_BACK; i <= center + PIN_FWD; i++) {
-    const src = pageImagePath(i);
-    if (src) pins.add(src);
+  if (existing?.state === 'loading' || existing?.state === 'queued') {
+    existing.priority = PRIORITIES[priority] < existing.priority ? PRIORITIES[priority] : existing.priority;
+    assetQueue.sort((a, b) => a.priority - b.priority);
+    return existing.promise;
   }
-  return pins;
+
+  let resolveJob;
+  const record = {
+    key,
+    chapterIndex,
+    pageIndex,
+    priority: PRIORITIES[priority],
+    epoch,
+    state: 'queued',
+    promise: new Promise(resolve => { resolveJob = resolve; }),
+    resolve: resolveJob,
+  };
+  assetRecords.set(key, record);
+  assetQueue.push(record);
+  assetQueue.sort((a, b) => a.priority - b.priority);
+  pumpAssets();
+  return record.promise;
 }
 
-function evictImages(center) {
-  const pins = pinnedSources(center);
-  const loaded = [...document.querySelectorAll('#stage img.art[src]')]
-    .filter(img => img.dataset.state === 'decoded');
-  let count = loaded.length;
-  const candidates = loaded
-    .filter(img => !pins.has(img.dataset.src))
-    .sort((a, b) => (imageUse.get(a.dataset.src) || 0) - (imageUse.get(b.dataset.src) || 0));
-
-  for (const img of candidates) {
-    if (count <= IMAGE_BUDGET) break;
-    imageUse.delete(img.dataset.src);
-    img.removeAttribute('src');
-    img.dataset.state = 'idle';
-    img.closest('.page')?.classList.remove('image-error');
-    count--;
-  }
-}
-
-function queuePrefetch(center) {
-  const chapter = book.chapters[ci];
-  for (let i = center + 2; i <= center + PREFETCH_AHEAD; i++) {
-    if (!chapter.pages[i]) continue;
-    const key = `${chapter.id}:${i}`;
-    if (prefetchQueued.has(key)) continue;
-    prefetchQueued.add(key);
-    prefetchQueue.push({ chapterId: chapter.id, index: i, key });
-  }
-  pumpPrefetch();
-}
-
-function pumpPrefetch() {
-  while (prefetchRunning < PREFETCH_CONCURRENCY && prefetchQueue.length) {
-    const job = prefetchQueue.shift();
-    if (job.chapterId !== book.chapters[ci]?.id) {
-      prefetchQueued.delete(job.key);
+function pumpAssets() {
+  while (activeFetches < MAX_FETCHES && assetQueue.length) {
+    const job = assetQueue.shift();
+    if (!job || job.epoch !== imageEpoch) {
+      job?.resolve(false);
       continue;
     }
-    prefetchRunning++;
-    ensurePageImage(job.index, 'low', true, job.chapterId)
-      .finally(() => {
-        prefetchRunning--;
-        prefetchQueued.delete(job.key);
-        evictImages(navPi);
-        pumpPrefetch();
-      });
+    job.state = 'loading';
+    loadAndDecode(job.key)
+      .then(() => {
+        if (job.epoch !== imageEpoch) return job.resolve(false);
+        job.state = 'decoded';
+        decodedUse.set(job.key, performance.now());
+        job.resolve(true);
+        evictDecoded();
+      })
+      .catch(error => {
+        console.warn(error);
+        job.state = 'failed';
+        job.resolve(false);
+      })
+      .finally(() => pumpAssets());
   }
 }
 
-async function show(n) {
-  closeLearning(false);
-  const pages = $('stage').children;
-  if (!pages.length) return;
-  const target = Math.max(0, Math.min(pages.length - 1, n));
-  navPi = target;
-  const token = ++showToken;
-  await ensurePageImage(target, 'high');
-  if (token !== showToken) return;
-  pi = target;
-  [...pages].forEach((el, i) => el.classList.toggle('active', i === pi));
-  $('bar').style.transform = `scaleX(${(pi + 1) / pages.length})`;
-  for (let i = pi - PIN_BACK; i <= pi + PIN_FWD; i++) {
-    if (i !== pi && pages[i]) ensurePageImage(i, 'low');
+function evictDecoded() {
+  const visible = new Set([...document.querySelectorAll('#stage img.art')].map(img => img.dataset.src).filter(Boolean));
+  const decoded = [...assetRecords.values()].filter(record => record.state === 'decoded' && !visible.has(record.key));
+  decoded.sort((a, b) => (decodedUse.get(a.key) || 0) - (decodedUse.get(b.key) || 0));
+  while ([...assetRecords.values()].filter(record => record.state === 'decoded').length > DECODE_BUDGET && decoded.length) {
+    const record = decoded.shift();
+    assetRecords.delete(record.key);
+    decodedUse.delete(record.key);
   }
-  queuePrefetch(pi);
-  evictImages(pi);
 }
 
-function next() {
-  if (activeInteraction) return;
-  const ch = book.chapters[ci];
-  if (navPi < ch.pages.length - 1) return show(navPi + 1);
-  if (ci < book.chapters.length - 1) { ci++; pi = 0; navPi = 0; renderChapter(); } // flow into next chapter
+function slotWindow(chapterIndex, pageIndex) {
+  const ch = book.chapters[chapterIndex];
+  const slots = [];
+  if (pageIndex > 0) slots.push({ slot: 'prev', chapterIndex, pageIndex: pageIndex - 1 });
+  slots.push({ slot: 'current', chapterIndex, pageIndex });
+  if (pageIndex < ch.pages.length - 1) slots.push({ slot: 'next', chapterIndex, pageIndex: pageIndex + 1 });
+  else if (chapterIndex < book.chapters.length - 1) slots.push({ slot: 'next', chapterIndex: chapterIndex + 1, pageIndex: 0 });
+  if (pageIndex + 2 < ch.pages.length) slots.push({ slot: 'preload', chapterIndex, pageIndex: pageIndex + 2 });
+  return slots.slice(0, 4);
 }
-function prev() {
+
+function renderSlots() {
+  const slots = slotWindow(ci, pi);
+  $('stage').innerHTML = slots.map(({ slot, chapterIndex, pageIndex }) => {
+    const page = book.chapters[chapterIndex].pages[pageIndex];
+    return pageHTML(page, pageIndex).replace('class="page', `class="page slot-${slot}`).replace(`data-i="${pageIndex}"`, `data-i="${pageIndex}" data-slot="${slot}" data-chapter="${book.chapters[chapterIndex].id}"`);
+  }).join('');
+  for (const slot of slots) {
+    const page = book.chapters[slot.chapterIndex].pages[slot.pageIndex];
+    const src = readerAssetForPage(page).src;
+    const img = document.querySelector(`.page[data-slot="${slot.slot}"] img.art`);
+    const record = assetRecords.get(src);
+    if (img && record?.state === 'decoded') {
+      img.src = src;
+      img.dataset.state = 'decoded';
+    } else if (img) {
+      img.dataset.state = record?.state || 'idle';
+    }
+  }
+  document.querySelectorAll('.page').forEach(el => el.classList.toggle('active', el.dataset.slot === 'current'));
+  updateProgress();
+}
+
+function queueWarmup(chapterIndex, pageIndex) {
+  loadPageAsset(chapterIndex, pageIndex, 'P0');
+  const ch = book.chapters[chapterIndex];
+  if (pageIndex > 0) loadPageAsset(chapterIndex, pageIndex - 1, 'P2');
+  if (pageIndex < ch.pages.length - 1) loadPageAsset(chapterIndex, pageIndex + 1, 'P2');
+  if (pageIndex + 2 < ch.pages.length) loadPageAsset(chapterIndex, pageIndex + 2, 'P3');
+}
+
+function targetFor(delta) {
+  if (delta > 0) {
+    const ch = book.chapters[ci];
+    if (pi < ch.pages.length - 1) return { chapterIndex: ci, pageIndex: pi + 1 };
+    if (ci < book.chapters.length - 1) return { chapterIndex: ci + 1, pageIndex: 0 };
+  } else {
+    if (pi > 0) return { chapterIndex: ci, pageIndex: pi - 1 };
+    if (ci > 0) return { chapterIndex: ci - 1, pageIndex: book.chapters[ci - 1].pages.length - 1 };
+  }
+  return null;
+}
+
+async function go(delta) {
   if (activeInteraction) return;
-  if (navPi > 0) return show(navPi - 1);
-  if (ci > 0) { ci--; pi = book.chapters[ci].pages.length - 1; navPi = pi; renderChapter(); }
+  const target = targetFor(delta);
+  if (!target) return;
+  markMetric('qs:pageTurnIntent');
+  readerMode = { mode: 'turning', chapterIndex: ci, from: pi, to: target.pageIndex };
+  $('reader').classList.add('turning');
+  markFeedback('qs:pageTurnIntent', 'qs:pageTurnFeedbackVisible', 'pageTurnIntentToFeedback');
+  const epoch = imageEpoch;
+  navPi = target.pageIndex;
+  const ready = await loadPageAsset(target.chapterIndex, target.pageIndex, 'P1', epoch);
+  if (!ready || epoch !== imageEpoch) return;
+  ci = target.chapterIndex;
+  pi = target.pageIndex;
+  navPi = pi;
+  applyAmbient(book.chapters[ci]);
+  buildProgress();
+  renderSlots();
+  queueWarmup(ci, pi);
+  $('reader').classList.remove('turning');
+  readerMode = { mode: 'reading', chapterIndex: ci, pageIndex: pi };
+  markMetric('qs:pageCommit');
+  measureMetric('pageTurnIntentToCommit', 'qs:pageTurnIntent', 'qs:pageCommit');
+}
+
+function next() { return go(1); }
+function prev() { return go(-1); }
+
+function goHome() {
+  markMetric('qs:homeTap');
+  readerMode = { mode: 'home' };
+  resetImagePipeline();
+  $('home').style.display = 'block';
+  $('reader').classList.remove('on', 'turning');
+  $('stage').innerHTML = '';
+  markFeedback('qs:homeTap', 'qs:homeFeedbackVisible', 'homeTapToFeedback');
+  requestAnimationFrame(() => {
+    closeLearning(false);
+    applyAmbient(null);
+    activateWaitingWorkerIfSafe();
+  });
 }
 
 $('tapR').onclick = next;
 $('tapL').onclick = prev;
-$('back').onclick = renderHome;
+$('back').onclick = goHome;
 
 function interactionKey(interaction) {
   return `${book.chapters[ci].id}:${interaction.id}`;
@@ -1198,6 +1320,14 @@ if ('serviceWorker' in navigator) {
     window.qsServiceWorkerWaiting = false;
     if (reloadForServiceWorker) window.location.reload();
   });
+
+  navigator.serviceWorker.addEventListener('message', event => {
+    if (event.data?.type === 'QS_BUILD_META') window.qsCacheBuildId = event.data.buildId;
+    if (event.data?.type === 'QS_BUILD_AVAILABLE') {
+      window.qsServiceWorkerWaiting = true;
+      if (readerIsHome()) window.location.reload();
+    }
+  });
 }
 
 window.qsResetCache = async () => {
@@ -1213,17 +1343,32 @@ window.qsResetCache = async () => {
 };
 
 window.qsDebug = () => ({
+  mode: readerMode,
   buildId: book?.buildId,
-  chapterId: book?.chapters?.[ci]?.id,
-  page: pi,
-  targetPage: navPi,
-  loadedImages: [...document.querySelectorAll('#stage img.art')].map((img, index) => ({
-    index,
-    src: img.getAttribute('src') || '',
-    state: img.dataset.state || 'idle',
-    naturalWidth: img.naturalWidth,
-    complete: img.complete,
+  chapterIndex: readerMode.mode === 'home' ? null : ci,
+  pageIndex: readerMode.mode === 'home' ? null : pi,
+  slotCount: document.querySelectorAll('#stage .page').length,
+  activeSlots: [...document.querySelectorAll('#stage .page')].map(page => ({
+    slot: page.dataset.slot,
+    chapterId: page.dataset.chapter,
+    pageIndex: Number(page.dataset.i),
+    state: page.querySelector('img.art')?.dataset.state || 'idle',
+    naturalWidth: page.querySelector('img.art')?.naturalWidth || 0,
   })),
+  assetTier: (window.innerWidth < 700 || (($('appFrame')?.getBoundingClientRect().width || 0) < 520)) ? 'readerMobile' : 'readerDesktop',
+  scheduler: {
+    activeFetches,
+    activeDecodes,
+    queued: {
+      P0: assetQueue.filter(job => job.priority === PRIORITIES.P0).length,
+      P1: assetQueue.filter(job => job.priority === PRIORITIES.P1).length,
+      P2: assetQueue.filter(job => job.priority === PRIORITIES.P2).length,
+      P3: assetQueue.filter(job => job.priority === PRIORITIES.P3).length,
+      P4: assetQueue.filter(job => job.priority === PRIORITIES.P4).length,
+    },
+  },
+  metrics: perfMetrics,
+  cacheBuildId: window.qsCacheBuildId || null,
   serviceWorker: {
     controlled: !!navigator.serviceWorker?.controller,
     waiting: !!window.qsServiceWorkerWaiting,

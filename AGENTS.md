@@ -136,8 +136,8 @@ it. Continuity holds within a chapter and across the whole book.
   "Image 1/2/…"; the legend tells the model to match the style of Image 1 and keep each subject
   identical to its plate while composing a **new** scene/camera (not copying the plate layout).
   `input_fidelity` and `thinking` are not supported for `gpt-image-2` and are never sent.
-- **Auditability.** Each chapter writes `public/images/<id>/manifest.json` recording the exact
-  compiled prompt and reference plates used for every page — reproducible and reviewable.
+- **Auditability.** Each chapter writes `artifacts/page-manifests/<id>/manifest.json` recording
+  the exact compiled prompt and reference plates used for every page — reproducible and reviewable.
 
 ## Art Direction
 
@@ -217,18 +217,21 @@ it. Continuity holds within a chapter and across the whole book.
 2. Canon entities for the chapter exist in `canon/`; **Pass A** (`bun run plates`) generates and the
    builder visually QA's their reference plates in one house style.
 3. **Pass B** (`bun run gen <chapterId>`) compiles each page from the canon and renders it with
-   `images.edit` against the relevant plates at 2K, writing PNGs to `public/images/<id>/NN.png` and a
-   per-chapter `manifest.json`.
-4. The generator emits `public/book.json` (chapters → typed pages + image paths), stripping the
-   build-only `scene`/`cast`/`era` fields, for the reader.
-5. Reader renders home + chapters from `book.json`.
+   `images.edit` against the relevant plates at 2K, writing PNG masters to
+   `artifacts/page-masters/<id>/NN.png` and audit manifests to
+   `artifacts/page-manifests/<id>/manifest.json`.
+4. **Asset derivation** (`bun run derive-assets`) derives the deployed WebP tiers from the page
+   masters: `public/thumbs/`, `public/reader-mobile/`, and `public/reader-desktop/`.
+5. The generator emits `public/book.json` (chapters → typed pages + tiered asset paths), stripping
+   the build-only `scene`/`cast`/`era` fields, for the reader.
+6. Reader renders home + chapters from `book.json`.
 
 ## Deployment
 
 - Static site under `public/`, deployed to **GitHub Pages** (Actions workflow on push to default
   branch). Open the Pages URL in Safari → Share → Add to Home Screen for an offline app icon.
-- Serve images as optimized **WebP** for fast phone loads; keep PNG masters out of the deployed
-  path. Watch total deployed size.
+- Serve images as optimized **WebP** tiers for fast phone loads; keep PNG masters out of the
+  deployed path. Watch total deployed size.
 
 ## Repo Conventions
 
@@ -240,9 +243,11 @@ it. Continuity holds within a chapter and across the whole book.
   - `canon/` — the story bible: `types.ts`, `style.ts`, `places.ts`, `characters.ts`, `objects.ts`,
     `index.ts` (registry + resolver + `compile()`), and `refs/` (generated reference plates).
   - `scripts/` — `img.ts` (gpt-image-2 helpers), `plates.ts` (Pass A), `generate.ts` (Pass B),
-    `serve.ts`.
-  - `public/` — deployed static site (`index.html`, `book.json`, `images/<id>/NN.png` + `manifest.json`,
-    `fonts/`).
+    `derive-assets.ts`, `serve.ts`.
+  - `artifacts/` — local page masters in `page-masters/` and tracked audit manifests in
+    `page-manifests/`.
+  - `public/` — deployed static site (`index.html`, `book.json`, `build.json`, `thumbs/`,
+    `reader-mobile/`, `reader-desktop/`, `fonts/`, `icons/`).
 - Local preview: `bun run serve` binds `0.0.0.0:4173` for same-Wi-Fi iPhone testing.
 
 ## Status
