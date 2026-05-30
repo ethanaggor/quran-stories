@@ -17,6 +17,9 @@
     --ink: #2a2622;
     --paper: #f7f3ec;
     --accent: #c98a4b;
+    /* Right / wrong feedback for the discovery interactions. */
+    --ok: #3f7d4f;
+    --no: #c0492f;
     --serif: "Newsreader", Georgia, serif;
     --display: "Fraunces", Georgia, serif;
     --arabic: "Amiri", serif;
@@ -284,28 +287,72 @@
     min-height: 34px; border-radius: 8px; padding: 8px 10px; border: 1px solid rgba(42,38,34,.16);
     background: rgba(255,255,255,.34); font-family: var(--display); font-size: 13px;
   }
-  .hint-pill.found { background: rgba(201,138,75,.18); border-color: rgba(201,138,75,.34); }
+  .hint-pill.found { background: rgba(201,138,75,.22); border-color: rgba(201,138,75,.4); }
+  .hint-pill.pop { animation: pop .42s cubic-bezier(.2,.9,.3,1.25); }
+  .learn-progress { font-family: var(--display); font-size: 12px; letter-spacing: .12em;
+    text-transform: uppercase; color: rgba(42,38,34,.6); }
   .reveal-box, .feedback-box, .complete-box {
     border-radius: 8px; padding: 11px 12px; background: rgba(255,255,255,.42);
     border: 1px solid rgba(42,38,34,.12); font-size: 17px; line-height: 1.35;
   }
   .reveal-box strong, .feedback-box strong { font-family: var(--display); font-weight: 600; }
   .complete-box { background: rgba(201,138,75,.17); border-color: rgba(201,138,75,.28); }
+  .complete-box.glow { animation: cascadeIn .34s ease both, pulseGlow 1.1s ease .12s; }
+
+  /* Right / wrong verdict shown after a choice or sequence check. */
+  .verdict {
+    display: flex; gap: 9px; align-items: flex-start;
+    border-radius: 8px; padding: 11px 12px; border: 1px solid; font-size: 17px; line-height: 1.35;
+  }
+  .verdict .v-icon { width: 22px; height: 22px; flex: 0 0 auto; }
+  .choice-mark .learn-icon, .seq-mark .learn-icon, .v-icon .learn-icon { width: 100%; height: 100%; }
+  .verdict .v-text b { font-family: var(--display); font-weight: 600; }
+  .verdict.ok { background: color-mix(in srgb, var(--ok) 15%, #fff);
+    border-color: color-mix(in srgb, var(--ok) 50%, transparent); color: #234a2c; }
+  .verdict.ok .v-icon { color: var(--ok); }
+  .verdict.no { background: color-mix(in srgb, var(--no) 13%, #fff);
+    border-color: color-mix(in srgb, var(--no) 50%, transparent); color: #6e2618; }
+  .verdict.no .v-icon { color: var(--no); }
+  .verdict.animate { animation: cascadeIn .3s ease both; }
+
   .choice-grid { display: grid; gap: 8px; }
   .choice-btn, .check-btn {
     min-height: 46px; border-radius: 8px; border: 1px solid rgba(42,38,34,.18);
     background: rgba(255,255,255,.38); color: #2a2622; padding: 10px 12px;
     text-align: left; font-family: var(--display); font-size: 17px; line-height: 1.15;
-    transition: transform .18s cubic-bezier(.16,1,.3,1), background .18s ease, border-color .18s ease;
+    transition: transform .18s cubic-bezier(.16,1,.3,1), background .18s ease, border-color .18s ease, opacity .2s ease;
   }
-  .choice-btn.correct { background: rgba(125,149,92,.24); border-color: rgba(95,121,67,.36); }
-  .choice-btn.try { background: rgba(188,111,75,.16); border-color: rgba(188,111,75,.28); }
+  .choice-btn { display: flex; align-items: center; gap: 10px; }
+  .choice-btn .choice-label { flex: 1; }
+  .choice-btn .choice-mark { width: 22px; height: 22px; flex: 0 0 auto; display: grid; place-items: center; opacity: 0; }
+  .choice-btn.correct {
+    background: color-mix(in srgb, var(--ok) 20%, #fff); border-color: var(--ok); color: #234a2c;
+    box-shadow: inset 3px 0 0 var(--ok);
+  }
+  .choice-btn.wrong {
+    background: color-mix(in srgb, var(--no) 15%, #fff); border-color: var(--no); color: #6e2618;
+    box-shadow: inset 3px 0 0 var(--no);
+  }
+  .choice-btn.correct .choice-mark { color: var(--ok); opacity: 1; }
+  .choice-btn.wrong .choice-mark { color: var(--no); opacity: 1; }
+  .choice-btn.correct.animate { animation: pop .4s cubic-bezier(.2,.9,.3,1.25); }
+  .choice-btn.wrong.animate { animation: shake .42s ease; }
+  .choice-btn.locked { pointer-events: none; }
+  .choice-btn.dim { opacity: .45; }
+
   .sequence-list { display: grid; gap: 8px; }
   .sequence-item {
-    display: grid; grid-template-columns: 1fr 82px; gap: 8px; align-items: center;
+    display: grid; grid-template-columns: 20px 1fr 82px; gap: 8px; align-items: center;
     border-radius: 8px; border: 1px solid rgba(42,38,34,.14);
     background: rgba(255,255,255,.38); padding: 8px 8px 8px 12px;
   }
+  .sequence-item .seq-mark { width: 20px; height: 20px; display: grid; place-items: center; opacity: 0; }
+  .sequence-item.ok { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 16%, #fff); }
+  .sequence-item.no { border-color: var(--no); background: color-mix(in srgb, var(--no) 12%, #fff); }
+  .sequence-item.ok .seq-mark { color: var(--ok); opacity: 1; }
+  .sequence-item.no .seq-mark { color: var(--no); opacity: 1; }
+  .sequence-item.no.animate { animation: shake .42s ease; }
+  .sequence-item.ok.cascade { animation: cascadeIn .34s ease both; animation-delay: calc(var(--i, 0) * 70ms); }
   .sequence-label { font-family: var(--display); font-size: 16px; line-height: 1.16; }
   .seq-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .seq-btn {
@@ -338,11 +385,31 @@
   @keyframes sheetIn {
     to { transform: translateY(0); opacity: 1; }
   }
+  @keyframes pop {
+    0% { transform: scale(1); }
+    45% { transform: scale(1.07); }
+    100% { transform: scale(1); }
+  }
+  @keyframes shake {
+    10%, 90% { transform: translateX(-2px); }
+    20%, 80% { transform: translateX(4px); }
+    30%, 50%, 70% { transform: translateX(-7px); }
+    40%, 60% { transform: translateX(7px); }
+  }
+  @keyframes cascadeIn {
+    from { opacity: 0; transform: translateY(7px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201,138,75,0); }
+    40% { box-shadow: 0 0 0 4px rgba(201,138,75,.28); }
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .bokeh-dot, .bokeh-field::after,
     .page, .prog > i, .learn-btn, .learn-btn::before, .learn-btn::after, .hotspot-marker, .seq-btn,
-    .hotspot-marker::after, .learn-sheet, .choice-btn, .check-btn {
+    .hotspot-marker::after, .learn-sheet, .choice-btn, .check-btn,
+    .hint-pill, .verdict, .complete-box, .sequence-item {
       animation: none !important;
       transition: none !important;
     }
@@ -492,6 +559,12 @@ function sparkIcon() {
 function checkIcon() {
   return `<svg class="learn-icon" viewBox="0 0 24 24" aria-hidden="true">
     <path d="M6.5 12.5l3.2 3.2 7.8-8.4"></path>
+  </svg>`;
+}
+
+function crossIcon() {
+  return `<svg class="learn-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M7 7l10 10M17 7L7 17"></path>
   </svg>`;
 }
 
@@ -775,6 +848,10 @@ function getState(interaction) {
       feedback: '',
       sequenceOrder: interaction.kind === 'sequence' ? initialSequenceOrder(interaction) : [],
       sequenceMessage: '',
+      checked: false,
+      // Transient "play this animation once" flags, consumed during render.
+      animateOption: null,
+      animateMarker: null,
     });
   }
   return interactionState.get(key);
@@ -873,46 +950,84 @@ function interactionBody(interaction, state) {
 
 function hotspotBody(interaction, state) {
   const active = interaction.markers.find(marker => marker.id === state.activeMarker);
-  const complete = state.found.length === interaction.markers.length;
+  const total = interaction.markers.length;
+  const complete = state.found.length === total;
+  const justFound = state.animateMarker;
+  state.animateMarker = null;
+  const pills = interaction.markers.map(marker => {
+    const found = state.found.includes(marker.id);
+    const pop = found && marker.id === justFound ? ' pop' : '';
+    return `<span class="hint-pill ${found ? 'found' : ''}${pop}">${esc(marker.label)}</span>`;
+  }).join('');
   return `
-    <div class="hint-row">
-      ${interaction.markers.map(marker => `<span class="hint-pill ${state.found.includes(marker.id) ? 'found' : ''}">${esc(marker.label)}</span>`).join('')}
-    </div>
+    <div class="learn-progress">${state.found.length} of ${total} found</div>
+    <div class="hint-row">${pills}</div>
     ${active ? `<div class="reveal-box"><strong>${esc(active.label)}.</strong> ${esc(active.reveal)}</div>` : '<div class="reveal-box">Tap the glowing markers on the picture.</div>'}
-    ${complete ? `<div class="complete-box">${esc(interaction.completeText || 'You found them all.')}</div>` : ''}`;
+    ${complete ? `<div class="complete-box glow">${esc(interaction.completeText || 'You found them all.')}</div>` : ''}`;
 }
 
 function choiceBody(interaction, state) {
+  const solved = isInteractionComplete(book.chapters[ci].id, interaction);
+  const justPicked = state.animateOption;
+  state.animateOption = null;
+  const selectedOpt = interaction.options.find(o => o.id === state.selectedOption);
+  const buttons = interaction.options.map(option => {
+    const selected = state.selectedOption === option.id;
+    const classes = ['choice-btn'];
+    let mark = '';
+    if (option.correct && (selected || solved)) { classes.push('correct'); mark = checkIcon(); }
+    else if (selected && !option.correct && !solved) { classes.push('wrong'); mark = crossIcon(); }
+    if (selected && option.id === justPicked) classes.push('animate');
+    if (solved) { classes.push('locked'); if (!option.correct) classes.push('dim'); }
+    return `<button class="${classes.join(' ')}" type="button" data-option="${esc(option.id)}"${solved ? ' disabled' : ''}>
+      <span class="choice-label">${esc(option.label)}</span>
+      <span class="choice-mark">${mark}</span>
+    </button>`;
+  }).join('');
+  const verdict = selectedOpt
+    ? `<div class="verdict ${selectedOpt.correct ? 'ok' : 'no'} animate" aria-live="polite">
+        <span class="v-icon">${selectedOpt.correct ? checkIcon() : crossIcon()}</span>
+        <span class="v-text"><b>${selectedOpt.correct ? 'Correct.' : 'Not quite.'}</b> ${esc(selectedOpt.feedback)}</span>
+      </div>`
+    : '';
   return `
-    <div class="choice-grid">
-      ${interaction.options.map(option => {
-        const selected = state.selectedOption === option.id;
-        const klass = selected ? (option.correct ? 'correct' : 'try') : '';
-        return `<button class="choice-btn ${klass}" type="button" data-option="${esc(option.id)}">${esc(option.label)}</button>`;
-      }).join('')}
-    </div>
-    ${state.feedback ? `<div class="feedback-box">${esc(state.feedback)}</div>` : ''}
-    ${isInteractionComplete(book.chapters[ci].id, interaction) ? `<div class="complete-box">${esc(interaction.completeText || 'Nicely done.')}</div>` : ''}`;
+    <div class="choice-grid">${buttons}</div>
+    ${verdict}
+    ${solved ? `<div class="complete-box glow">${esc(interaction.completeText || 'Nicely done.')}</div>` : ''}`;
 }
 
 function sequenceBody(interaction, state) {
   const itemsById = Object.fromEntries(interaction.items.map(item => [item.id, item]));
-  const correct = state.sequenceOrder.every((id, index) => id === interaction.correctOrder[index]);
+  const total = state.sequenceOrder.length;
+  const positions = state.sequenceOrder.map((id, index) => id === interaction.correctOrder[index]);
+  const correct = positions.every(Boolean);
+  const inPlace = positions.filter(Boolean).length;
+  const solved = isInteractionComplete(book.chapters[ci].id, interaction);
+  const checked = state.checked;
+  const rows = state.sequenceOrder.map((id, index) => {
+    const item = itemsById[id];
+    const ok = positions[index];
+    const stateCls = checked ? (ok ? 'ok' : 'no') : '';
+    const animCls = checked ? (correct ? 'cascade' : (ok ? '' : 'animate')) : '';
+    const mark = checked ? (ok ? checkIcon() : crossIcon()) : '';
+    return `<div class="sequence-item ${stateCls} ${animCls}" data-item="${esc(id)}" style="--i:${index}">
+      <span class="seq-mark">${mark}</span>
+      <div class="sequence-label">${esc(item.label)}</div>
+      <div class="seq-controls">
+        <button class="seq-btn" type="button" data-seq="${index}" data-dir="-1" ${index === 0 || solved ? 'disabled' : ''}>Up</button>
+        <button class="seq-btn" type="button" data-seq="${index}" data-dir="1" ${index === total - 1 || solved ? 'disabled' : ''}>Down</button>
+      </div>
+    </div>`;
+  }).join('');
+  const header = checked ? `<div class="learn-progress">${inPlace} of ${total} in place</div>` : '';
+  const result = !state.sequenceMessage ? '' : (correct
+    ? `<div class="complete-box glow">${esc(state.sequenceMessage)}</div>`
+    : `<div class="verdict no animate" aria-live="polite"><span class="v-icon">${crossIcon()}</span><span class="v-text"><b>Not yet.</b> ${esc(state.sequenceMessage)}</span></div>`);
   return `
-    <div class="sequence-list">
-      ${state.sequenceOrder.map((id, index) => {
-        const item = itemsById[id];
-        return `<div class="sequence-item">
-          <div class="sequence-label">${esc(item.label)}</div>
-          <div class="seq-controls">
-            <button class="seq-btn" type="button" data-seq="${index}" data-dir="-1" ${index === 0 ? 'disabled' : ''}>Up</button>
-            <button class="seq-btn" type="button" data-seq="${index}" data-dir="1" ${index === state.sequenceOrder.length - 1 ? 'disabled' : ''}>Down</button>
-          </div>
-        </div>`;
-      }).join('')}
-    </div>
-    <button class="check-btn" type="button" id="checkSequence">Check order</button>
-    ${state.sequenceMessage ? `<div class="${correct ? 'complete-box' : 'feedback-box'}">${esc(state.sequenceMessage)}</div>` : ''}`;
+    ${header}
+    <div class="sequence-list">${rows}</div>
+    ${solved ? '' : '<button class="check-btn" type="button" id="checkSequence">Check order</button>'}
+    ${result}`;
 }
 
 function bindInteractionControls(interaction) {
@@ -942,6 +1057,7 @@ function tapMarker(markerId) {
   const state = getState(interaction);
   if (!state.found.includes(markerId)) state.found.push(markerId);
   state.activeMarker = markerId;
+  state.animateMarker = markerId;
   if (state.found.length === interaction.markers.length) markComplete(interaction);
   renderHotspotMarkers();
   renderLearningSheet();
@@ -951,25 +1067,51 @@ function chooseOption(optionId) {
   if (!activeInteraction) return;
   const { interaction } = activeInteraction;
   const state = getState(interaction);
+  if (isInteractionComplete(book.chapters[ci].id, interaction)) return; // locked once solved
   const option = interaction.options.find(item => item.id === optionId);
   if (!option) return;
   state.selectedOption = option.id;
   state.feedback = option.feedback;
+  state.animateOption = option.id;
   if (option.correct) markComplete(interaction);
   renderLearningSheet();
+}
+
+// Animate sequence rows sliding from their previous positions (FLIP) after a re-render.
+function flipSequence(firstRects) {
+  const list = $('learnSheet').querySelector('.sequence-list');
+  if (!list) return;
+  list.querySelectorAll('.sequence-item').forEach(el => {
+    const first = firstRects[el.dataset.item];
+    if (!first) return;
+    const dy = first.top - el.getBoundingClientRect().top;
+    if (!dy) return;
+    el.style.transition = 'none';
+    el.style.transform = `translateY(${dy}px)`;
+    requestAnimationFrame(() => {
+      el.style.transition = 'transform .28s cubic-bezier(.2,.8,.3,1)';
+      el.style.transform = '';
+    });
+  });
 }
 
 function moveSequence(index, dir) {
   if (!activeInteraction) return;
   const { interaction } = activeInteraction;
   const state = getState(interaction);
+  if (isInteractionComplete(book.chapters[ci].id, interaction)) return;
   const target = index + dir;
   if (target < 0 || target >= state.sequenceOrder.length) return;
+  const list = $('learnSheet').querySelector('.sequence-list');
+  const firstRects = {};
+  if (list) list.querySelectorAll('.sequence-item').forEach(el => { firstRects[el.dataset.item] = el.getBoundingClientRect(); });
   const nextOrder = state.sequenceOrder.slice();
   [nextOrder[index], nextOrder[target]] = [nextOrder[target], nextOrder[index]];
   state.sequenceOrder = nextOrder;
   state.sequenceMessage = '';
+  state.checked = false;
   renderLearningSheet();
+  flipSequence(firstRects);
 }
 
 function checkSequence() {
@@ -977,11 +1119,12 @@ function checkSequence() {
   const { interaction } = activeInteraction;
   const state = getState(interaction);
   const correct = state.sequenceOrder.every((id, index) => id === interaction.correctOrder[index]);
+  state.checked = true;
   if (correct) {
     state.sequenceMessage = interaction.completeText || 'That is the story order.';
     markComplete(interaction);
   } else {
-    state.sequenceMessage = 'Try the order the story happened in.';
+    state.sequenceMessage = 'Move the highlighted steps into the order the story happened in.';
   }
   renderLearningSheet();
   requestAnimationFrame(() => { $('learnSheet').scrollTop = $('learnSheet').scrollHeight; });
