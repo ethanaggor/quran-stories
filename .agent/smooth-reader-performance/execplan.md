@@ -34,6 +34,293 @@ The Quran Stories PWA should feel immediate on iPhone:
 
 ## Target Architecture
 
+### Implementation Contract
+
+This section is the controlling contract for implementation. If any later checklist item is less specific, use this section.
+
+### Files And Entry Points
+
+Expected source edits:
+
+- `.gitignore`: ignore local generated PNG masters under `artifacts/page-masters/`; keep audit manifests trackable.
+- `package.json` and `bun.lock`: only if adding a verified latest stable/LTS image-processing dependency or script alias.
+- `scripts/generate.ts`: stop treating `public/images/` as the reader output; write source masters and audit manifests to the new non-deployed locations; emit the new `book.json` and `build.json` contracts.
+- `scripts/derive-assets.ts`: new deterministic tier derivation script.
+- `public/index.html`: reader frame layout, virtualized page slots, input-first transitions, asset scheduler, performance marks, debug helpers, and use of tiered assets.
+- `public/sw.js`: cache bucket cutover and cached-UI-first startup behavior.
+
+Expected generated/deployed outputs:
+
+- `public/book.json`: generated from the tiered asset contract below.
+- `public/build.json`: generated with shell assets and asset buckets.
+- `public/thumbs/**.webp`: generated home and placeholder images.
+- `public/reader-mobile/**.webp`: generated mobile reader images.
+- `public/reader-desktop/**.webp`: generated iPad/desktop reader images.
+
+Expected non-deployed outputs:
+
+- `artifacts/page-masters/<chapter>/<NN>.png`: local source masters, ignored by git.
+- `artifacts/page-manifests/<chapter>/manifest.json`: audit manifests with compiled prompts and refs, tracked.
+
+Expected deletion:
+
+- `public/images/` is a legacy deploy path. After the new tiers and manifests are generated and validated, remove `public/images/` from the working tree with `trash`. Do not leave it as a compatibility tier.
+
+### Runtime Data Shape
+
+`book.json` must use this shape. Do not emit `page.image` or a top-level chapter `cover` string after the cutover.
+
+```ts
+type BookAsset = {
+  src: string;
+  width: number;
+  height: number;
+  bytes: number;
+  mime: "image/webp";
+};
+
+type PageAssets = {
+  thumb: BookAsset;
+  readerMobile: BookAsset;
+  readerDesktop: BookAsset;
+};
+
+type BookPage = {
+  type: PageType;
+  text?: string;
+  pos?: TextPos;
+  theme?: Theme;
+  section?: { kicker?: string; title: string };
+  arabic?: { word: string; translit: string; meaning: string };
+  quote?: { translation: string; source: string; arabic?: string };
+  interaction?: PageInteraction;
+  assets: PageAssets;
+};
+
+type BookChapter = {
+  id: string;
+  title: string;
+  subtitle: string;
+  ambient: AmbientConfig;
+  coverAssets: PageAssets;
+  pages: BookPage[];
+};
+
+type BookJson = {
+  title: string;
+  buildId: string;
+  assetVersion: 3;
+  chapters: BookChapter[];
+};
+```
+
+Example page entry:
+
+```json
+{
+  "type": "cover",
+  "text": "Who Is Allah?",
+  "assets": {
+    "thumb": {
+      "src": "thumbs/who-is-allah/00.webp?v=<buildId>",
+      "width": 360,
+      "height": 640,
+      "bytes": 42136,
+      "mime": "image/webp"
+    },
+    "readerMobile": {
+      "src": "reader-mobile/who-is-allah/00.webp?v=<buildId>",
+      "width": 828,
+      "height": 1472,
+      "bytes": 168442,
+      "mime": "image/webp"
+    },
+    "readerDesktop": {
+      "src": "reader-desktop/who-is-allah/00.webp?v=<buildId>",
+      "width": 1152,
+      "height": 2048,
+      "bytes": 382901,
+      "mime": "image/webp"
+    }
+  }
+}
+```
+
+`build.json` must use this shape:
+
+```ts
+type BuildJson = {
+  appVersion: 3;
+  buildId: string;
+  shellAssets: string[];
+  assetBuckets: {
+    thumbs: string[];
+    readerMobile: string[];
+    readerDesktop: string[];
+  };
+  counts: {
+    chapters: number;
+    pages: number;
+    thumbs: number;
+    readerMobile: number;
+    readerDesktop: number;
+  };
+  bytes: {
+    thumbs: number;
+    readerMobile: number;
+    readerDesktop: number;
+    totalImageTiers: number;
+  };
+};
+```
+
+### Image Tier Rules
+
+- This performance cutover must not call GPT image generation. It derives smaller runtime assets from already generated page art.
+- Derivation source priority is:
+  1. `artifacts/page-masters/<chapter>/<NN>.png` when present;
+  2. current local `public/images/<chapter>/<NN>.png` during the first cutover, if present;
+  3. current `public/images/<chapter>/<NN>.webp` only when no PNG master exists.
+- After the first successful derivation, future derivation reads from `artifacts/page-masters/`, not from `public/images/`.
+- Home cards must use only `coverAssets.thumb.src`.
+- Reader placeholders may use `page.assets.thumb.src`.
+- The reader must choose `readerMobile` when the viewport width is below `700px` or the computed reader frame width is below `520px`.
+- The reader must choose `readerDesktop` for iPad/desktop frame rendering when the computed reader frame width is at least `520px`.
+- No home-load code may reference `readerMobile`, `readerDesktop`, or `public/images`.
+- No runtime code may construct image paths manually from chapter id and page index. Runtime image selection must read from `book.json`.
+
+Byte targets:
+
+- thumbnails: target average under `50KB`, hard maximum `90KB`;
+- mobile reader images: target average under `180KB`, hard maximum `350KB`;
+- desktop reader images: keep visual quality high, hard maximum `650KB`;
+- total deployed image tiers: target under `300MB`, hard maximum `350MB`.
+
+If the hard byte targets produce visibly degraded art, revise the dimension/quality decision in this execplan before continuing.
+
+### iPad And Desktop Frame
+
+The reader remains a 9:16 mobile book on larger screens. Implement a dedicated reader frame around the page slots.
+
+Required layout behavior:
+
+- On mobile viewports below `700px`, the reader frame fills the viewport exactly as the current phone reader does.
+- On viewports `700px` and wider, the reader frame is centered, preserves `aspect-ratio: 9 / 16`, and is capped by both viewport height and a comfortable maximum width.
+- Bokeh remains visible outside the centered frame on iPad/desktop.
+- The page image, overlays, hotspots, learning affordances, and progress bar are clipped to the frame, not to the whole browser viewport.
+
+CSS target shape:
+
+```css
+.reader-frame {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+@media (min-width: 700px) {
+  .reader-frame {
+    width: min(100vw, 56.25dvh, 576px);
+    height: auto;
+    aspect-ratio: 9 / 16;
+    max-height: 100dvh;
+    border-radius: 18px;
+  }
+}
+```
+
+The exact selector names may follow the existing `public/index.html` style, but the resulting behavior must match this contract.
+
+### Reader DOM Contract
+
+- `#stage` must contain no more than four page-slot elements at any time: previous, current, next, and optional preload.
+- The implementation must not use `ch.pages.map(...)` to render an entire chapter into `#stage`.
+- On the Prophet Muhammad chapter, opening page 0 must not create 95 page nodes.
+- Learning sheets and hotspot layers mount only for the current slot.
+- Returning Home clears all reader slots before home transition work completes.
+
+### Input Latency And Instrumentation
+
+Visible feedback means a user-observable class, transform, opacity change, progress movement, or stable transition state has been applied and painted. It does not mean the final target image has decoded.
+
+Add these marks and measures:
+
+```text
+qs:storyTap
+qs:storyFeedbackVisible
+qs:homeTap
+qs:homeFeedbackVisible
+qs:pageTurnIntent
+qs:pageTurnFeedbackVisible
+qs:pageCommit
+```
+
+Rules:
+
+- Mark the tap/intent at the beginning of the pointer/click/swipe handler.
+- Apply feedback before any `await`, image decode, cache lookup, chapter render, or service-worker freshness work.
+- Mark `*FeedbackVisible` after the next `requestAnimationFrame` following the feedback class/style update.
+- `storyFeedbackVisible - storyTap` must be `<= 100ms`.
+- `homeFeedbackVisible - homeTap` must be `<= 100ms`.
+- `pageTurnFeedbackVisible - pageTurnIntent` must be `<= 100ms`.
+- `pageCommit - pageTurnIntent` may exceed `100ms` when a new image is not decoded yet, but the current page must remain visually stable until commit.
+
+`window.qsDebug()` must return at least:
+
+```ts
+{
+  mode: ReaderMode;
+  chapterIndex: number | null;
+  pageIndex: number | null;
+  slotCount: number;
+  activeSlots: Array<{ slot: "prev" | "current" | "next" | "preload"; chapterId: string; pageIndex: number; state: AssetState }>;
+  assetTier: "thumb" | "readerMobile" | "readerDesktop";
+  scheduler: { activeFetches: number; activeDecodes: number; queued: Record<"P0" | "P1" | "P2" | "P3" | "P4", number> };
+  metrics: Record<string, number>;
+  cacheBuildId: string | null;
+}
+```
+
+### Network Contract
+
+On a cold mobile home load at `390x844`:
+
+- zero requests may be made to `reader-mobile/`;
+- zero requests may be made to `reader-desktop/`;
+- zero requests may be made to `images/`;
+- home image requests must be to `thumbs/`;
+- `book.json`, shell, fonts, icons, and thumbnails may load.
+
+On first story open:
+
+- the first P0 request is the selected chapter page 0 `readerMobile` asset;
+- P2 prefetch for page 1 may start only after the P0 job is queued;
+- P3/P4 work must not compete with the first visible reader image.
+
+### Service Worker Cache Contract
+
+Use these cache buckets:
+
+```text
+qs-meta
+qs-shell-<buildId>
+qs-thumbs-<buildId>
+qs-reader-mobile-<buildId>
+qs-reader-desktop-<buildId>
+```
+
+Fetch strategy:
+
+- navigations: cached shell first, background refresh second;
+- `book.json` and `build.json`: cached response first when available, background refresh second, with client notification when a newer build is available;
+- `thumbs/`: cache-first inside `qs-thumbs-<buildId>`;
+- `reader-mobile/`: cache-first inside `qs-reader-mobile-<buildId>`;
+- `reader-desktop/`: cache-first inside `qs-reader-desktop-<buildId>`;
+- old build caches prune only when activation is safe, meaning the app is on Home or after a full reload.
+
+The service worker must not delay visible Home, story-open feedback, Home feedback, page-turn feedback, or learning interactions while checking freshness.
+
 ### Static Asset Tiers
 
 Generate and deploy separate image tiers:
@@ -48,11 +335,11 @@ Recommended starting sizes:
 - mobile reader: `828x1472` or nearest 9:16 size validated on iPhone;
 - desktop reader: keep current `1152x2048` WebP unless visual QA shows a smaller desktop tier is enough.
 
-The deployed runtime manifest must include width, height, byte size, and tier URLs for every page. The app chooses by viewport and device pixel ratio.
+The deployed runtime manifest is `book.json`; it must include width, height, byte size, MIME type, and tier URLs for every page as defined in the runtime data shape above.
 
 ### Source/Master Ownership
 
-PNG masters must not live in the Pages deploy root unless the reader directly serves them. Move or regenerate source masters outside `public/`, or remove them from tracked/deployed state using the repo deletion rule: use `trash`, never `rm`.
+PNG masters must not live in the Pages deploy root. The cutover writes source masters to `artifacts/page-masters/`, audit manifests to `artifacts/page-manifests/`, and deployable WebP tiers to `public/thumbs/`, `public/reader-mobile/`, and `public/reader-desktop/`.
 
 Expected final deploy root:
 
@@ -69,7 +356,7 @@ public/
   reader-desktop/
 ```
 
-`public/images/` should either disappear from the deploy path or become a small compatibility-free current tier. Do not leave unused PNG masters in `public/`.
+`public/images/` must disappear from the deploy path after tier generation and validation. Do not leave unused PNG masters, legacy WebPs, or prompt manifests in `public/images/`.
 
 ### Reader Runtime
 
@@ -164,27 +451,42 @@ Startup should prefer cached UI first, then background freshness:
 
 - [ ] Inspect current tracked/ignored status of `public/images/**/*.png`, `public/images/**/*.webp`, and manifests.
 - [ ] Choose the image derivation tool. If adding a dependency, check the latest stable/LTS version first per repo policy.
+- [ ] Update `.gitignore` so `artifacts/page-masters/**/*.png` stays local and audit manifests can be tracked.
 - [ ] Add a deterministic asset derivation script, e.g. `scripts/derive-assets.ts`.
+- [ ] Ensure asset derivation uses existing art only and does not call GPT image generation.
+- [ ] Seed `artifacts/page-masters/` from current local `public/images/**/*.png` when those PNG masters exist.
+- [ ] Fall back to current `public/images/**/*.webp` as derivation input only for pages where no PNG master exists.
+- [ ] Update `scripts/generate.ts` so newly generated PNG masters are written to `artifacts/page-masters/<chapter>/<NN>.png`.
+- [ ] Update `scripts/generate.ts` so prompt/reference manifests are written to `artifacts/page-manifests/<chapter>/manifest.json`.
 - [ ] Generate thumbnail tier into `public/thumbs/<chapter>/<NN>.webp`.
 - [ ] Generate mobile reader tier into `public/reader-mobile/<chapter>/<NN>.webp`.
 - [ ] Generate desktop reader tier into `public/reader-desktop/<chapter>/<NN>.webp`.
-- [ ] Write byte size and dimensions for every generated asset into build metadata.
-- [ ] Update `scripts/generate.ts` so `book.json` exposes `assets.thumb`, `assets.readerMobile`, and `assets.readerDesktop` per page.
-- [ ] Remove unused deployed masters from `public/` using `trash`, or move them to a non-deployed source/master location.
-- [ ] Confirm `public/` deployed size drops materially from the current `2.4G`.
+- [ ] Write byte size, dimensions, MIME type, and versioned URL for every generated asset into `book.json`.
+- [ ] Update `scripts/generate.ts` so `book.json` exposes `coverAssets` per chapter and `assets.thumb`, `assets.readerMobile`, and `assets.readerDesktop` per page.
+- [ ] Update `scripts/generate.ts` so `build.json` exposes `assetBuckets`, `counts`, and `bytes`.
+- [ ] Remove `public/images/` using `trash` after new tiers and manifests are validated.
+- [ ] Confirm `public/` has zero `.png` files outside icons and zero files under `public/images/`.
+- [ ] Confirm deployed image tiers are under the `350MB` hard maximum.
 
 ### Phase 2: Runtime Data Contract
 
 - [ ] Cut over runtime code from `page.image` to the explicit tiered asset contract.
+- [ ] Cut over runtime code from chapter `cover` string to `chapter.coverAssets`.
 - [ ] Remove old assumptions that one page URL serves home, mobile reader, and desktop reader.
+- [ ] Remove runtime code that constructs image URLs from chapter id and page index.
+- [ ] Ensure home cards use only `chapter.coverAssets.thumb.src`.
+- [ ] Ensure reader pages choose only `page.assets.readerMobile.src` or `page.assets.readerDesktop.src`.
+- [ ] Ensure placeholders use only `page.assets.thumb.src`.
 - [ ] Preserve story copy, interactions, page types, progress ticks, and chapter order.
 - [ ] Add runtime assertions in development/debug mode for missing asset tiers.
-- [ ] Keep `book.json` and `build.json` deterministic across repeated `bun run gen --book-only`.
+- [ ] Keep `book.json` and `build.json` deterministic across repeated asset derivation plus `bun run gen --book-only`.
 
 ### Phase 3: Reader Virtualization
 
 - [ ] Replace `stage.innerHTML = ch.pages.map(...)` with fixed reusable page slots.
-- [ ] Render previous/current/next slots only.
+- [ ] Render previous/current/next slots only, plus no more than one optional preload slot.
+- [ ] Ensure `#stage` contains no more than four page-slot elements after opening any chapter.
+- [ ] Ensure opening `prophet-muhammad` page 0 does not create 95 page nodes.
 - [ ] Keep progress and section ticks data-driven.
 - [ ] Ensure learning interactions still mount only for the current page.
 - [ ] Ensure hotspot layers are scoped to the current virtual slot.
@@ -193,6 +495,7 @@ Startup should prefer cached UI first, then background freshness:
 
 ### Phase 4: Input-First Transitions
 
+- [ ] Add the performance marks listed in `Input Latency And Instrumentation`.
 - [ ] Add immediate home-card pressed/opening state on story tap.
 - [ ] Keep the selected card/cover visible while the first reader image prepares.
 - [ ] Prevent accidental transparent reader/bokeh-only loading states.
@@ -200,6 +503,17 @@ Startup should prefer cached UI first, then background freshness:
 - [ ] Keep the current page visible until the target page is ready.
 - [ ] Commit the target page only after decode succeeds or fallback state is ready.
 - [ ] Add immediate Home response and cancel/demote reader asset work.
+- [ ] Ensure tap/intent feedback is applied before any `await`, decode, cache lookup, or freshness check.
+- [ ] Ensure `storyFeedbackVisible - storyTap`, `homeFeedbackVisible - homeTap`, and `pageTurnFeedbackVisible - pageTurnIntent` are each `<= 100ms`.
+
+### Phase 4.5: iPad/Desktop Frame
+
+- [ ] Add a dedicated reader frame element or equivalent wrapper around the page slots.
+- [ ] Preserve full-viewport phone behavior below `700px`.
+- [ ] Center a 9:16 frame on viewports `700px` and wider.
+- [ ] Clip page images, overlays, hotspots, learning affordances, and progress bar to the frame.
+- [ ] Keep the existing bokeh visible outside the frame on iPad/desktop.
+- [ ] Verify the frame does not resize or shift when text, hotspots, loading states, or learning controls appear.
 
 ### Phase 5: Asset Scheduler
 
@@ -209,13 +523,17 @@ Startup should prefer cached UI first, then background freshness:
 - [ ] Pause lower-priority work during user navigation.
 - [ ] Use idle callbacks for home thumbnail warmup and nonessential prefetch.
 - [ ] Evict only decoded, non-pinned assets.
-- [ ] Expose `window.qsDebug()` with scheduler state, queue lengths, active jobs, cache build ID, and current asset tier.
+- [ ] Ensure first story-open P0 reader image queues before P2/P3/P4 prefetch work.
+- [ ] Expose `window.qsDebug()` with the exact fields listed in `Input Latency And Instrumentation`.
 - [ ] Keep `window.qsResetCache()` or an equivalent development reset helper.
 
 ### Phase 6: PWA Cache Buckets
 
 - [ ] Update `public/sw.js` to cache shell, thumbs, reader-mobile, and reader-desktop separately.
+- [ ] Use exact cache names `qs-meta`, `qs-shell-<buildId>`, `qs-thumbs-<buildId>`, `qs-reader-mobile-<buildId>`, and `qs-reader-desktop-<buildId>`.
 - [ ] Make image cache keys include build ID and tier.
+- [ ] Change navigation handling from network-first to cached-shell-first with background refresh.
+- [ ] Change `book.json` and `build.json` handling to cached-response-first with background refresh and client notification for new builds.
 - [ ] Preserve offline launch from warmed cache.
 - [ ] Defer build activation while reading.
 - [ ] Prune old tier caches on safe activation.
@@ -229,9 +547,14 @@ Startup should prefer cached UI first, then background freshness:
 - [ ] Confirm repeated generation does not dirty deterministic files.
 - [ ] Confirm `public/` no longer includes unused large masters.
 - [ ] Use Agent Browser at `390x844` to verify cold load, warm SW load, story open, Home return, fast page turns, and offline reload.
-- [ ] Validate tap-to-feedback under 100ms for story open, Home, and next/previous page intent.
+- [ ] Validate cold mobile home load makes zero requests to `reader-mobile/`, `reader-desktop/`, and `images/`.
+- [ ] Validate home image requests are to `thumbs/`.
+- [ ] Validate first story-open P0 request is the selected chapter page 0 `readerMobile` asset.
+- [ ] Validate tap-to-feedback under `100ms` for 10 story-open, 10 Home, and 10 next/previous page-turn samples.
+- [ ] Validate `#stage` contains no more than four page-slot elements while reading.
 - [ ] Validate no active/visible reader slot has missing `src` or `naturalWidth === 0` after decode.
 - [ ] Validate no accidental bokeh-only loading state appears on mobile.
+- [ ] Validate iPad/desktop frame at `834x1194`, `1024x1366`, and `1440x900`.
 - [ ] Validate console/errors are clean after cold and warm passes.
 - [ ] Validate deployed GitHub Pages `build.json` matches the committed build after push.
 
@@ -240,20 +563,39 @@ Startup should prefer cached UI first, then background freshness:
 - Delete whole-chapter hidden page DOM rendering.
 - Delete distance-only image windowing.
 - Delete home use of full reader-size covers.
-- Delete deployed PNG masters from `public/` unless they become an explicit served tier.
-- Delete any compatibility fallback that keeps both old single-image and new tiered-image runtime paths after cutover validation passes.
+- Delete the entire legacy `public/images/` deploy path after the new tiers are validated.
+- Delete deployed PNG masters from `public/`.
+- Delete the old single-image `page.image` and chapter `cover` runtime path.
 - Delete stale comments that describe the old page/image ownership model.
+
+## Expected Smoothness Results
+
+The implementation is not complete until these observed results are true.
+
+| Surface | Expected result | Measurement |
+| --- | --- | --- |
+| Cold mobile home load | Home becomes usable without loading reader-sized art. | At `390x844`, network entries include `thumbs/` but zero `reader-mobile/`, zero `reader-desktop/`, and zero `images/`. |
+| Story tap | The tapped card visibly responds immediately and remains a deliberate opening state until page 0 is ready. | `qs:storyFeedbackVisible - qs:storyTap <= 100ms` across 10 samples. |
+| First reader image | The selected chapter page 0 is the first high-priority reader image. | First P0 scheduler job and first reader-tier request are `readerMobile/<chapter>/00.webp` on mobile. |
+| Page turn | The current page stays stable while the target page prepares; the intent is visible immediately. | `qs:pageTurnFeedbackVisible - qs:pageTurnIntent <= 100ms` across 10 samples; no blank transparent page. |
+| Home tap | Home responds immediately and reader prefetch no longer competes with the transition. | `qs:homeFeedbackVisible - qs:homeTap <= 100ms` across 10 samples; scheduler P0/P1 reader jobs are canceled or demoted. |
+| Reader DOM | Large chapters do not create large DOM trees. | `#stage` has at most four page slots on every chapter, including Prophet Muhammad. |
+| iPad/desktop | The reader feels like the same mobile book inside a centered frame. | At `834x1194`, `1024x1366`, and `1440x900`, the 9:16 frame is centered, stable, and clips all page content. |
+| Deploy artifact | GitHub Pages ships only served static assets. | No `public/images/`; deployed image tiers under `350MB`; no page masters under `public/`. |
+| Offline warm launch | A previously opened build launches offline without blocking on freshness. | Warm online visit, switch offline in Agent Browser, reload, open a story, and turn at least one page. |
 
 ## Acceptance Criteria
 
 - The app remains a static GitHub Pages PWA.
 - Bokeh looks unchanged.
-- On mobile, every user tap produces visible feedback in under 100ms.
-- Cold startup does not trigger a full-cover image stampede.
+- On mobile, every measured story, Home, and page-turn tap produces visible feedback in under `100ms`.
+- Cold startup does not trigger a full-cover image stampede: zero `reader-mobile/`, `reader-desktop/`, or `images/` requests before first story open.
 - Story open never shows accidental bokeh-only loading.
 - Page turns feel immediate even when the target image is not yet decoded.
 - Home return is immediate and cancels/demotes reader prefetch work.
-- The deployed artifact is materially smaller and contains no unused image masters.
+- The reader DOM is virtualized to at most four page slots.
+- The iPad/desktop reader preserves the 9:16 mobile frame with bokeh outside the frame.
+- The deployed artifact is under the `350MB` image-tier hard maximum and contains no unused image masters.
 - Offline launch works after a warm online visit.
 - The implementation is committed with an explicitly reviewed staged diff.
 
